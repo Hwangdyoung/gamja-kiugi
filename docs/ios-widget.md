@@ -56,12 +56,26 @@ npx cap open ios
 3. 홈 화면으로 나가면 위젯 감자가 그 표정으로 바뀝니다.
 4. 실제로도 앱을 안 열면 하루가 지날 때마다 위젯이 바뀝니다 (앱을 열면 다시 웃음).
 
+## 7. 미접속 알림과 Apple Watch
+
+- 앱을 처음 열면 알림 허용을 묻습니다 → **허용**.
+- 앱은 마지막 접속 후 **2·4·7·14·21·28일째 오전 10시**에 감자 알림을 기기 안에 미리 예약합니다
+  (기획안 7장: 표정이 바뀌는 날만, 분노 이후 주 1회, 밤 9시~아침 9시 제외). 서버는 필요 없습니다.
+- 앱을 다시 열면 예약을 지우고 그날부터 다시 셉니다. 설정에서 **푸시 알림**을 끄면 예약이 모두 지워집니다.
+- **Apple Watch**: 따로 설치할 것이 없습니다. iPhone이 잠겨 있고 워치를 차고 있으면 iOS가 같은 알림을 워치로 넘깁니다.
+  (iPhone **Watch 앱 → 알림 → 감자 키우기**가 "iPhone 알림 미러링"이면 됩니다.)
+
+**발표 시연**: 앱 → 톱니 → 시연 슬라이더를 원하는 일수로 → **지금 표정으로 알림 미리 보내기 (10초 뒤)** →
+바로 iPhone 화면을 잠그면 10초 뒤 iPhone 잠금 화면과 Apple Watch에 알림이 뜹니다.
+
 ## 구조
 
 | 파일 | 역할 |
 | --- | --- |
 | `capacitor.config.json` | 앱 이름·번들 ID·웹 빌드 폴더 |
-| `ios/App/App/AppDelegate.swift` | `WidgetBridgePlugin`: 웹 → App Group 저장소(이름·다음 단계·시연 일수·마지막 접속 시각) → 위젯 새로고침 |
+| `ios/App/App/AppDelegate.swift` | `WidgetBridgePlugin`: 웹 → App Group 저장소(이름·다음 단계·시연 일수·마지막 접속 시각) → 위젯 새로고침. `GamjaNotifications`: 미접속 알림 예약·시연용 알림 |
+| `ios/App/App/SceneDelegate.swift` | 플러그인을 등록하는 `MainViewController`로 앱 화면을 띄움 |
+| `src/lib/notify.js` | 알림 규칙과 4주 치 예약 목록(`notificationSchedule`) |
 | `src/lib/nativeWidget.js` | 웹에서 위 플러그인 호출 (iPhone 앱일 때만) |
 | `ios/App/GamjaWidget/GamjaWidget.swift` | 위젯: 미접속 일수 계산, 표정·문구, 8일 치 장면 미리 예약 |
 | `ios/App/GamjaWidget/Assets.xcassets` | 위젯용 감자 그림 4장 |

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, within, cleanup } from '@testing-library/rea
 import App from '../App.jsx';
 import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
-import { notifyDecision } from '../lib/notify.js';
+import { notificationSchedule, notifyDecision } from '../lib/notify.js';
 import { MAJORS, TYPES } from '../lib/data.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
@@ -37,6 +37,14 @@ describe('표정·문구·알림 규칙', () => {
     const sendDays = Array.from({ length: 22 }, (_, d) => d).filter((d) => notifyDecision(d, true).send);
     expect(sendDays).toEqual([2, 4, 7, 14, 21]);
     expect(notifyDecision(4, false).send).toBe(false);
+  });
+  it('iPhone 앱이 예약할 4주 치 알림: 날짜·표정·문구', () => {
+    const plan = notificationSchedule({ name: '하늘', done: [true, false, false, false], track: MAJORS.dmc.tracks.mkt });
+    expect(plan.map((p) => [p.day, p.mood])).toEqual([
+      [2, 'neutral'], [4, 'annoyed'], [7, 'angry'], [14, 'angry'], [21, 'angry'], [28, 'angry'],
+    ]);
+    expect(plan[1].body).toBe('2단계 아직이야? 서울 갈 거야?');
+    expect(plan[2].body).toBe('하늘이 화났다. 춘천 공고 확인하러 와.');
   });
 });
 

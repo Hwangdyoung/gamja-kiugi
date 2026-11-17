@@ -1,4 +1,4 @@
-import { moodOf } from './growth.js';
+import { messageFor, moodOf } from './growth.js';
 
 /* 기획안 7장 알림 규칙(가정)
    - 표정이 바뀌는 날(2·4·7일째)에만 보낸다. 하루 한 번까지.
@@ -19,4 +19,18 @@ export function notifyDecision(days, enabled) {
   return changed
     ? { send: true, reason: '표정이 바뀐 날이에요.' }
     : { send: false, reason: '표정이 바뀌는 날에만 보내요.' };
+}
+
+/* iPhone 앱이 기기 안에 미리 예약할 알림 목록 (마지막 접속 후 며칠째, 표정, 문구).
+   위 규칙으로 보내는 날만 골라 4주 치를 만든다: 2·4·7·14·21·28일째 */
+const PLAN_DAYS = 28;
+
+export function notificationSchedule({ name, done, track }) {
+  const out = [];
+  for (let day = 1; day <= PLAN_DAYS; day++) {
+    if (!notifyDecision(day, true).send) continue;
+    const mood = moodOf(day);
+    out.push({ day, mood, body: messageFor(mood, { name, done, track }) });
+  }
+  return out;
 }

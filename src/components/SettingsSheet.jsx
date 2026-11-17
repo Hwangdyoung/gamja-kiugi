@@ -4,7 +4,7 @@ import { MOODS } from '../lib/data.js';
 /* 설정: 이름·전공·직무 수정, 푸시 알림 켜고 끄기 (기획안 7장)
    + 발표용 시연: iPhone 앱에서는 폰 화면 밖 시연 도구를 볼 수 없어서 여기에도 둔다.
      슬라이더를 움직이고 홈 화면으로 나가면 위젯 표정이 바뀐다. */
-export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, onSave, onClose, days, onDays, mood }) {
+export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, onSave, onClose, days, onDays, mood, onTestNotification }) {
   return (
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" role="dialog" aria-modal="true" aria-label="설정" onClick={(e) => e.stopPropagation()}>
@@ -39,6 +39,11 @@ export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, 
           <small>
             지금 표정: {MOODS[mood]}. iPhone 앱에서는 홈 화면 위젯도 이 일수만큼 지난 모습으로 바뀌어요.
           </small>
+          {onTestNotification && (
+            <button type="button" className="btn outline sm" onClick={onTestNotification}>
+              지금 표정으로 알림 미리 보내기 (10초 뒤)
+            </button>
+          )}
         </div>
 
         <h3 className="sheet-sub">내 정보</h3>
