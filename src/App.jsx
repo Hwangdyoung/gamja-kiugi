@@ -13,6 +13,7 @@ import SettingsSheet from './components/SettingsSheet.jsx';
 import DemoPanel from './components/DemoPanel.jsx';
 import { BackIcon, GearIcon } from './components/Icons.jsx';
 
+const APP_NAME = '감자 키우기';
 const EMPTY_DONE = [false, false, false, false];
 
 export default function App() {
@@ -32,7 +33,7 @@ export default function App() {
   const [q, setQ] = useState('');
   const [type, setType] = useState('전체');
   const [mode, setMode] = useState(null);
-  const [nameDraft, setNameDraft] = useState('');
+  const [nameDraft, setNameDraft] = useState(''); // 시작 화면에서 입력 중인 이름
   const [toast, setToast] = useState('');
   const [days, setDays] = useState(0); // 시연용 미접속 일수
 
@@ -48,13 +49,12 @@ export default function App() {
     scrollRef.current?.scrollTo?.(0, 0);
   }, [tab, detailId]);
 
-  // 브라우저 탭 아이콘과 제목이 캐릭터 표정·이름을 따라간다 (기획안 7장: 앱 아이콘 표정 변화)
+  // 브라우저 탭 아이콘이 캐릭터 표정을 따라간다 (기획안 7장: 앱 아이콘 표정 변화)
   const tabMood = moodOf(days);
   useEffect(() => {
     const link = document.querySelector('link[rel="icon"]');
     if (link) link.href = `./icons/favicon-${tabMood}.png`;
-    document.title = `${profile?.name ?? '○○'} 키우기`;
-  }, [tabMood, profile?.name]);
+  }, [tabMood]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -75,7 +75,7 @@ export default function App() {
   const hiddenCount = all.length - items.length;
   const mood = moodOf(days);
   const message = profile ? messageFor(mood, { name: profile.name, done, track }) : '';
-  const appName = `${profile?.name ?? '○○'} 키우기`;
+  const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
 
   const toggleSave = (id) => setSaved((s) => ({ ...s, [id]: !s[id] }));
@@ -116,7 +116,7 @@ export default function App() {
 
   let screen;
   if (!profile) {
-    screen = <Onboarding logoName={nameDraft || '○○'} onNameDraft={setNameDraft} onSubmit={saveProfile} />;
+    screen = <Onboarding nameDraft={nameDraft} onNameDraft={setNameDraft} onSubmit={saveProfile} />;
   } else if (detail) {
     screen = (
       <OpportunityDetail
@@ -192,7 +192,7 @@ export default function App() {
               </button>
             ) : (
               <span className="brand">
-                <span className="nm">{profile.name}</span> 키우기
+                <span className="nm">감자</span> 키우기
               </span>
             )}
             {detail && <span className="appbar-title">기회 상세</span>}

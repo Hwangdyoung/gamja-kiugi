@@ -1,12 +1,12 @@
 import Mascot from '../components/Mascot.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
 
-/* 시작 설정: 랜딩 문구 → 세 가지 입력. 입력한 이름이 바로 앱 이름(○○ 자리)에 들어간다 */
-export default function Onboarding({ logoName, onNameDraft, onSubmit }) {
+/* 시작 설정: 랜딩 문구 → 세 가지 입력. 입력한 이름은 감자가 사용자를 부를 때 쓴다 */
+export default function Onboarding({ nameDraft, onNameDraft, onSubmit }) {
   return (
     <div className="screen onboarding">
       <p className="brand-lg">
-        <span className="nm">{logoName}</span> 키우기
+        <span className="nm">감자</span> 키우기
       </p>
 
       <section className="landing">
@@ -20,8 +20,8 @@ export default function Onboarding({ logoName, onNameDraft, onSubmit }) {
         <div className="landing-char">
           <Mascot mood="happy" size={64} />
           <p>
-            <b>“{logoName === '○○' ? '이름부터 알려줘.' : `${logoName}, 같이 춘천에서 커 보자.`}”</b>
-            <small>이름을 넣으면 앱 이름이 바뀌어요.</small>
+            <b>“{nameDraft ? `${nameDraft}, 같이 춘천에서 커 보자.` : '이름부터 알려줘.'}”</b>
+            <small>이름을 넣으면 감자가 불러 줘요.</small>
           </p>
         </div>
       </section>

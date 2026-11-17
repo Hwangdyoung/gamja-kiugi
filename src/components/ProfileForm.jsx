@@ -30,7 +30,7 @@ export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNam
           className="input"
           type="text"
           maxLength={8}
-          placeholder="앱 이름에 들어갈 이름"
+          placeholder="감자가 부를 이름"
           value={name}
           onChange={(e) => {
             setName(e.target.value);

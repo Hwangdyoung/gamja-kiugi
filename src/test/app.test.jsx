@@ -63,7 +63,8 @@ describe('화면 흐름', () => {
     fireEvent.click(screen.getByText('내 경로 만들기'));
     expect(screen.getByRole('alert').textContent).toBe('이름을 입력해 주세요.');
     fireEvent.change(screen.getByLabelText('이름'), { target: { value: name } });
-    expect(document.querySelector('.brand-lg .nm').textContent).toBe(name);
+    expect(document.querySelector('.brand-lg').textContent).toBe('감자 키우기');
+    expect(document.querySelector('.landing-char').textContent).toContain(`${name}, 같이 춘천에서 커 보자.`);
     fireEvent.click(screen.getByLabelText(/디지털미디어콘텐츠/));
     fireEvent.click(screen.getByLabelText('마케팅형'));
     fireEvent.click(screen.getByText('내 경로 만들기'));
@@ -71,7 +72,7 @@ describe('화면 흐름', () => {
 
   it('시작 설정 → 홈 → 기회 상세 → 스크랩', () => {
     start();
-    expect(document.querySelector('.brand').textContent).toBe('하늘 키우기');
+    expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
     expect(screen.getByText('하늘이 오늘도 성장 중!')).toBeTruthy();
     expect(screen.getByText('다음 단계 추천 기회')).toBeTruthy();
 
@@ -123,6 +124,6 @@ describe('화면 흐름', () => {
     // 다시 열어도 저장된 프로필로 시작
     cleanup();
     render(<App />);
-    expect(document.querySelector('.brand').textContent).toBe('하늘 키우기');
+    expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
   });
 });
