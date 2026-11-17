@@ -94,6 +94,11 @@ npm run build    # dist/ 에 배포용 파일 생성
 npm run preview  # 빌드 결과를 배포와 같은 방식으로 미리 보기
 ```
 
+## iPhone 앱과 홈 화면 위젯 (시연용)
+
+웹 앱을 Capacitor로 감싼 iPhone 앱에 감자 위젯을 붙였습니다. 앱을 안 열수록 위젯 속 감자가 화를 냅니다.
+설치·시연 방법은 [docs/ios-widget.md](docs/ios-widget.md)를 보세요. 웹(Vercel) 배포에는 영향이 없습니다.
+
 ## 배포 (GitHub → Vercel)
 
 배포 설정은 `vercel.json`에 들어 있어서 Vercel 화면에서 따로 바꿀 값이 없습니다.

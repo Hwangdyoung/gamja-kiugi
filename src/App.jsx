@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { doneCount, getTrack, messageFor, moodOf } from './lib/growth.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import * as storage from './lib/storage.js';
+import { syncWidget } from './lib/nativeWidget.js';
 import Onboarding from './screens/Onboarding.jsx';
 import Home from './screens/Home.jsx';
 import Opportunities from './screens/Opportunities.jsx';
@@ -55,6 +56,15 @@ export default function App() {
     const link = document.querySelector('link[rel="icon"]');
     if (link) link.href = `./icons/favicon-${tabMood}.png`;
   }, [tabMood]);
+
+  // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보낸다. 앱으로 돌아올 때마다 "지금 접속"으로 기록
+  useEffect(() => {
+    const send = () => syncWidget({ profile, done, demoDays: days });
+    send();
+    const onVisible = () => document.visibilityState === 'visible' && send();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [profile, done, days]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -222,6 +232,9 @@ export default function App() {
             onNotify={setNotifyOn}
             onSave={saveProfile}
             onClose={() => setSettingsOpen(false)}
+            days={days}
+            onDays={setDays}
+            mood={mood}
           />
         )}
       </div>
