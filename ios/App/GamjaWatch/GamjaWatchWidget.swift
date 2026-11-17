@@ -15,7 +15,7 @@ struct GamjaWatchEntry: TimelineEntry {
 
 struct GamjaWatchProvider: TimelineProvider {
     func placeholder(in context: Context) -> GamjaWatchEntry {
-        GamjaWatchEntry(date: .now, state: GamjaState(ready: true, days: 0, mood: .happy, title: "하늘 신났다!!", sub: "오늘도 같이 크자"))
+        GamjaWatchEntry(date: .now, state: GamjaState(ready: true, days: 0, mood: .happy, title: "감자 신났다!!", sub: "오늘도 같이 크자"))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GamjaWatchEntry) -> Void) {

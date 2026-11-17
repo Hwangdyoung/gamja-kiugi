@@ -1,7 +1,7 @@
 // 워치 앱과 워치 컴플리케이션이 함께 쓰는 감자 상태 계산
 // (같은 파일이 GamjaWatch, GamjaWatch Watch App 두 폴더에 들어 있다. 고칠 때는 둘 다 고친다.)
 // 표정 규칙은 웹 앱 src/lib/growth.js, iPhone 위젯 GamjaWidget.swift와 같다.
-// 워치 문구는 화면이 작아서 "하늘 화났다!!" + 줄바꿈 + "춘천 공고 당장 확인해"처럼 두 줄로 짧게 쓴다.
+// 워치 문구는 화면이 작아서 "감자 화났다!!" + 줄바꿈 + "춘천 공고 당장 확인해"처럼 두 줄로 짧게 쓴다.
 
 import SwiftUI
 
@@ -39,7 +39,7 @@ struct GamjaState {
     let ready: Bool
     let days: Int
     let mood: Mood
-    /// 첫 줄: "하늘 화났다!!"
+    /// 첫 줄: "감자 화났다!!"
     let title: String
     /// 둘째 줄: "춘천 공고 당장 확인해"
     let sub: String
@@ -52,7 +52,7 @@ struct GamjaState {
         return days == 0 ? "오늘 접속했어요" : "\(days)일째 미접속"
     }
 
-    /// 한 줄 컴플리케이션: "하늘 화났다!! · 7일째"
+    /// 한 줄 컴플리케이션: "감자 화났다!! · 7일째"
     var inline: String {
         guard ready else { return "감자 키우기" }
         return days == 0 ? title : "\(title) · \(days)일째"
@@ -86,8 +86,8 @@ struct GamjaState {
         let realDays = max(0, Int(date.timeIntervalSince1970 - lastOpen) / Int(gamjaDay))
         let days = realDays + (store?.integer(forKey: "demoDays") ?? 0)
         let mood = Mood(days: days)
-        let raw = store?.string(forKey: "name") ?? ""
-        let (title, sub) = lines(mood: mood, name: raw.isEmpty ? "감자" : raw, nextStep: store?.integer(forKey: "nextStep") ?? 1)
+        // 첫 줄 주어는 사용자 이름이 아니라 늘 "감자" (서비스 이름 감자 키우기에 맞춤)
+        let (title, sub) = lines(mood: mood, name: "감자", nextStep: store?.integer(forKey: "nextStep") ?? 1)
         return GamjaState(ready: true, days: days, mood: mood, title: title, sub: sub)
     }
 }

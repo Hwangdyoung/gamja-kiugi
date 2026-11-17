@@ -18,8 +18,12 @@ export function moodOf(days) {
   return 'angry';
 }
 
-/* 말풍선·알림 문구. 캐릭터는 반말 B급 톤(기획안 9장) */
-export function messageFor(mood, { name, done, track }) {
+/* 말풍선·알림 문구. 캐릭터는 반말 B급 톤(기획안 9장)
+   주어는 사용자 이름이 아니라 늘 "감자" (서비스 이름 감자 키우기). 이름은 홈 인사에서만 부른다 */
+export const CHARACTER = '감자';
+
+export function messageFor(mood, { done, track }) {
+  const name = CHARACTER;
   const i = josa(name, '이', '가');
   const full = doneCount(done) >= 4;
   if (mood === 'happy') {

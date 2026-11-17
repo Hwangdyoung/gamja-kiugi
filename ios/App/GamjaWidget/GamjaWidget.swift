@@ -46,7 +46,8 @@ private func josa(_ name: String, _ withBatchim: String, _ without: String) -> S
 }
 
 private func message(mood: Mood, name: String, nextStep: Int) -> String {
-    let n = name.isEmpty ? "감자" : name
+    // 주어는 사용자 이름이 아니라 늘 "감자" (웹 src/lib/growth.js, 워치와 같음)
+    let n = "감자"
     let i = josa(n, "이", "가")
     let allDone = nextStep == 0
     switch mood {
@@ -87,7 +88,7 @@ struct GamjaProvider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> GamjaEntry {
-        GamjaEntry(date: .now, days: 0, mood: .happy, message: "하늘이 오늘도 성장 중!", ready: true)
+        GamjaEntry(date: .now, days: 0, mood: .happy, message: "감자가 오늘도 성장 중!", ready: true)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GamjaEntry) -> Void) {

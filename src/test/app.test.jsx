@@ -26,11 +26,11 @@ describe('표정·문구·알림 규칙', () => {
       'happy', 'happy', 'neutral', 'neutral', 'annoyed', 'annoyed', 'angry', 'angry',
     ]);
   });
-  it('받침에 맞춰 조사를 붙이고, 4단계를 마치면 직무별 축하 문구를 보여준다', () => {
+  it('사용자 이름과 상관없이 주어는 감자이고, 4단계를 마치면 직무별 축하 문구를 보여준다', () => {
     const track = MAJORS.bio.tracks.res;
     const all = [true, true, true, true];
-    expect(messageFor('happy', { name: '하늘', done: [false, false, false, false], track })).toBe('하늘이 오늘도 성장 중!');
-    expect(messageFor('angry', { name: '지수', done: all, track })).toBe('지수가 화났다. 춘천 공고 확인하러 와.');
+    expect(messageFor('happy', { name: '하늘', done: [false, false, false, false], track })).toBe('감자가 오늘도 성장 중!');
+    expect(messageFor('angry', { name: '지수', done: all, track })).toBe('감자가 화났다. 춘천 공고 확인하러 와.');
     expect(messageFor('happy', { name: '하늘', done: all, track })).toContain('연구자의 길');
   });
   it('표정이 바뀌는 날과, 분노 이후 주 1회만 알림을 보낸다', () => {
@@ -44,7 +44,7 @@ describe('표정·문구·알림 규칙', () => {
       [2, 'neutral'], [4, 'annoyed'], [7, 'angry'], [14, 'angry'], [21, 'angry'], [28, 'angry'],
     ]);
     expect(plan[1].body).toBe('2단계 아직이야? 서울 갈 거야?');
-    expect(plan[2].body).toBe('하늘이 화났다. 춘천 공고 확인하러 와.');
+    expect(plan[2].body).toBe('감자가 화났다. 춘천 공고 확인하러 와.');
   });
 });
 
@@ -81,7 +81,7 @@ describe('화면 흐름', () => {
   it('시작 설정 → 홈 → 기회 상세 → 스크랩', () => {
     start();
     expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
-    expect(screen.getByText('하늘이 오늘도 성장 중!')).toBeTruthy();
+    expect(screen.getByText('감자가 오늘도 성장 중!')).toBeTruthy();
     expect(screen.getByText('다음 단계 추천 기회')).toBeTruthy();
 
     // 시연 도구: 7일 → 분노, 알림 발송
