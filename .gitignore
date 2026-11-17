@@ -1,0 +1,17 @@
+# 의존성·빌드 결과 (Vercel이 다시 설치하고 빌드한다)
+node_modules
+dist
+
+# Vercel CLI가 만드는 로컬 연결 정보
+.vercel
+
+# 로컬 개발 도구 설정
+.claude
+
+# 환경 변수 (키를 쓰게 되면 Vercel 대시보드에 넣는다)
+.env
+.env.*
+
+# OS·로그
+.DS_Store
+*.log

@@ -1,0 +1,661 @@
+<title>OO 키우기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout concept: 잡코리아식 구인구직 포털 구조(헤더·검색·메뉴 → 맞춤 카드 2열 → 빠른 선택 → 칩 + 카드 그리드)에
+   쥬니어네이버풍 겉모습(해바라기 노랑, 하늘색, 굵은 윤곽선, 둥근 버튼, 말풍선)을 입힌다. 모바일에서는 한 열로 쌓인다. */
+:root{
+  --bg:#fff6d0; --sky:#a9dcff; --panel:#ffffff; --panel-2:#fff1b0; --line:#f0be2a; --sun:#ffd23f;
+  --ink:#2a2d3a; --ink-2:#5b5f70;
+  --btn:#1f74c4; --btn-ink:#ffffff; --btn-edge:#124f8c;
+  --ok:#2a9a58; --danger:#c43a22;
+  --logo-fill:#ffffff; --logo-edge:#2b86d9;
+  --m-line:#3a2a10; --m-happy:#ffd23f; --m-neutral:#ffe58a; --m-annoyed:#ffb347; --m-angry:#ff7a59;
+  --m-leaf:#3fbf6a; --m-star:#ffe14d; --m-cheek:#ff8fa3; --m-mouth:#8a1c1c; --m-shadow:rgba(0,0,0,.14);
+  --f-display:"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15233d; --sky:#243f6b; --panel:#1e2f50; --panel-2:#2b4170; --line:#caa02a;
+    --ink:#f3f0e4; --ink-2:#b9c1d5;
+    --btn:#5db0f5; --btn-ink:#0e1d33; --btn-edge:#2f7fc2;
+    --ok:#5fd08b; --danger:#ff8a70;
+    --logo-fill:#ffd23f; --logo-edge:#0b1830; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15233d; --sky:#243f6b; --panel:#1e2f50; --panel-2:#2b4170; --line:#caa02a;
+  --ink:#f3f0e4; --ink-2:#b9c1d5;
+  --btn:#5db0f5; --btn-ink:#0e1d33; --btn-edge:#2f7fc2;
+  --ok:#5fd08b; --danger:#ff8a70;
+  --logo-fill:#ffd23f; --logo-edge:#0b1830; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--sky),var(--bg) 420px);background-repeat:no-repeat;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;word-break:keep-all;overflow-wrap:break-word}
+.shell{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--btn);outline-offset:2px}
+h1,h2,h3,h4,p{margin:0}
+button{font-family:inherit}
+
+/* header */
+.top-in{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px 24px;align-items:center;padding-block:16px 6px}
+.logo{font-family:var(--f-display);font-weight:400;font-size:36px;line-height:1.1;text-decoration:none;color:var(--logo-fill);-webkit-text-stroke:7px var(--logo-edge);paint-order:stroke fill;letter-spacing:.02em;text-shadow:0 3px 0 var(--logo-edge);white-space:nowrap}
+.search{display:flex;align-items:center;gap:8px;min-width:0;width:100%;max-width:520px;background:var(--panel);border:3px solid var(--line);border-radius:999px;padding:4px 6px}
+.region{flex:none;font-weight:700;font-size:14px;background:var(--panel-2);border-radius:999px;padding:6px 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;color:var(--ink);padding:6px 4px}
+.search input::placeholder{color:var(--ink-2);opacity:.8}
+.search button{flex:none;display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:var(--btn);color:var(--btn-ink);cursor:pointer}
+.login{font-weight:700;font-size:15px;color:var(--btn);background:var(--panel);border:3px solid var(--line);border-radius:14px;padding:9px 14px;cursor:pointer;white-space:nowrap;max-width:210px;overflow:hidden;text-overflow:ellipsis}
+.menu{display:flex;gap:26px;overflow-x:auto;padding-block:8px 14px}
+.menu a{font-family:var(--f-display);font-size:19px;color:var(--ink);text-decoration:none;white-space:nowrap;padding-block:3px;border-bottom:3px solid transparent}
+.menu a:hover{border-bottom-color:var(--line)}
+@media (max-width:700px){
+  .top-in{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo login" "search search"}
+  .top-in .logo{grid-area:logo}.top-in .login{grid-area:login}.top-in .search{grid-area:search;max-width:none}
+  .logo{font-size:30px}
+}
+
+/* panels, buttons, tags */
+.panel{background:var(--panel);border:3px solid var(--line);border-radius:22px;padding:18px}
+.panel.dashed{border-style:dashed;border-radius:18px;padding:14px 16px}
+.btn{display:inline-block;font-family:var(--f-display);font-size:18px;line-height:1.2;color:var(--btn-ink);background:var(--btn);border:0;border-bottom:5px solid var(--btn-edge);border-radius:14px;padding:11px 18px;cursor:pointer;text-decoration:none}
+.btn:active:not(:disabled){transform:translateY(3px);border-bottom-width:2px}
+.btn.sm{font-size:16px;padding:8px 14px;border-bottom-width:4px}
+.ghost{font:inherit;font-size:14px;font-weight:700;color:var(--ink-2);background:none;border:2px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.tagp{display:inline-block;font-size:12px;font-weight:700;background:var(--panel-2);border:2px solid var(--line);border-radius:999px;padding:0 9px}
+.pill{display:inline-block;font-size:12px;color:var(--ink-2);background:var(--panel-2);border-radius:999px;padding:1px 9px}
+.err{min-height:1.4em;color:var(--danger);font-weight:700;font-size:13px}
+.err:empty{min-height:0}
+.warn{font-size:13px;font-weight:700;background:var(--panel-2);border:2px solid var(--line);border-radius:12px;padding:8px 12px}
+.meta{color:var(--ink-2);font-size:14px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:4px}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
+.kicker{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--btn);font-size:14px}
+.intro-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+.intro-top p.lead{font-size:18px;font-weight:700;margin:4px 0 12px;text-wrap:balance}
+.intro .mascot-wrap{width:118px}
+.faux{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px;filter:blur(5px);opacity:.8;pointer-events:none;user-select:none}
+.faux div{background:var(--panel-2);border-radius:14px;padding:12px;display:grid;gap:8px}
+.faux i{display:block;height:10px;border-radius:5px;background:var(--line);opacity:.7}
+.faux i:nth-child(2){width:70%}.faux i:nth-child(3){width:40%;background:var(--btn)}
+@media (max-width:480px){.faux div:nth-child(3){display:none}.faux{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.setup{display:grid;gap:12px}
+.setup h2{font-family:var(--f-display);font-weight:400;font-size:22px}
+.setup label.t,.setup legend{font-weight:700;font-size:14px;padding:0}
+.setup fieldset{border:0;margin:0;padding:0;min-width:0}
+.field{width:100%;font-family:var(--f-display);font-size:20px;color:var(--ink);background:var(--panel);border:3px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:4px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:6px}
+.opt{display:block;cursor:pointer}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt-body{display:block;height:100%;background:var(--panel);border:3px solid var(--line);border-radius:14px;padding:9px 12px}
+.opt-body strong{display:block;font-family:var(--f-display);font-weight:400;font-size:17px;line-height:1.3}
+.opt-body small{color:var(--ink-2);font-size:12px}
+.opt input:checked + .opt-body{border-color:var(--btn);background:var(--panel-2);box-shadow:0 0 0 3px var(--btn)}
+.opt input:focus-visible + .opt-body{outline:3px solid var(--btn);outline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+.me{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:center}
+@media (max-width:560px){.me{grid-template-columns:1fr}}
+.me .mascot-wrap{width:min(170px,70%)}
+.me-info{display:grid;gap:8px;justify-items:start}
+.who{font-family:var(--f-display);font-size:20px;line-height:1.3}
+.prog{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.bar{width:100%;height:12px;background:var(--panel-2);border:2px solid var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .35s}
+.next{color:var(--ink-2);font-size:14px}
+
+.bubble{position:relative;background:var(--panel-2);border:3px solid var(--line);border-radius:18px;padding:9px 12px;font-weight:700;font-size:14px;text-align:center;text-wrap:balance;margin-bottom:20px}
+.bubble::before,.bubble::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:10px solid transparent}
+.bubble::before{bottom:-23px;border-top-color:var(--line)}
+.bubble::after{bottom:-17px;border-top-color:var(--panel-2)}
+.me .bubble{min-height:3.4em;display:grid;place-items:center}
+
+.side h2{font-family:var(--f-display);font-weight:400;font-size:21px;line-height:1.3;text-wrap:balance}
+.prefbar{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-top:12px;text-align:left;font:inherit;font-weight:500;color:var(--ink);background:var(--panel-2);border:2px solid var(--line);border-radius:14px;padding:11px 14px;cursor:pointer}
+.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+@media (max-width:860px) and (min-width:481px){.quick{gap:12px}}
+@media (max-width:480px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.qc{display:flex;flex-direction:column;justify-content:space-between;gap:12px;min-height:104px;text-align:left;font:inherit;font-weight:700;font-size:14px;line-height:1.35;color:var(--ink);background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:11px;cursor:pointer}
+.qc svg{align-self:flex-end;width:30px;height:30px;padding:5px;border-radius:50%;background:var(--panel-2);color:var(--btn)}
+
+/* prototype simulator */
+.sim{margin-top:16px;border:3px dashed var(--line);border-radius:18px;padding:12px 14px}
+.sim-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+.sim-tag{font-size:12px;font-weight:700;color:var(--btn-ink);background:var(--btn);border-radius:999px;padding:2px 10px}
+.sim label{font-weight:700}
+.sim-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 24px;align-items:start;margin-top:6px}
+@media (max-width:700px){.sim-body{grid-template-columns:1fr}}
+.sim input[type=range]{width:100%;accent-color:var(--btn);margin:6px 0 0}
+/* 눈금은 실제 값 위치에 둔다. 좌우 8px은 슬라이더 손잡이 반지름만큼의 여백 */
+.sim-scale{position:relative;height:18px;margin:2px 8px 0;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sim-scale span{position:absolute;top:0;transform:translateX(-50%)}
+.sim-mood{margin-top:6px;font-size:13px;color:var(--ink-2)}
+.notif{display:flex;gap:10px;align-items:flex-start;background:var(--panel-2);border-radius:16px;padding:10px 12px}
+.ni{flex:none;width:36px;height:36px;border-radius:10px;background:var(--m-happy);display:grid;place-items:center}
+.nt{min-width:0}
+.nt-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+.nt-top b{color:var(--ink)}
+.nt p{margin-top:2px;font-weight:700;overflow-wrap:anywhere}
+
+/* quick pick */
+.pickbar{margin-top:20px;text-align:center;padding:22px 16px}
+.pickbar h2{font-family:var(--f-display);font-weight:400;font-size:22px;text-wrap:balance}
+.seg{display:inline-grid;grid-template-columns:1fr 1fr;margin-top:14px;max-width:100%;border:3px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
+.seg button{font:inherit;font-weight:700;font-size:15px;color:var(--ink);background:transparent;border:0;padding:14px 18px;cursor:pointer;min-width:0}
+.seg button + button{border-left:3px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--btn);color:var(--btn-ink)}
+
+/* sections */
+.sec{margin-top:36px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin-bottom:12px}
+.sec-head h2{font-family:var(--f-display);font-weight:400;font-size:26px}
+.sec-head p{font-size:13px;color:var(--ink-2)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px}
+.chip{flex:none;font:inherit;font-weight:700;font-size:14px;color:var(--ink-2);background:var(--panel-2);border:2px solid transparent;border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--btn);background:var(--panel);border-color:var(--btn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.job{display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--panel);border:3px solid var(--line);border-radius:18px;padding:14px}
+.job-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.job h3{font-family:var(--f-display);font-weight:400;font-size:18px;line-height:1.35;text-wrap:balance}
+.job .org{font-size:13px;color:var(--ink-2)}
+.job-foot{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
+.star{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:none;color:var(--ink-2);cursor:pointer}
+.star svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.star[aria-pressed="true"]{color:#e0a000}
+.star[aria-pressed="true"] svg{fill:currentColor}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink-2);padding:28px 0}
+.more{display:block;margin:16px auto 0}
+
+/* 4단계가 3+1로 갈라지지 않게 4열 → 2열 → 1열로만 바뀐다 */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:960px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+.step{display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--panel);border:3px solid var(--line);border-radius:18px;padding:14px}
+.step.done{border-color:var(--ok)}
+.step-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stepn{font-family:var(--f-display);font-size:16px;color:var(--btn)}
+.step h3{font-family:var(--f-display);font-weight:400;font-size:18px;line-height:1.35;text-wrap:balance}
+.step p{font-size:14px}
+.step h4{font-size:12px;color:var(--ink-2);font-weight:700;margin-top:4px}
+.step ul{margin:0;padding-left:18px;font-size:14px}
+.chk{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:10px;font-weight:700;font-size:14px;cursor:pointer}
+.chk input{width:20px;height:20px;accent-color:var(--ok)}
+.empty-panel{text-align:center;display:grid;gap:12px;justify-items:center;padding:28px 16px}
+.senior h3{font-family:var(--f-display);font-weight:400;font-size:18px}
+.senior ol{margin:8px 0 0;padding-left:20px}
+.senior li{margin:3px 0}
+.foot{margin:32px 0 0;padding-bottom:56px;font-size:12px;color:var(--ink-2)}
+
+/* mascot */
+.mascot-wrap{margin:0 auto}
+.mascot{display:block;width:100%;height:auto;overflow:visible;animation:bob 2.6s ease-in-out infinite}
+.mascot[data-mood="angry"]{animation:shake .38s linear infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes puff{0%,100%{transform:translateY(0);opacity:.95}50%{transform:translateY(-6px);opacity:.55}}
+.m-shadow{fill:var(--m-shadow)}
+.m-body{fill:var(--m-happy);stroke:var(--m-line);stroke-width:5;transition:fill .4s}
+.mascot[data-mood="neutral"] .m-body{fill:var(--m-neutral)}
+.mascot[data-mood="annoyed"] .m-body{fill:var(--m-annoyed)}
+.mascot[data-mood="angry"] .m-body{fill:var(--m-angry)}
+.m-stem{fill:none;stroke:var(--m-line);stroke-width:5;stroke-linecap:round}
+.m-leaf{fill:var(--m-leaf);stroke:var(--m-line);stroke-width:4;stroke-linejoin:round}
+.m-star{fill:var(--m-star);stroke:var(--m-line);stroke-width:3;stroke-linejoin:round}
+.mascot:not(.lv3):not(.lv4) .leaf-c{display:none}
+.mascot:not(.lv4) .m-star{display:none}
+.f{display:none}
+.mascot[data-mood="happy"] .f-happy,.mascot[data-mood="neutral"] .f-neutral,.mascot[data-mood="annoyed"] .f-annoyed,.mascot[data-mood="angry"] .f-angry{display:block}
+.f path{fill:none;stroke:var(--m-line);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.f .brow{stroke-width:6}
+.f .eye{fill:var(--m-line)}
+.f .cheek{fill:var(--m-cheek);opacity:.6}
+.f-angry .cheek{opacity:.85;fill:#ff4d4d}
+.f .mouth-open{fill:var(--m-mouth)}
+.steam{display:none;fill:#fff;stroke:var(--m-line);stroke-width:3}
+.mascot[data-mood="angry"] .steam{display:block}
+.steam circle{animation:puff 1.2s ease-in-out infinite}
+.steam circle:nth-child(2n){animation-delay:.4s}
+@media (prefers-reduced-motion: reduce){
+  .mascot,.steam circle{animation:none!important}
+  .bar i,.m-body{transition:none}
+}
+</style>
+
+<main id="top">
+  <header>
+    <div class="shell">
+      <div class="top-in">
+        <a class="logo" href="#top" data-go="top"><span class="nm">○○</span> 키우기</a>
+        <form class="search" id="f-search" role="search">
+          <span class="region">춘천 전체</span>
+          <input id="q" type="search" placeholder="춘천 기회 검색" aria-label="춘천 기회 검색" autocomplete="off">
+          <button type="submit" aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+        </form>
+        <button class="login" id="login" type="button">전공·직무 설정</button>
+      </div>
+      <nav class="menu" aria-label="메뉴">
+        <a href="#jobs" data-go="jobs">기회 찾기</a>
+        <a href="#path" data-go="path">내 성장 경로</a>
+        <a href="#senior" data-go="senior">선배 이야기</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="shell">
+    <section class="hero">
+      <div class="panel" id="hero-main">
+        <!-- 설정 전 -->
+        <div class="intro" id="v-intro">
+          <div class="intro-top">
+            <div>
+              <p class="kicker"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>오늘의 추천</p>
+              <p class="lead">내 전공에 맞는 춘천 기회를 찾아드려요!</p>
+              <button class="btn sm" type="button" data-open="setup">나만의 맞춤 정보 받기</button>
+            </div>
+            <div class="mascot-wrap" id="m-intro"></div>
+          </div>
+          <div class="faux" aria-hidden="true"><div><i></i><i></i><i></i></div><div><i></i><i></i><i></i></div><div><i></i><i></i><i></i></div></div>
+        </div>
+
+        <!-- 설정 -->
+        <form class="setup" id="setup" autocomplete="off" novalidate hidden>
+          <h2>춘천에서 나를 키워볼까요?</h2>
+          <div>
+            <label class="t" for="name">이름</label>
+            <input id="name" class="field" type="text" maxlength="8" placeholder="내 이름">
+          </div>
+          <fieldset><legend>전공</legend><div class="opts" id="majors"></div></fieldset>
+          <fieldset><legend>관심 직무</legend><div class="opts" id="tracks"></div></fieldset>
+          <p class="warn" id="warn" hidden></p>
+          <p class="err" id="err" role="alert"></p>
+          <div class="row">
+            <button class="btn" type="submit" id="save">내 경로 만들기</button>
+            <button class="ghost" type="button" id="cancel">닫기</button>
+          </div>
+        </form>
+
+        <!-- 설정 후 -->
+        <div class="me" id="v-me" hidden>
+          <div>
+            <div class="bubble" id="bubble" aria-live="polite"></div>
+            <div class="mascot-wrap" id="m-home"></div>
+          </div>
+          <div class="me-info">
+            <p class="who" id="who"></p>
+            <p class="prog" id="prog"></p>
+            <div class="bar" role="progressbar" aria-label="성장 경로 진행" aria-valuemin="0" aria-valuemax="4" id="barwrap"><i id="barfill"></i></div>
+            <p class="next" id="next"></p>
+            <button class="btn sm" type="button" data-go="path">내 성장 경로 보기</button>
+          </div>
+        </div>
+
+        <div class="dashed sim" id="sim" hidden>
+          <div class="sim-head">
+            <span class="sim-tag">프로토타입 전용</span>
+            <label for="days">마지막 접속 후 <span id="daysv">0</span>일</label>
+          </div>
+          <div class="sim-body">
+            <div>
+              <input type="range" id="days" min="0" max="10" step="1" value="0">
+              <div class="sim-scale" aria-hidden="true"><span style="left:0%">0</span><span style="left:20%">2</span><span style="left:40%">4</span><span style="left:70%">7</span><span style="left:100%">10</span></div>
+              <p class="sim-mood" id="moodline"></p>
+            </div>
+            <div class="notif">
+              <div class="ni" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 21V11" stroke="#3a2a10" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M12 12C7 12 4 9 4 4c5 0 8 3 8 8Z" fill="#3fbf6a" stroke="#3a2a10" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14c0-4 2.5-7 8-7 0 5-3 7-8 7Z" fill="#3fbf6a" stroke="#3a2a10" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="nt">
+                <div class="nt-top"><b><span class="nm">○○</span> 키우기</b><span>지금</span></div>
+                <p id="notif"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel side">
+        <h2 id="side-title"></h2>
+        <button class="prefbar" id="pref" type="button"><span id="pref-text"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <div class="quick">
+          <button class="qc" type="button" data-go="jobs">이번 달<br>춘천 기회<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
+          <button class="qc" type="button" data-go="path">내 성장<br>경로<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg></button>
+          <button class="qc" type="button" data-go="senior">선배<br>이야기<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
+          <button class="qc" type="button" data-go="sim">표정 변화<br>체험<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14q4 4 8 0"/><path d="M9 9.5h.01M15 9.5h.01"/></svg></button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel pickbar" id="pickbar">
+      <h2>10초 컷! 나에게 맞는 기회 보기</h2>
+      <div class="seg" role="group" aria-label="우선순위 선택">
+        <button type="button" id="mode-job" aria-pressed="false">내 직무가<br>더 중요해요</button>
+        <button type="button" id="mode-exp" aria-pressed="false">경험부터<br>쌓고 싶어요</button>
+      </div>
+    </section>
+
+    <section class="sec" id="jobs">
+      <div class="sec-head"><h2>춘천 기회</h2><div class="row"><p id="jobs-note"></p><button class="ghost" id="clearq" type="button" hidden>검색어 지우기</button></div></div>
+      <div class="chips" id="chips" role="group" aria-label="기회 유형"></div>
+      <div class="grid" id="grid"></div>
+      <button class="ghost more" id="more" type="button" hidden>더보기</button>
+    </section>
+
+    <section class="sec" id="path">
+      <div class="sec-head"><h2>내 성장 경로</h2><p id="path-note"></p></div>
+      <div id="path-body"></div>
+    </section>
+
+    <section class="sec" id="senior">
+      <div class="sec-head"><h2>선배 이야기</h2></div>
+      <div class="panel senior" id="senior-body"></div>
+    </section>
+
+    <p class="foot">기회 이름과 선배 사례는 프로토타입용 예시예요. 실제 공고와 인터뷰 조사 결과로 바꿔야 해요. 푸시 알림은 앱 환경에서만 동작해서 여기서는 미리보기로 보여줘요.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function batchim(n){
+    var c = n.trim().slice(-1).charCodeAt(0);
+    if (!(c >= 0xAC00 && c <= 0xD7A3)) return null;
+    return (c - 0xAC00) % 28 !== 0;
+  }
+  function josa(n, a, b){ var h = batchim(n); return h === null ? a + '(' + b + ')' : (h ? a : b); }
+
+  /* ---------- 데이터 (예시) ---------- */
+  var DMC_SENIOR = ['3학년 때 춘천 축제 콘텐츠 제작 참여', '4학년 때 지역 스타트업 마케팅 인턴', '졸업 후 춘천 콘텐츠 기업 입사'];
+  var MAJORS = {
+    dmc: { label: '디지털미디어콘텐츠', sub: '콘텐츠 · 미디어 · 홍보', tracks: {
+      mkt: { label: '마케팅형', senior: DMC_SENIOR, levels: [
+        { tag: '서포터즈', t: '지역 축제 SNS 서포터즈', d: '춘천 지역 축제를 SNS로 알리는 활동이에요. 포트폴리오 첫 줄이 생겨요.', o: ['지역 축제 SNS 서포터즈 모집', '대학 연계 지역 홍보단'] },
+        { tag: '프로젝트', t: '로컬 브랜드 콘텐츠 제작 프로젝트', d: '로컬 브랜드의 콘텐츠를 직접 만들어 보는 프로젝트예요.', o: ['로컬 브랜드 협업 콘텐츠 프로젝트', { t: '지역 상권 홍보 공모전', type: '공모전' }] },
+        { tag: '인턴', t: '문화재단·관광재단 인턴', d: '재단 실무를 가까이서 경험하는 단계예요.', o: ['문화재단 인턴 공고', '관광재단 인턴 공고'] },
+        { tag: '취업 지원', t: '지역 콘텐츠 기업·공공기관 홍보직무 지원', d: '쌓은 경험으로 춘천 안에서 직무에 지원해요.', o: ['지역 콘텐츠 기업 채용', '공공기관 홍보직무 채용'] }
+      ]},
+      plan: { label: '콘텐츠 기획형', senior: DMC_SENIOR, levels: [
+        { tag: '공모전', t: '지역 콘텐츠 공모전 도전', d: '기획서 한 편으로 시작해요. 수상 경력은 다음 단계의 근거가 돼요.', o: ['지역 콘텐츠 아이디어 공모전', '청년 정책 제안 공모전'] },
+        { tag: '프로젝트', t: '지역 축제 콘텐츠 제작 참여', d: '축제 콘텐츠가 만들어지는 과정을 직접 겪어요.', o: ['축제 영상·콘텐츠 제작 스태프', '지역 행사 기획 보조'] },
+        { tag: '인턴', t: '지역 스타트업 인턴', d: '작은 팀에서 기획부터 실행까지 맡아 봐요.', o: ['지역 스타트업 콘텐츠 인턴', { t: '창업지원 프로그램 참여', type: '프로젝트' }] },
+        { tag: '취업 지원', t: '춘천 콘텐츠 기업 입사 지원', d: '포트폴리오를 들고 춘천 기업에 지원해요.', o: ['지역 콘텐츠 기업 채용', '공공기관 콘텐츠 기획직'] }
+      ]}
+    }},
+    bio: { label: '바이오메디컬', sub: '연구 · 실험 · 품질', tracks: {
+      res: { label: '연구형', goal: '춘천에서 연구자의 길에 들어섰습니다.', senior: null, levels: [
+        { tag: '탐색', t: '관련 연구실 탐색', d: '어떤 연구실이 있는지 직접 찾아가 물어봐요.', o: ['학과 연구실 소개와 면담', '대학 연구실 공개 프로그램'] },
+        { tag: '연구', t: '학부연구생·연구보조', d: '연구실에서 실험 보조를 맡아 경험을 쌓아요.', o: ['학부연구생 모집', '연구보조 아르바이트'] },
+        { tag: '현장실습', t: '바이오 기업 현장실습', d: '춘천·강원권 바이오 기업의 현장을 경험해요.', o: ['춘천·강원권 바이오 기업 현장실습', { t: '산학협력 인턴', type: '인턴' }] },
+        { tag: '선택', t: '연구개발 직무 지원 또는 대학원 진학', d: '기업으로 갈지 대학원으로 갈지 정해요.', o: [{ t: '바이오 기업 연구개발 채용', type: '취업 지원' }, { t: '대학원 진학(연구실 연계)', type: '진학' }] }
+      ]},
+      qa: { label: '품질관리형', senior: null, levels: [
+        { tag: '탐색', t: '바이오 기업·직무 탐색', d: '품질관리가 어떤 일인지부터 알아봐요.', o: ['기업 직무 소개 자료', '직무 선배 인터뷰'] },
+        { tag: '실습', t: '실험·품질 실습 경험 쌓기', d: '실험과 분석 실습을 늘려 직무 근거를 만들어요.', o: ['학과 실험 실습 심화', '품질관리 관련 교육 프로그램'] },
+        { tag: '현장실습', t: '바이오 기업 현장실습', d: '실제 품질관리 현장을 경험해요.', o: ['춘천·강원권 바이오 기업 현장실습', { t: '산학협력 인턴', type: '인턴' }] },
+        { tag: '취업 지원', t: '품질관리 직무 지원', d: '현장 경험을 근거로 직무에 지원해요.', o: ['바이오 기업 품질관리 채용', '공공 연구기관 시험분석직'] }
+      ]}
+    }}
+  };
+  var MOODS = { happy: '웃음', neutral: '무표정', annoyed: '짜증', angry: '분노' };
+  var GROUPS = {
+    job: ['인턴', '현장실습', '취업 지원', '진학'],
+    exp: ['서포터즈', '공모전', '프로젝트', '탐색', '연구', '실습']
+  };
+  var PAGE = 8;
+
+  var state = { name: '', profile: false, editing: false, major: null, track: null, done: [false, false, false, false], days: 0, mode: null, type: '전체', q: '', visible: PAGE, stars: {} };
+  var pend = { major: null, track: null };
+
+  /* ---------- 캐릭터 ---------- */
+  function mascotSVG(lv){
+    var s = lv === 1 ? 0.75 : (lv === 2 ? 0.9 : 1);
+    return '<svg class="mascot lv' + lv + '" data-lv="' + lv + '" data-mood="happy" viewBox="0 -14 200 224" role="img" aria-label="캐릭터">' +
+      '<ellipse class="m-shadow" cx="100" cy="198" rx="54" ry="8"/>' +
+      '<g class="steam"><circle cx="36" cy="72" r="9"/><circle cx="22" cy="52" r="6"/><circle cx="164" cy="72" r="9"/><circle cx="178" cy="52" r="6"/></g>' +
+      '<g transform="translate(100 60) scale(' + s + ') translate(-100 -60)">' +
+        '<path class="m-stem" d="M100 62 C100 52 100 46 100 38"/>' +
+        '<path class="m-leaf leaf-a" d="M100 42 C80 42 66 28 64 14 C84 14 98 26 100 42Z"/>' +
+        '<path class="m-leaf leaf-b" d="M100 42 C120 42 134 28 136 14 C116 14 102 26 100 42Z"/>' +
+        '<path class="m-leaf leaf-c" d="M100 38 C91 26 93 10 100 0 C107 10 109 26 100 38Z"/>' +
+        '<path class="m-star" d="M100 -12 l3.4 7.4 8 .9 -6 5.4 1.7 7.9 -7.1 -4 -7.1 4 1.7 -7.9 -6 -5.4 8 -.9z"/>' +
+      '</g>' +
+      '<path class="m-body" d="M100 58 C150 58 176 92 176 128 C176 168 144 190 100 190 C56 190 24 168 24 128 C24 92 50 58 100 58Z"/>' +
+      '<g class="f f-happy"><path d="M64 120 Q74 106 84 120"/><path d="M116 120 Q126 106 136 120"/><path class="mouth-open" d="M84 138 Q100 164 116 138Z"/><circle class="cheek" cx="58" cy="140" r="9"/><circle class="cheek" cx="142" cy="140" r="9"/></g>' +
+      '<g class="f f-neutral"><circle class="eye" cx="74" cy="120" r="6"/><circle class="eye" cx="126" cy="120" r="6"/><path d="M88 148 H112"/></g>' +
+      '<g class="f f-annoyed"><path class="brow" d="M62 104 L86 111"/><path class="brow" d="M138 104 L114 111"/><circle class="eye" cx="74" cy="124" r="5.5"/><circle class="eye" cx="126" cy="124" r="5.5"/><path d="M86 152 Q100 143 114 152"/></g>' +
+      '<g class="f f-angry"><path class="brow" d="M58 98 L88 113"/><path class="brow" d="M142 98 L112 113"/><circle class="eye" cx="74" cy="126" r="5"/><circle class="eye" cx="126" cy="126" r="5"/><path d="M82 158 Q100 138 118 158"/><circle class="cheek" cx="56" cy="142" r="11"/><circle class="cheek" cx="144" cy="142" r="11"/></g>' +
+    '</svg>';
+  }
+  function setMascot(el, mood, lv){
+    var svg = el.firstElementChild;
+    if (!svg || +svg.getAttribute('data-lv') !== lv){ el.innerHTML = mascotSVG(lv); svg = el.firstElementChild; }
+    svg.setAttribute('data-mood', mood);
+    svg.setAttribute('aria-label', '캐릭터, 표정 ' + MOODS[mood]);
+  }
+
+  /* ---------- 계산 ---------- */
+  function track(){ return state.profile ? MAJORS[state.major].tracks[state.track] : null; }
+  function doneCount(){ return state.done.filter(Boolean).length; }
+  function lvNow(){ return Math.min(doneCount() + 1, 4); }
+  function nextIdx(){ return state.done.indexOf(false); }
+  function moodOf(d){ return d <= 1 ? 'happy' : d <= 3 ? 'neutral' : d <= 6 ? 'annoyed' : 'angry'; }
+  function messageFor(mood){
+    var n = state.name, i = josa(n, '이', '가'), full = doneCount() >= 4;
+    if (mood === 'happy') return full ? '축하합니다! ' + n + josa(n, '은', '는') + ' ' + (track().goal || '춘천에서 직장인이 되었습니다.') : n + i + ' 오늘도 성장 중!';
+    if (mood === 'neutral') return n + i + ' 멈춰 있어요.';
+    if (mood === 'annoyed') return full ? '4단계까지 와놓고 서울 갈 거야?' : (nextIdx() + 1) + '단계 아직이야? 서울 갈 거야?';
+    return n + i + ' 화났다. 춘천 공고 확인하러 와.';
+  }
+  function updateLogo(txt){
+    var n = (txt !== undefined ? txt : state.name) || '○○';
+    $$('.nm').forEach(function(e){ e.textContent = n; });
+  }
+  /* 기회는 문자열이면 단계 태그를 유형으로 쓰고, { t, type }이면 자기 유형을 쓴다 */
+  function oTitle(o){ return typeof o === 'string' ? o : o.t; }
+  function oType(o, L){ return (typeof o === 'string' ? null : o.type) || L.tag; }
+  function buildItems(){
+    var seen = {}, out = [];
+    function add(T){
+      T.levels.forEach(function(L, i){
+        L.o.forEach(function(o){
+          var type = oType(o, L), title = oTitle(o);
+          var k = type + '|' + title;
+          if (seen[k]) return; seen[k] = 1;
+          out.push({ type: type, title: title, sub: (i + 1) + '단계 · ' + L.t, key: k });
+        });
+      });
+    }
+    if (state.profile) add(track());
+    else Object.keys(MAJORS).forEach(function(mk){ var tr = MAJORS[mk].tracks; Object.keys(tr).forEach(function(tk){ add(tr[tk]); }); });
+    return out;
+  }
+
+  /* ---------- 렌더 ---------- */
+  function optHTML(group, key, label, sub, checked){
+    return '<label class="opt"><input type="radio" name="' + group + '" value="' + key + '"' + (checked ? ' checked' : '') + '><span class="opt-body"><strong>' + label + '</strong>' + (sub ? '<small>' + sub + '</small>' : '') + '</span></label>';
+  }
+  function renderSetupOpts(){
+    $('#majors').innerHTML = Object.keys(MAJORS).map(function(k){ return optHTML('major', k, MAJORS[k].label, MAJORS[k].sub, pend.major === k); }).join('');
+    var box = $('#tracks');
+    if (!pend.major){ box.innerHTML = '<p class="pill">전공부터 골라주세요</p>'; return; }
+    var tr = MAJORS[pend.major].tracks;
+    box.innerHTML = Object.keys(tr).map(function(k){ return optHTML('track', k, tr[k].label, '', pend.track === k); }).join('');
+  }
+  /* 이미 단계를 완료한 사람이 전공·직무를 바꾸려 하면 초기화된다고 미리 알린다 */
+  function updateWarn(){
+    var dc = doneCount();
+    var w = state.profile && dc > 0 && (pend.major !== state.major || (pend.track && pend.track !== state.track));
+    $('#warn').hidden = !w;
+    $('#warn').textContent = w ? '전공·직무를 바꾸면 지금까지 완료한 단계 ' + dc + '개가 지워지고 처음부터 다시 시작돼요.' : '';
+  }
+  function renderHero(){
+    $('#v-intro').hidden = state.profile || state.editing;
+    $('#setup').hidden = !state.editing;
+    $('#v-me').hidden = !(state.profile && !state.editing);
+    $('#sim').hidden = !state.profile || state.editing;
+    if (!state.profile){ setMascot($('#m-intro'), 'happy', 1); return; }
+    var mood = moodOf(state.days), msg = messageFor(mood), dc = doneCount(), ni = nextIdx();
+    $('#bubble').textContent = msg;
+    setMascot($('#m-home'), mood, lvNow());
+    $('#who').textContent = state.name + ' · ' + MAJORS[state.major].label + ' ' + track().label;
+    $('#prog').textContent = dc + ' / 4단계 완료';
+    $('#barfill').style.width = (dc * 25) + '%';
+    $('#barwrap').setAttribute('aria-valuenow', dc);
+    $('#next').textContent = ni === -1 ? '모든 단계를 마쳤어요.' : '다음은 ' + (ni + 1) + '단계, ' + track().levels[ni].t;
+    $('#daysv').textContent = state.days;
+    $('#days').value = state.days;
+    $('#moodline').textContent = '캐릭터 표정: ' + MOODS[mood];
+    $('#notif').textContent = msg;
+  }
+  function renderSide(){
+    $('#side-title').textContent = state.profile ? state.name + '님을 위한 맞춤 정보' : '맞춤 정보를 제공해드릴게요!';
+    $('#pref-text').textContent = state.profile ? '전공·직무 바꾸기' : '전공·직무 설정하고 맞춤 기회 받아보기';
+    $('#login').textContent = state.profile ? state.name + ' · ' + MAJORS[state.major].label : '전공·직무 설정';
+  }
+  function renderJobs(){
+    var master = buildItems();
+    var modeSet = state.mode ? GROUPS[state.mode] : null;
+    var base = master.filter(function(it){ return !modeSet || modeSet.indexOf(it.type) !== -1; });
+    var types = ['전체'];
+    base.forEach(function(it){ if (types.indexOf(it.type) === -1) types.push(it.type); });
+    if (types.indexOf(state.type) === -1) state.type = '전체';
+    $('#chips').innerHTML = types.map(function(t){ return '<button type="button" class="chip" data-type="' + esc(t) + '" aria-pressed="' + (state.type === t) + '">' + esc(t) + '</button>'; }).join('');
+    var q = state.q.trim().toLowerCase();
+    var list = base.filter(function(it){
+      return (state.type === '전체' || it.type === state.type) && (!q || (it.title + ' ' + it.sub + ' ' + it.type).toLowerCase().indexOf(q) !== -1);
+    });
+    var shown = list.slice(0, state.visible);
+    $('#clearq').hidden = !q;
+    $('#jobs-note').textContent = (q ? '"' + state.q.trim() + '" 검색 · ' : '') + (state.profile ?'내 경로(' + MAJORS[state.major].label + ' · ' + track().label + ') 기준 ' + list.length + '건' : '전공·직무를 설정하면 내 경로 기준으로 보여드려요 · ' + list.length + '건');
+    $('#grid').innerHTML = shown.length ? shown.map(function(it){
+      var on = !!state.stars[it.key];
+      return '<article class="job"><div class="job-top"><span class="tagp">' + esc(it.type) + '</span><button type="button" class="star" data-star="' + master.indexOf(it) + '" aria-pressed="' + on + '" aria-label="' + esc(it.title) + ' 스크랩"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button></div><h3>' + esc(it.title) + '</h3><p class="org">' + esc(it.sub) + '</p><div class="job-foot"><span class="pill">춘천</span><span class="pill">예시</span></div></article>';
+    }).join('') : '<p class="empty">조건에 맞는 기회가 없어요.</p>';
+    var rest = list.length - shown.length;
+    $('#more').hidden = rest <= 0;
+    $('#more').textContent = '더보기 (' + rest + ')';
+    $('#mode-job').setAttribute('aria-pressed', state.mode === 'job');
+    $('#mode-exp').setAttribute('aria-pressed', state.mode === 'exp');
+    $('#grid')._master = master;
+  }
+  function renderPath(){
+    var box = $('#path-body');
+    if (!state.profile){
+      $('#path-note').textContent = '';
+      box.innerHTML = '<div class="panel empty-panel"><p>전공과 관심 직무를 고르면 졸업까지의 경로가 4단계로 나와요.</p><button class="btn sm" type="button" data-open="setup">나만의 맞춤 정보 받기</button></div>';
+      return;
+    }
+    var T = track();
+    $('#path-note').textContent = MAJORS[state.major].label + ' · ' + T.label;
+    box.innerHTML = '<ol class="steps">' + T.levels.map(function(L, i){
+      var d = state.done[i];
+      return '<li class="step' + (d ? ' done' : '') + '"><div class="step-top"><span class="stepn">' + (i + 1) + '단계</span><span class="tagp">' + esc(L.tag) + '</span></div><h3>' + esc(L.t) + '</h3><p>' + esc(L.d) + '</p><h4>이런 기회 (예시)</h4><ul>' + L.o.map(function(x){ return '<li>' + esc(oTitle(x)) + '</li>'; }).join('') + '</ul><label class="chk"><input type="checkbox" data-step="' + i + '"' + (d ? ' checked' : '') + '> 완료했어요</label></li>';
+    }).join('') + '</ol>';
+  }
+  function renderSenior(){
+    var box = $('#senior-body');
+    var T = track();
+    if (!state.profile){ box.innerHTML = '<p class="meta">전공을 설정하면 그 전공 선배의 경로를 보여드려요.</p>'; return; }
+    if (T.senior){
+      box.innerHTML = '<h3>이 경로를 지난 선배 (예시)</h3><p class="meta">' + esc(MAJORS[state.major].label) + ' 전공 선배 A</p><ol>' + T.senior.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
+    } else {
+      box.innerHTML = '<h3>이 경로를 지난 선배</h3><p class="meta">선배 인터뷰를 마치면 실제 사례로 채울 자리예요.</p>';
+    }
+  }
+  function renderAll(){ updateLogo(); renderHero(); renderSide(); renderJobs(); renderPath(); renderSenior(); }
+
+  /* ---------- 동작 ---------- */
+  function goTo(id){
+    var el = document.getElementById(id); if (!el) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+  function openSetup(){
+    state.editing = true;
+    pend.major = state.major; pend.track = state.track;
+    $('#name').value = state.name; $('#err').textContent = '';
+    $('#save').textContent = state.profile ? '저장하기' : '내 경로 만들기';
+    renderSetupOpts(); updateWarn(); renderHero();
+    goTo('top');
+    setTimeout(function(){ $('#name').focus({ preventScroll: true }); }, 0);
+  }
+  document.addEventListener('click', function(e){
+    var g = e.target.closest('[data-go]');
+    if (g){
+      e.preventDefault();
+      var id = g.getAttribute('data-go');
+      if (id === 'sim'){
+        if (!state.profile){ openSetup(); return; }
+        // 슬라이더와 캐릭터가 한 화면에 보이도록 캐릭터 카드 맨 위로 이동
+        goTo('hero-main'); $('#days').focus({ preventScroll: true }); return;
+      }
+      goTo(id); return;
+    }
+    if (e.target.closest('[data-open="setup"]')){ openSetup(); return; }
+  });
+  $('#login').addEventListener('click', openSetup);
+  $('#pref').addEventListener('click', openSetup);
+  $('#cancel').addEventListener('click', function(){ state.editing = false; renderAll(); });
+
+  $('#name').addEventListener('input', function(e){ $('#err').textContent = ''; updateLogo(e.target.value.trim()); });
+  $('#majors').addEventListener('change', function(e){
+    if (e.target.name !== 'major') return;
+    pend.major = e.target.value; pend.track = null; $('#err').textContent = '';
+    renderSetupOpts(); updateWarn();
+    var picked = $('#majors input[value="' + pend.major + '"]'); if (picked) picked.focus();
+  });
+  $('#tracks').addEventListener('change', function(e){
+    if (e.target.name !== 'track') return;
+    pend.track = e.target.value; $('#err').textContent = ''; updateWarn();
+  });
+  $('#setup').addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = $('#name').value.trim();
+    if (!v){ $('#err').textContent = '이름을 적어주세요.'; $('#name').focus(); return; }
+    if (!pend.major){ $('#err').textContent = '전공을 골라주세요.'; return; }
+    if (!pend.track){ $('#err').textContent = '관심 직무를 골라주세요.'; return; }
+    var changed = state.major !== pend.major || state.track !== pend.track;
+    state.name = v; state.major = pend.major; state.track = pend.track;
+    state.profile = true; state.editing = false;
+    if (changed){ state.done = [false, false, false, false]; state.days = 0; state.mode = null; state.type = '전체'; state.visible = PAGE; state.q = ''; $('#q').value = ''; }
+    renderAll(); goTo('top');
+  });
+
+  $('#days').addEventListener('input', function(e){ state.days = +e.target.value; renderHero(); });
+
+  $('#f-search').addEventListener('submit', function(e){ e.preventDefault(); goTo('jobs'); });
+  $('#q').addEventListener('input', function(e){ state.q = e.target.value; state.visible = PAGE; renderJobs(); });
+
+  $('#mode-job').addEventListener('click', function(){ state.mode = state.mode === 'job' ? null : 'job'; state.type = '전체'; state.visible = PAGE; renderJobs(); });
+  $('#mode-exp').addEventListener('click', function(){ state.mode = state.mode === 'exp' ? null : 'exp'; state.type = '전체'; state.visible = PAGE; renderJobs(); });
+  $('#chips').addEventListener('click', function(e){
+    var c = e.target.closest('[data-type]'); if (!c) return;
+    state.type = c.getAttribute('data-type'); state.visible = PAGE; renderJobs();
+  });
+  $('#grid').addEventListener('click', function(e){
+    var s = e.target.closest('[data-star]'); if (!s) return;
+    var it = $('#grid')._master[+s.getAttribute('data-star')];
+    if (!it) return;
+    state.stars[it.key] = !state.stars[it.key];
+    s.setAttribute('aria-pressed', !!state.stars[it.key]);
+  });
+  $('#clearq').addEventListener('click', function(){ state.q = ''; $('#q').value = ''; state.visible = PAGE; renderJobs(); });
+  $('#more').addEventListener('click', function(){ state.visible += PAGE; renderJobs(); });
+  $('#path-body').addEventListener('change', function(e){
+    var c = e.target.closest('[data-step]'); if (!c) return;
+    state.done[+c.getAttribute('data-step')] = c.checked;
+    renderHero(); renderPath();
+    var again = $('[data-step="' + c.getAttribute('data-step') + '"]'); if (again) again.focus();
+  });
+
+  renderAll();
+})();
+</script>
