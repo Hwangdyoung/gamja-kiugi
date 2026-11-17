@@ -2,6 +2,7 @@ import UIKit
 import Capacitor
 import WidgetKit
 import UserNotifications
+import WatchConnectivity
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -11,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // 앱을 보고 있을 때도 감자 알림 배너가 뜨게 한다 (시연용 "미리 보내기")
         UNUserNotificationCenter.current().delegate = self
+        WatchSync.shared.activate()
         return true
     }
 
@@ -82,6 +84,15 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
         store.set(call.getInt("demoDays") ?? 0, forKey: "demoDays")   // 시연 도구 슬라이더 값
         store.set(now.timeIntervalSince1970, forKey: "lastOpen")      // 앱을 쓰고 있으니 지금이 마지막 접속
         WidgetCenter.shared.reloadAllTimelines()
+
+        // Apple Watch 앱·컴플리케이션에도 같은 상태를 보낸다
+        WatchSync.shared.send([
+            "hasProfile": call.getBool("hasProfile") ?? false,
+            "name": call.getString("name") ?? "",
+            "nextStep": call.getInt("nextStep") ?? 1,
+            "demoDays": call.getInt("demoDays") ?? 0,
+            "lastOpen": now.timeIntervalSince1970,
+        ])
 
         // 미접속 알림 다시 예약: 앱을 열 때마다 "마지막 접속"이 바뀌므로 지우고 새로 건다
         let schedule = (call.getArray("notifications") as? [[String: Any]]) ?? []
@@ -163,6 +174,59 @@ enum GamjaNotifications {
         } catch {
             return nil
         }
+    }
+}
+
+// MARK: - Apple Watch로 보내기
+// iPhone과 워치는 저장소를 함께 쓰지 못해서 WatchConnectivity로 보낸다.
+// - applicationContext: 워치 앱이 켜질 때 받는 "최신 상태" 한 벌
+// - complicationUserInfo: 워치 페이스에 컴플리케이션이 있으면 워치 앱을 깨워서 바로 반영 (하루 횟수 제한 있음)
+final class WatchSync: NSObject, WCSessionDelegate {
+    static let shared = WatchSync()
+    private var pending: [String: Any]?
+
+    func activate() {
+        guard WCSession.isSupported() else { return }
+        WCSession.default.delegate = self
+        WCSession.default.activate()
+    }
+
+    func send(_ info: [String: Any]) {
+        guard WCSession.isSupported() else { return }
+        let session = WCSession.default
+        guard session.activationState == .activated else { pending = info; return }
+        guard session.isPaired, session.isWatchAppInstalled else {
+            NSLog("[GamjaWidget] 워치 없음 (paired=%d, installed=%d)", session.isPaired, session.isWatchAppInstalled)
+            pending = info   // 나중에 워치 앱이 설치되면 보낸다
+            return
+        }
+        do { try session.updateApplicationContext(info) } catch { NSLog("[GamjaWidget] 워치 전송 실패: %@", error.localizedDescription) }
+        if session.isComplicationEnabled, session.remainingComplicationUserInfoTransfers > 0 {
+            session.transferCurrentComplicationUserInfo(info)
+        }
+        NSLog("[GamjaWidget] 워치로 보냄 (컴플리케이션 %@)", session.isComplicationEnabled ? "있음" : "없음")
+    }
+
+    func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {
+        if state == .activated, let info = pending {
+            pending = nil
+            DispatchQueue.main.async { self.send(info) }
+        }
+    }
+
+    /// 워치 앱이 설치되거나 워치를 바꾸면 남아 있던 상태를 보낸다
+    func sessionWatchStateDidChange(_ session: WCSession) {
+        if let info = pending {
+            pending = nil
+            DispatchQueue.main.async { self.send(info) }
+        }
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {}
+
+    /// 다른 워치로 바꾸면 다시 연결
+    func sessionDidDeactivate(_ session: WCSession) {
+        session.activate()
     }
 }
 

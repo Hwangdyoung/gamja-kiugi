@@ -19,6 +19,10 @@
 		DD11BE3530ABDE7100AD5B86 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD11BE3430ABDE7100AD5B86 /* WidgetKit.framework */; };
 		DD11BE3730ABDE7100AD5B86 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD11BE3630ABDE7100AD5B86 /* SwiftUI.framework */; };
 		DD11BE4230ABDE7300AD5B86 /* GamjaWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD11BE3230ABDE7100AD5B86 /* GamjaWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DD11BEA130ABF52A00AD5B86 /* GamjaWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DD11BE9730ABF52700AD5B86 /* GamjaWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DD11BEAB30ABF55100AD5B86 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD11BE3430ABDE7100AD5B86 /* WidgetKit.framework */; };
+		DD11BEAC30ABF55100AD5B86 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD11BE3630ABDE7100AD5B86 /* SwiftUI.framework */; };
+		DD11BEB730ABF55300AD5B86 /* GamjaWatchExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD11BEAA30ABF55100AD5B86 /* GamjaWatchExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +32,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = DD11BE3130ABDE7100AD5B86;
 			remoteInfo = GamjaWidgetExtension;
+		};
+		DD11BE9F30ABF52A00AD5B86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD11BE9630ABF52700AD5B86;
+			remoteInfo = "GamjaWatch Watch App";
+		};
+		DD11BEB530ABF55300AD5B86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD11BEA930ABF55100AD5B86;
+			remoteInfo = GamjaWatchExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -39,6 +57,28 @@
 			dstSubfolderSpec = 13;
 			files = (
 				DD11BE4230ABDE7300AD5B86 /* GamjaWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD11BEA230ABF52A00AD5B86 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				DD11BEA130ABF52A00AD5B86 /* GamjaWatch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD11BEBC30ABF55300AD5B86 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				DD11BEB730ABF55300AD5B86 /* GamjaWatchExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -60,6 +100,8 @@
 		DD11BE3230ABDE7100AD5B86 /* GamjaWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GamjaWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD11BE3430ABDE7100AD5B86 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		DD11BE3630ABDE7100AD5B86 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		DD11BE9730ABF52700AD5B86 /* GamjaWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GamjaWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD11BEAA30ABF55100AD5B86 /* GamjaWatchExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GamjaWatchExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -70,10 +112,19 @@
 			);
 			target = DD11BE3130ABDE7100AD5B86 /* GamjaWidgetExtension */;
 		};
+		DD11BEB830ABF55300AD5B86 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = DD11BEA930ABF55100AD5B86 /* GamjaWatchExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DD11BE3830ABDE7100AD5B86 /* GamjaWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DD11BE4630ABDE7300AD5B86 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = GamjaWidget; sourceTree = "<group>"; };
+		DD11BE9830ABF52700AD5B86 /* GamjaWatch Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "GamjaWatch Watch App"; sourceTree = "<group>"; };
+		DD11BEAD30ABF55100AD5B86 /* GamjaWatch */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DD11BEB830ABF55300AD5B86 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = GamjaWatch; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +145,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD11BE9430ABF52700AD5B86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD11BEA730ABF55100AD5B86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD11BEAC30ABF55100AD5B86 /* SwiftUI.framework in Frameworks */,
+				DD11BEAB30ABF55100AD5B86 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -103,6 +170,8 @@
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
 				DD11BE3830ABDE7100AD5B86 /* GamjaWidget */,
+				DD11BE9830ABF52700AD5B86 /* GamjaWatch Watch App */,
+				DD11BEAD30ABF55100AD5B86 /* GamjaWatch */,
 				DD11BE3330ABDE7100AD5B86 /* Frameworks */,
 				504EC3051FED79650016851F /* Products */,
 			);
@@ -113,6 +182,8 @@
 			children = (
 				504EC3041FED79650016851F /* App.app */,
 				DD11BE3230ABDE7100AD5B86 /* GamjaWidgetExtension.appex */,
+				DD11BE9730ABF52700AD5B86 /* GamjaWatch Watch App.app */,
+				DD11BEAA30ABF55100AD5B86 /* GamjaWatchExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,11 +224,13 @@
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
 				DD11BE4330ABDE7300AD5B86 /* Embed Foundation Extensions */,
+				DD11BEA230ABF52A00AD5B86 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DD11BE4130ABDE7300AD5B86 /* PBXTargetDependency */,
+				DD11BEA030ABF52A00AD5B86 /* PBXTargetDependency */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -189,6 +262,52 @@
 			productReference = DD11BE3230ABDE7100AD5B86 /* GamjaWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		DD11BE9630ABF52700AD5B86 /* GamjaWatch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD11BEA530ABF52A00AD5B86 /* Build configuration list for PBXNativeTarget "GamjaWatch Watch App" */;
+			buildPhases = (
+				DD11BE9330ABF52700AD5B86 /* Sources */,
+				DD11BE9430ABF52700AD5B86 /* Frameworks */,
+				DD11BE9530ABF52700AD5B86 /* Resources */,
+				DD11BEBC30ABF55300AD5B86 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD11BEB630ABF55300AD5B86 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				DD11BE9830ABF52700AD5B86 /* GamjaWatch Watch App */,
+			);
+			name = "GamjaWatch Watch App";
+			packageProductDependencies = (
+			);
+			productName = "GamjaWatch Watch App";
+			productReference = DD11BE9730ABF52700AD5B86 /* GamjaWatch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DD11BEA930ABF55100AD5B86 /* GamjaWatchExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD11BEB930ABF55300AD5B86 /* Build configuration list for PBXNativeTarget "GamjaWatchExtension" */;
+			buildPhases = (
+				DD11BEA630ABF55100AD5B86 /* Sources */,
+				DD11BEA730ABF55100AD5B86 /* Frameworks */,
+				DD11BEA830ABF55100AD5B86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DD11BEAD30ABF55100AD5B86 /* GamjaWatch */,
+			);
+			name = GamjaWatchExtension;
+			packageProductDependencies = (
+			);
+			productName = GamjaWatchExtension;
+			productReference = DD11BEAA30ABF55100AD5B86 /* GamjaWatchExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -204,6 +323,12 @@
 						ProvisioningStyle = Automatic;
 					};
 					DD11BE3130ABDE7100AD5B86 = {
+						CreatedOnToolsVersion = 27.2;
+					};
+					DD11BE9630ABF52700AD5B86 = {
+						CreatedOnToolsVersion = 27.2;
+					};
+					DD11BEA930ABF55100AD5B86 = {
 						CreatedOnToolsVersion = 27.2;
 					};
 				};
@@ -226,6 +351,8 @@
 			targets = (
 				504EC3031FED79650016851F /* App */,
 				DD11BE3130ABDE7100AD5B86 /* GamjaWidgetExtension */,
+				DD11BE9630ABF52700AD5B86 /* GamjaWatch Watch App */,
+				DD11BEA930ABF55100AD5B86 /* GamjaWatchExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -251,6 +378,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD11BE9530ABF52700AD5B86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD11BEA830ABF55100AD5B86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -270,6 +411,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD11BE9330ABF52700AD5B86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD11BEA630ABF55100AD5B86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -277,6 +432,16 @@
 			isa = PBXTargetDependency;
 			target = DD11BE3130ABDE7100AD5B86 /* GamjaWidgetExtension */;
 			targetProxy = DD11BE4030ABDE7300AD5B86 /* PBXContainerItemProxy */;
+		};
+		DD11BEA030ABF52A00AD5B86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD11BE9630ABF52700AD5B86 /* GamjaWatch Watch App */;
+			targetProxy = DD11BE9F30ABF52A00AD5B86 /* PBXContainerItemProxy */;
+		};
+		DD11BEB630ABF55300AD5B86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD11BEA930ABF55100AD5B86 /* GamjaWatchExtension */;
+			targetProxy = DD11BEB530ABF55300AD5B86 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -414,6 +579,7 @@
 			baseConfigurationReference = 958DCC722DB07C7200EA8C5F /* debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A29N9TRGDN;
@@ -425,7 +591,6 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -438,6 +603,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A29N9TRGDN;
@@ -448,7 +614,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
@@ -468,6 +633,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -486,7 +652,6 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				CODE_SIGN_ENTITLEMENTS = GamjaWidgetExtension.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.GamjaWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -511,6 +676,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -528,7 +694,6 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				CODE_SIGN_ENTITLEMENTS = GamjaWidgetExtension.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.GamjaWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -538,6 +703,186 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DD11BEA330ABF52A00AD5B86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A29N9TRGDN;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "감자 키우기";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.hwangdyoung.gamjakiugi;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWatchApp.entitlements;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		DD11BEA430ABF52A00AD5B86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A29N9TRGDN;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "감자 키우기";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.hwangdyoung.gamjakiugi;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWatchApp.entitlements;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		DD11BEBA30ABF55300AD5B86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A29N9TRGDN;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GamjaWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "감자 키우기";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWatchExtension.entitlements;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.watchkitapp.GamjaWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		DD11BEBB30ABF55300AD5B86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A29N9TRGDN;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GamjaWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "감자 키우기";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				CODE_SIGN_ENTITLEMENTS = GamjaWatchExtension.entitlements;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hwangdyoung.gamjakiugi.watchkitapp.GamjaWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -567,6 +912,24 @@
 			buildConfigurations = (
 				DD11BE4430ABDE7300AD5B86 /* Debug */,
 				DD11BE4530ABDE7300AD5B86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD11BEA530ABF52A00AD5B86 /* Build configuration list for PBXNativeTarget "GamjaWatch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD11BEA330ABF52A00AD5B86 /* Debug */,
+				DD11BEA430ABF52A00AD5B86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD11BEB930ABF55300AD5B86 /* Build configuration list for PBXNativeTarget "GamjaWatchExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD11BEBA30ABF55300AD5B86 /* Debug */,
+				DD11BEBB30ABF55300AD5B86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

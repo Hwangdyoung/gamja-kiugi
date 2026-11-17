@@ -68,6 +68,27 @@ npx cap open ios
 **발표 시연**: 앱 → 톱니 → 시연 슬라이더를 원하는 일수로 → **지금 표정으로 알림 미리 보내기 (10초 뒤)** →
 바로 iPhone 화면을 잠그면 10초 뒤 iPhone 잠금 화면과 Apple Watch에 알림이 뜹니다.
 
+## 8. Apple Watch 앱과 워치 페이스 컴플리케이션
+
+iPhone 앱에 워치 앱(`GamjaWatch Watch App`)과 컴플리케이션(`GamjaWatchExtension`, 폴더 `ios/App/GamjaWatch`)이 들어 있습니다.
+iPhone에서 ▶로 설치하면 짝지은 Apple Watch에도 워치 앱이 함께 설치됩니다(워치의 Watch 앱 설정에 따라 수동 설치가 필요할 수 있음).
+
+- iPhone 앱이 이름·다음 단계·시연 일수·마지막 접속 시각을 **WatchConnectivity**로 워치에 보냅니다
+  (iPhone과 워치는 저장소를 함께 쓰지 못함).
+- 워치 앱: 지금 감자 표정과 문구를 보여주고, 받은 값을 워치 저장소에 적어 컴플리케이션을 다시 그립니다.
+- 컴플리케이션 4종: **동그라미**(감자 얼굴), **직사각형**(감자 + 문구 + "N일째 미접속"), **코너**(얼굴 + 일수), **인라인**("감자 7일째 기다림").
+  iPhone 위젯처럼 8일 치를 미리 예약해 폰을 안 열어도 하루마다 바뀝니다.
+
+**워치 페이스에 붙이기**: 워치 화면을 길게 누르기 → (컴플리케이션 칸이 많은 **모듈** 페이스 추천) **편집** →
+옆으로 넘겨 **컴플리케이션** → 칸 선택 → **감자 키우기**.
+
+**발표 시연**: iPhone 앱 → 톱니 → 시연 슬라이더를 7일로 → 몇 초 뒤 워치 페이스의 감자가 화난 얼굴로 바뀝니다.
+결과 화면 예: `docs/watch-complication-angry.png`
+
+**주의**: 워치 컴플리케이션 그림은 크기 제한이 있습니다(동그라미 약 112px 이하).
+`ios/App/GamjaWatch/Assets.xcassets`의 그림을 바꿀 때는 작게(얼굴 96×96, 감자 84×98) 유지하세요.
+너무 크면 컴플리케이션이 회색 자리표시로만 보입니다.
+
 ## 구조
 
 | 파일 | 역할 |
@@ -76,6 +97,9 @@ npx cap open ios
 | `ios/App/App/AppDelegate.swift` | `WidgetBridgePlugin`: 웹 → App Group 저장소(이름·다음 단계·시연 일수·마지막 접속 시각) → 위젯 새로고침. `GamjaNotifications`: 미접속 알림 예약·시연용 알림 |
 | `ios/App/App/SceneDelegate.swift` | 플러그인을 등록하는 `MainViewController`로 앱 화면을 띄움 |
 | `src/lib/notify.js` | 알림 규칙과 4주 치 예약 목록(`notificationSchedule`) |
+| `ios/App/GamjaWatch Watch App/` | 워치 앱: iPhone에서 상태 받기(`WatchDelegate`), 감자 화면 |
+| `ios/App/GamjaWatch/` | 워치 컴플리케이션 4종(`GamjaWatchWidget.swift`) |
+| `GamjaState.swift` (두 워치 폴더에 같은 파일) | 워치용 표정·문구 계산. 고칠 때 둘 다 고침 |
 | `src/lib/nativeWidget.js` | 웹에서 위 플러그인 호출 (iPhone 앱일 때만) |
 | `ios/App/GamjaWidget/GamjaWidget.swift` | 위젯: 미접속 일수 계산, 표정·문구, 8일 치 장면 미리 예약 |
 | `ios/App/GamjaWidget/Assets.xcassets` | 위젯용 감자 그림 4장 |
