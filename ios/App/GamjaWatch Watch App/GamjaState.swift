@@ -1,6 +1,7 @@
 // 워치 앱과 워치 컴플리케이션이 함께 쓰는 감자 상태 계산
-// (같은 파일이 GamjaWatch, GamjaWatchWidget 두 폴더에 들어 있다. 고칠 때는 둘 다 고친다.)
-// 규칙은 웹 앱 src/lib/growth.js, iPhone 위젯 GamjaWidget.swift와 같다.
+// (같은 파일이 GamjaWatch, GamjaWatch Watch App 두 폴더에 들어 있다. 고칠 때는 둘 다 고친다.)
+// 표정 규칙은 웹 앱 src/lib/growth.js, iPhone 위젯 GamjaWidget.swift와 같다.
+// 워치 문구는 화면이 작아서 "하늘 화났다!!" + 줄바꿈 + "춘천 공고 당장 확인해"처럼 두 줄로 짧게 쓴다.
 
 import SwiftUI
 
@@ -34,51 +35,59 @@ enum Mood: String {
     }
 }
 
-private func josa(_ name: String, _ withBatchim: String, _ without: String) -> String {
-    guard let scalar = name.unicodeScalars.last, (0xAC00...0xD7A3).contains(scalar.value) else {
-        return "\(withBatchim)(\(without))"
-    }
-    return (scalar.value - 0xAC00) % 28 != 0 ? withBatchim : without
-}
-
 struct GamjaState {
     let ready: Bool
     let days: Int
     let mood: Mood
-    let message: String
-    /// 짧은 문구 (인라인·코너 컴플리케이션)
-    let short: String
+    /// 첫 줄: "하늘 화났다!!"
+    let title: String
+    /// 둘째 줄: "춘천 공고 당장 확인해"
+    let sub: String
+
+    /// 두 줄을 한 줄로 (공간이 넉넉하지 않은 곳)
+    var message: String { "\(title) \(sub)" }
 
     var meta: String {
         guard ready else { return "iPhone에서 시작해 줘" }
         return days == 0 ? "오늘 접속했어요" : "\(days)일째 미접속"
     }
 
+    /// 한 줄 컴플리케이션: "하늘 화났다!! · 7일째"
+    var inline: String {
+        guard ready else { return "감자 키우기" }
+        return days == 0 ? title : "\(title) · \(days)일째"
+    }
+
+    /// 코너 컴플리케이션 아래 글자
+    var corner: String {
+        guard ready else { return "감자" }
+        return days == 0 ? "오늘 접속" : "\(days)일째"
+    }
+
     static func lastOpen() -> Double {
         UserDefaults(suiteName: sharedGroup)?.double(forKey: "lastOpen") ?? 0
+    }
+
+    static func lines(mood: Mood, name n: String, nextStep: Int) -> (String, String) {
+        switch mood {
+        case .happy: return nextStep == 0 ? ("\(n) 다 컸다!!", "이제 춘천에서 일하자") : ("\(n) 신났다!!", "오늘도 같이 크자")
+        case .neutral: return ("\(n) 멈췄다!!", "춘천 공고 한 번만 봐 줘")
+        case .annoyed: return ("\(n) 짜증났다!!", nextStep == 0 ? "다 해놓고 서울 갈 거야?" : "\(nextStep)단계 언제 할 거야?")
+        case .angry: return ("\(n) 화났다!!", "춘천 공고 당장 확인해")
+        }
     }
 
     static func load(at date: Date) -> GamjaState {
         let store = UserDefaults(suiteName: sharedGroup)
         let lastOpen = store?.double(forKey: "lastOpen") ?? 0
         guard store?.bool(forKey: "hasProfile") == true, lastOpen > 0 else {
-            return GamjaState(ready: false, days: 0, mood: .happy, message: "iPhone에서 감자 키우기를 열어 줘.", short: "감자 키우기")
+            return GamjaState(ready: false, days: 0, mood: .happy, title: "감자 키우기", sub: "iPhone에서 앱을 열어 줘")
         }
         let realDays = max(0, Int(date.timeIntervalSince1970 - lastOpen) / Int(gamjaDay))
         let days = realDays + (store?.integer(forKey: "demoDays") ?? 0)
         let mood = Mood(days: days)
         let raw = store?.string(forKey: "name") ?? ""
-        let n = raw.isEmpty ? "감자" : raw
-        let i = josa(n, "이", "가")
-        let nextStep = store?.integer(forKey: "nextStep") ?? 1
-        let message: String
-        switch mood {
-        case .happy: message = nextStep == 0 ? "4단계 다 마쳤어!" : "\(n)\(i) 오늘도 성장 중!"
-        case .neutral: message = "\(n)\(i) 멈춰 있어요."
-        case .annoyed: message = nextStep == 0 ? "4단계까지 와놓고 서울 갈 거야?" : "\(nextStep)단계 아직이야? 서울 갈 거야?"
-        case .angry: message = "\(n)\(i) 화났다. 춘천 공고 확인하러 와."
-        }
-        let short = days == 0 ? "감자 웃는 중" : "감자 \(days)일째 기다림"
-        return GamjaState(ready: true, days: days, mood: mood, message: message, short: short)
+        let (title, sub) = lines(mood: mood, name: raw.isEmpty ? "감자" : raw, nextStep: store?.integer(forKey: "nextStep") ?? 1)
+        return GamjaState(ready: true, days: days, mood: mood, title: title, sub: sub)
     }
 }

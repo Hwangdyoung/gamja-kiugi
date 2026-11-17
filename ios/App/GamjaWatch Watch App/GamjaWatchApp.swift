@@ -85,19 +85,25 @@ struct WatchHomeView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 6) {
+            VStack(spacing: 4) {
+                // 감자를 화면 너비 가득 크게
                 Image(state.mood.imageName)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 90)
-                Text(state.message)
-                    .font(.system(size: 15, weight: .bold))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 130)
+                Text(state.title)
+                    .font(.system(size: 20, weight: .heavy))
+                    .foregroundStyle(state.mood == .happy ? Color.white : state.mood.color)
+                Text(state.sub)
+                    .font(.system(size: 15, weight: .semibold))
                     .multilineTextAlignment(.center)
                 Text(state.meta)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(state.mood.color)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 2)
             }
-            .padding(.horizontal, 4)
+            .padding(.horizontal, 2)
         }
         .onReceive(NotificationCenter.default.publisher(for: .gamjaUpdated)) { _ in
             state = GamjaState.load(at: .now)

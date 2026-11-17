@@ -15,7 +15,7 @@ struct GamjaWatchEntry: TimelineEntry {
 
 struct GamjaWatchProvider: TimelineProvider {
     func placeholder(in context: Context) -> GamjaWatchEntry {
-        GamjaWatchEntry(date: .now, state: GamjaState(ready: true, days: 0, mood: .happy, message: "하늘이 오늘도 성장 중!", short: "감자 웃는 중"))
+        GamjaWatchEntry(date: .now, state: GamjaState(ready: true, days: 0, mood: .happy, title: "하늘 신났다!!", sub: "오늘도 같이 크자"))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GamjaWatchEntry) -> Void) {
@@ -49,26 +49,33 @@ struct GamjaWatchWidgetView: View {
                 .scaledToFit()
                 .widgetAccentable(false)
         case .accessoryCorner:
-            Image(s.mood.faceName)
+            // 코너 칸은 그림 한도가 더 작다(약 86px) → 80px 전용 그림
+            Image("corner_\(s.mood.rawValue)")
                 .resizable()
                 .scaledToFit()
-                .widgetLabel(s.ready ? (s.days == 0 ? "웃는 중" : "\(s.days)일째") : "감자")
+                .widgetLabel(s.corner)
         case .accessoryInline:
-            Text(s.short)
-        default: // accessoryRectangular
-            HStack(spacing: 6) {
+            Text(s.inline)
+        default: // accessoryRectangular: 감자를 칸 높이 가득, 오른쪽에 두 줄 문구
+            HStack(spacing: 4) {
                 Image(s.mood.imageName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 42)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(s.message)
-                        .font(.system(size: 13, weight: .bold))
+                    .frame(maxHeight: .infinity)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(s.title)
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundStyle(s.mood == .happy ? Color.white : s.mood.color)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Text(s.sub)
+                        .font(.system(size: 13, weight: .semibold))
                         .lineLimit(2)
                         .minimumScaleFactor(0.8)
                     Text(s.meta)
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(s.mood.color)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
                 Spacer(minLength: 0)
             }
