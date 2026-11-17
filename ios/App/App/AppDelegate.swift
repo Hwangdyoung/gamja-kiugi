@@ -61,6 +61,7 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
     ]
 
     @objc func update(_ call: CAPPluginCall) {
+        NSLog("[GamjaWidget] update 호출: %@", String(describing: call.options))
         guard let store = UserDefaults(suiteName: gamjaAppGroup) else {
             call.reject("App Group 저장소를 열 수 없어요")
             return
@@ -78,6 +79,7 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
 /// 위 플러그인을 등록하는 화면. Main.storyboard가 이 클래스를 쓴다.
 class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
+        NSLog("[GamjaWidget] capacitorDidLoad, bridge=%@", bridge == nil ? "nil" : "ok")
         bridge?.registerPluginInstance(WidgetBridgePlugin())
     }
 }

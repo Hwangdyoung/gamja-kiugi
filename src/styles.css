@@ -485,6 +485,9 @@ button { cursor: pointer; }
   box-shadow: var(--shadow);
 }
 @media (max-width: 520px) { .demo { width: auto; margin: 16px; } }
+/* iPhone 앱(Capacitor): 페이지 자체는 움직이지 않고 앱 화면만 스크롤 */
+.native, .native body { height: 100%; overflow: hidden; }
+.native .demo { display: none; }
 .demo-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .demo-head h2 { font-size: 15px; font-weight: 800; }
 .badge { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: var(--r-sm); background: var(--caution-soft); color: var(--caution-ink); }
