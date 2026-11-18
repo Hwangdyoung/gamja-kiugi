@@ -67,10 +67,60 @@ const EUBIO_JOBS = o('유바이오로직스 채용', '취업', '(주)유바이�
   'https://www.saramin.co.kr/zf_user/company-info/view-inner-recruit/csn/RVVzNTRkekV1dVc3S2pKVDd0TTcwUT09/company_nm/(%EC%A3%BC)%EC%9C%A0%EB%B0%94%EC%9D%B4%EC%98%A4%EB%A1%9C%EC%A7%81%EC%8A%A4',
   '부문별 수시 채용');
 
-const DMC_SENIOR = {
-  who: '디지털미디어콘텐츠 전공 선배 A (예시)',
-  now: '춘천 콘텐츠 기업 재직',
-  steps: ['3학년 때 춘천 축제 콘텐츠 제작 참여', '4학년 때 지역 스타트업 마케팅 인턴', '졸업 후 춘천 콘텐츠 기업 입사'],
+/* 선배 이야기 (기획안 8장: 춘천에 남은 졸업생 인터뷰, 익명)
+   아직 인터뷰 전이라, 위에서 조사한 실제 프로그램을 밟아 간 "가상 선배"로 채웠다.
+   화면에도 가상 사례라고 표시한다. 실제 인터뷰를 하면 이 자리를 바꾼다. */
+const SENIOR_MKT = {
+  who: '선배 A',
+  profile: '디지털미디어콘텐츠 19학번',
+  now: '춘천 지역 문화기관 홍보 담당 · 2년 차',
+  steps: [
+    '2학년 여름 · 춘천인재육성장학재단 서포터즈로 SNS 카드뉴스 제작',
+    '3학년 가을 · 춘천여행 SNS 공모전 블로그 부문 입상',
+    '4학년 하반기 · 미래내일 일경험으로 지역 기관 홍보 실무',
+    '졸업 직후 · 지역 재단 홍보직 공개채용 합격',
+  ],
+  quote: '서울 가야 홍보 일 한다고 생각했어요. 서포터즈 때 만난 담당자를 면접장에서 다시 만났어요.',
+  tip: '공모전·서포터즈 결과물을 블로그 하나에 모아 두세요. 그게 포트폴리오예요.',
+};
+const SENIOR_PLAN = {
+  who: '선배 B',
+  profile: '디지털미디어콘텐츠 18학번',
+  now: '춘천 콘텐츠 스타트업 기획자 · 3년 차',
+  steps: [
+    '3학년 · 춘천마임축제 현장 영상 스태프',
+    '3학년 겨울 · 지역 콘텐츠 공모전에 기획서 제출',
+    '4학년 겨울 · 동계 현장실습으로 지역 콘텐츠 기업 근무',
+    '졸업 후 · 실습한 회사에 채용 연계로 입사',
+  ],
+  quote: '작은 회사라 기획부터 촬영, 정산까지 다 해 봤어요. 서울 큰 회사 간 동기보다 빨리 컸어요.',
+  tip: '현장실습은 회사를 고를 수 있을 때 꼭 해 보세요. 채용으로 이어지는 경우가 많아요.',
+};
+const SENIOR_RES = {
+  who: '선배 C',
+  profile: '바이오메디컬 18학번',
+  now: '춘천 바이오 지원기관 연구원 · 2년 차',
+  steps: [
+    '2학년 겨울 · 학과 진로탐색 인턴십으로 연구실 체험',
+    '3학년 · 학부연구생으로 세포 실험 보조',
+    '4학년 겨울 · 동계 현장실습으로 바이오 기업 연구소 근무',
+    '졸업 후 · 지역 바이오 기관 연구개발 원급 공개채용 합격',
+  ],
+  quote: '춘천에 바이오 기업이 이렇게 많은지 현장실습 가서 처음 알았어요.',
+  tip: '학부연구생은 2학년 때 시작하세요. 실험 경력이 원급 채용에서 제일 많이 물어보는 거예요.',
+};
+const SENIOR_QA = {
+  who: '선배 D',
+  profile: '바이오메디컬 19학번',
+  now: '춘천 바이오 기업 품질관리(QC) · 1년 차',
+  steps: [
+    '3학년 · 학과 바이오 직무 상담에서 품질관리 직무를 처음 알게 됨',
+    '4학년 겨울 · 동계 현장실습으로 QC 시험 보조',
+    '4학년 겨울 · 바이오 분야 기업면접 매칭데이에서 현장 면접',
+    '졸업 직후 · 신입 QC로 입사',
+  ],
+  quote: '연구직만 생각했는데 QC는 신입 채용이 꾸준히 있어요. 매칭데이 하루에 면접을 세 군데 봤어요.',
+  tip: 'GMP 문서 쓰는 법을 미리 익혀 두면 면접에서 바로 티가 나요.',
 };
 
 export const MAJORS = {
@@ -80,7 +130,7 @@ export const MAJORS = {
     tracks: {
       mkt: {
         label: '마케팅형',
-        senior: DMC_SENIOR,
+        senior: SENIOR_MKT,
         levels: [
           { tag: '서포터즈', t: '지역 기관 SNS 서포터즈', d: '춘천 기관을 SNS로 알리는 활동이에요. 포트폴리오 첫 줄이 생겨요.', o: [TALENT_SUPPORTERS, RISE_SUPPORTERS] },
           { tag: '공모전', t: '춘천 홍보 콘텐츠 공모전', d: '춘천을 알리는 콘텐츠를 직접 만들어 내 봐요.', o: [SNS_CONTEST, DICA_CONTEST] },
@@ -90,7 +140,7 @@ export const MAJORS = {
       },
       plan: {
         label: '콘텐츠 기획형',
-        senior: DMC_SENIOR,
+        senior: SENIOR_PLAN,
         levels: [
           { tag: '공모전', t: '지역 콘텐츠 공모전 도전', d: '기획서 한 편으로 시작해요. 수상 경력은 다음 단계의 근거가 돼요.', o: [SNS_CONTEST, DICA_CONTEST] },
           { tag: '축제', t: '지역 축제 콘텐츠 참여', d: '축제 콘텐츠가 만들어지는 과정을 직접 겪어요.', o: [MIME_CALL, TALENT_SUPPORTERS] },
@@ -107,7 +157,7 @@ export const MAJORS = {
       res: {
         label: '연구형',
         goal: '춘천에서 연구자의 길에 들어섰습니다.',
-        senior: null,
+        senior: SENIOR_RES,
         levels: [
           { tag: '탐색', t: '관련 연구실·직무 탐색', d: '어떤 연구실과 기업이 있는지 직접 찾아가 물어봐요.', o: [PLANT_INTERN, BIO_JOB_TALK] },
           { tag: '연구', t: '학부연구생·연구보조', d: '연구실에서 실험 보조를 맡아 경험을 쌓아요.', o: [BIO_DEPT, WORK_EXP] },
@@ -117,7 +167,7 @@ export const MAJORS = {
       },
       qa: {
         label: '품질관리형',
-        senior: null,
+        senior: SENIOR_QA,
         levels: [
           { tag: '탐색', t: '바이오 기업·직무 탐색', d: '품질관리가 어떤 일인지부터 알아봐요.', o: [BIO_JOB_TALK, PLANT_INTERN] },
           { tag: '매칭', t: '바이오 기업 만나 보기', d: '도내 바이오 기업 면접·상담 자리에 나가 봐요.', o: [BIO_MATCHING, WORK_EXP] },

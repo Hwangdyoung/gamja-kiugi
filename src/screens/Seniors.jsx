@@ -21,8 +21,12 @@ export default function Seniors({ profile }) {
         no="04"
         en="SENIORS"
         title="먼저 남아 본 선배들."
-        lead={`춘천에 남은 ${major.label} 전공 선배가 지나온 길이에요. 인터뷰를 정리한 내용이고, 이름은 익명이에요.`}
+        lead={`춘천에 남은 ${major.label} 전공 선배가 지나온 길이에요. 내 직무 선배가 먼저 나와요.`}
       />
+
+      <p className="disclaimer">
+        지금은 실제 춘천 프로그램을 바탕으로 만든 가상 사례예요. 춘천에 남은 졸업생 인터뷰를 마치면 실제 이야기로 바뀌어요.
+      </p>
 
       {stories.length ? (
         stories.map((s) => (
@@ -33,14 +37,20 @@ export default function Seniors({ profile }) {
               </span>
               <div>
                 <h3>{s.who}</h3>
-                <p className="muted small">{s.now}</p>
+                <p className="muted small">{s.profile}</p>
+                <p className="small">{s.now}</p>
               </div>
+              <span className={`tag${s.mine ? ' mine' : ''}`}>{s.mine ? '내 직무' : s.trackLabel}</span>
             </div>
+            <blockquote className="senior-quote">“{s.quote}”</blockquote>
             <ol className="timeline">
               {s.steps.map((x) => (
                 <li key={x}>{x}</li>
               ))}
             </ol>
+            <p className="senior-tip">
+              <b>후배에게</b> {s.tip}
+            </p>
           </article>
         ))
       ) : (

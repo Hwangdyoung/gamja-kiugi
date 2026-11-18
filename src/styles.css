@@ -420,6 +420,12 @@ button { cursor: pointer; }
 .senior { padding: 16px; display: grid; gap: 12px; }
 .senior-head { display: flex; align-items: center; gap: 12px; }
 .senior-head h3 { font-size: 15px; font-weight: 700; }
+.senior-head > div { flex: 1; }
+.senior-head .tag { align-self: flex-start; flex-shrink: 0; }
+.senior .tag.mine { background: var(--primary); color: var(--primary-ink); }
+.senior-quote { margin: 0; padding: 10px 12px; font-size: 14px; line-height: 1.55; font-weight: 600; background: var(--secondary); color: var(--secondary-ink); border-radius: var(--r-lg); }
+.senior-tip { font-size: 13px; line-height: 1.5; color: var(--ink-2); padding-top: 10px; border-top: 1px solid var(--line); }
+.senior-tip b { color: var(--ink); margin-right: 6px; }
 .avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-md); background: var(--secondary); color: var(--secondary-ink); font-weight: 700; }
 .timeline { list-style: none; padding: 0; display: grid; gap: 10px; border-left: 2px solid var(--line); margin-left: 19px; }
 .timeline li { position: relative; padding-left: 18px; font-size: 14px; }
