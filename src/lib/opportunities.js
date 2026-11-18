@@ -9,6 +9,13 @@ export function startOfToday() {
   return d;
 }
 
+/* 'YYYY-MM-DD' → 그날 0시(기기 시간). 없으면 null */
+export function parseDate(s) {
+  if (!s) return null;
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 /* 기회 카드 목록. 내 경로의 기회를 단계 순서대로, 같은 기회는 한 번만 모은다.
    각 기회에 실제 마감일(deadline)과 몇 단계인지(step)를 붙인다. */
 export function buildItems(profile, today = startOfToday()) {
@@ -27,7 +34,9 @@ export function buildItems(profile, today = startOfToday()) {
         type: x.type,
         org: x.org,
         target: x.target,
-        deadline: x.due == null ? null : new Date(today.getTime() + x.due * DAY),
+        deadline: parseDate(x.due),
+        src: x.src,
+        when: x.when,
         step: i,
         stepTitle: level.t,
       });
@@ -49,13 +58,13 @@ export const isOpen = (item, today) => {
 
 export function ddayLabel(item, today) {
   const left = daysLeft(item, today);
-  if (left === null) return '상시';
+  if (left === null) return item.when ? '정기·수시' : '상시';
   if (left < 0) return '마감';
   return left === 0 ? 'D-DAY' : `D-${left}`;
 }
 
 export function formatDate(d) {
-  if (!d) return '상시 모집';
+  if (!d) return '지금 열린 마감일 없음';
   const w = '일월화수목금토'[d.getDay()];
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} (${w})`;
 }

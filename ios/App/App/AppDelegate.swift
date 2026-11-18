@@ -119,7 +119,9 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
 enum GamjaNotifications {
     /// 밤 9시~아침 9시를 피해 오전 10시에 보낸다
     static let sendHour = 10
-    static let prefix = "gamja-day-"
+    /// 예약 알림 이름 앞부분. 예전 버전의 "gamja-day-"도 지울 때 함께 지운다
+    static let prefix = "gamja-plan-"
+    static let oldPrefixes = ["gamja-day-"]
 
     static func authorize(_ done: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
@@ -127,28 +129,29 @@ enum GamjaNotifications {
         }
     }
 
-    /// schedule: [{ day: 2, mood: "neutral", body: "…" }, …] — 웹(src/lib/notify.js)이 기획안 규칙대로 만들어 보낸다
+    /// schedule: [{ at: 1763000000000(밀리초), kind: "away"|"due", mood: "neutral", body: "…" }, …]
+    /// 웹(src/lib/notify.js notificationPlan)이 미접속 알림과 마감 임박 알림을 합쳐, 하루 한 번·오전 10시로 맞춰 보낸다.
     static func reschedule(_ schedule: [[String: Any]], from lastOpen: Date) {
         let center = UNUserNotificationCenter.current()
         center.getPendingNotificationRequests { pending in
-            center.removePendingNotificationRequests(withIdentifiers: pending.map(\.identifier).filter { $0.hasPrefix(prefix) })
+            let mine = pending.map(\.identifier).filter { id in ([prefix] + oldPrefixes).contains { id.hasPrefix($0) } }
+            center.removePendingNotificationRequests(withIdentifiers: mine)
             guard !schedule.isEmpty else { return }
             authorize { granted in
                 guard granted else { return }
-                let calendar = Calendar.current
-                let startOfDay = calendar.startOfDay(for: lastOpen)
-                for item in schedule {
-                    guard let day = item["day"] as? Int,
+                var count = 0
+                for (i, item) in schedule.enumerated() {
+                    guard let at = (item["at"] as? NSNumber)?.doubleValue,
                           let mood = item["mood"] as? String,
-                          let body = item["body"] as? String,
-                          let dayDate = calendar.date(byAdding: .day, value: day, to: startOfDay),
-                          let fireDate = calendar.date(bySettingHour: sendHour, minute: 0, second: 0, of: dayDate),
-                          fireDate > Date() else { continue }
-                    let parts = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
-                    add(id: "\(prefix)\(day)", mood: mood, body: body,
+                          let body = item["body"] as? String else { continue }
+                    let fireDate = Date(timeIntervalSince1970: at / 1000)
+                    guard fireDate > Date() else { continue }
+                    let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
+                    add(id: "\(prefix)\(i)", mood: mood, body: body,
                         trigger: UNCalendarNotificationTrigger(dateMatching: parts, repeats: false))
+                    count += 1
                 }
-                NSLog("[GamjaWidget] 알림 %d개 예약", schedule.count)
+                NSLog("[GamjaWidget] 알림 %d개 예약", count)
             }
         }
     }

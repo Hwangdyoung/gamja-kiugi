@@ -12,7 +12,7 @@ const SHORTCUTS = [
 ];
 
 /* 홈: 검색창, 캐릭터와 말풍선, 진행 상황, 다음 단계, 추천 기회 (기획안 6장) */
-export default function Home({ name, track, mood, message, done, items, today, saved, onOpen, onSave, onTab, onSearch }) {
+export default function Home({ name, track, mood, message, done, items, today, saved, urgent = [], onOpen, onSave, onTab, onSearch }) {
   const [q, setQ] = useState('');
   const dc = done.filter(Boolean).length;
   const ni = nextIndex(done);
@@ -62,6 +62,20 @@ export default function Home({ name, track, mood, message, done, items, today, s
           </div>
         </div>
       </section>
+
+      {urgent.length > 0 && (
+        <section className="section urgent" aria-label="마감 임박 스크랩">
+          <div className="section-head">
+            <h2>스크랩한 기회 마감 임박</h2>
+            <span className="badge warn">{urgent.length}건</span>
+          </div>
+          <div className="list">
+            {urgent.map((it) => (
+              <OpportunityCard key={it.id} item={it} today={today} saved onOpen={onOpen} onSave={onSave} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <button type="button" className="card next" onClick={() => onTab('path')}>
         <span className="next-body">

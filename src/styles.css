@@ -174,7 +174,7 @@ button { cursor: pointer; }
 .fine { font-size: 12px; color: var(--ink-3); text-align: center; }
 .link { border: 0; background: none; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--primary); }
 
-.btn {
+.btn { text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -533,10 +533,28 @@ button { cursor: pointer; }
 .onboarding { padding-top: 18px; gap: 18px; }
 .onboarding .brand-lg { font-size: 18px; text-align: left; }
 .landing { display: grid; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-.landing-char { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
-.landing-char p { display: grid; gap: 2px; font-size: 14px; }
-.landing-char small { font-size: 12px; color: var(--ink-3); }
 .landing-form { display: grid; gap: 14px; }
+.hero { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; }
+.hero-bubble {
+  position: relative; padding: 12px 14px; font-size: 15px; font-weight: 700; line-height: 1.45;
+  background: var(--secondary); color: var(--secondary-ink); border-radius: var(--r-lg);
+}
+.hero-bubble::before {
+  content: ''; position: absolute; left: -7px; top: 50%; translate: 0 -50%;
+  border: 7px solid transparent; border-left: 0; border-right-color: var(--secondary);
+}
+.how { list-style: none; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.how li { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.how-no { font-size: 13px; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; padding-top: 1px; }
+.how b { display: block; font-size: 15px; }
+.how small { display: block; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.mood-strip { display: grid; gap: 10px; padding: 14px; background: var(--muted); border-radius: var(--r-lg); }
+.mood-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.mood-row figure { display: grid; justify-items: center; gap: 4px; margin: 0; }
+.mood-row figcaption { font-size: 12px; font-weight: 700; color: var(--ink-2); }
+.mood-strip p { display: grid; gap: 2px; font-size: 14px; text-align: center; }
+.mood-strip small { font-size: 12px; color: var(--ink-3); }
+.urgent .section-head .badge { background: oklch(0.95 0.05 30); color: var(--danger); }
 
 /* ---------- 홈 하단 번호 카드 ---------- */
 .motto { display: grid; gap: 2px; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; padding-top: 10px; border-top: 1px solid var(--line); }

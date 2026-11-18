@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { doneCount, getTrack, messageFor, moodOf } from './lib/growth.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
+import { urgentSaved } from './lib/notify.js';
 import * as storage from './lib/storage.js';
 import { isNativeApp, sendTestNotification, syncWidget } from './lib/nativeWidget.js';
 import Onboarding from './screens/Onboarding.jsx';
@@ -57,14 +58,6 @@ export default function App() {
     if (link) link.href = `./icons/favicon-${tabMood}.png`;
   }, [tabMood]);
 
-  // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보낸다. 앱으로 돌아올 때마다 "지금 접속"으로 기록
-  useEffect(() => {
-    const send = () => syncWidget({ profile, done, demoDays: days, notifyOn });
-    send();
-    const onVisible = () => document.visibilityState === 'visible' && send();
-    document.addEventListener('visibilitychange', onVisible);
-    return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [profile, done, days, notifyOn]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -83,8 +76,18 @@ export default function App() {
     [all, today]
   );
   const hiddenCount = all.length - items.length;
+
+  // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보내고 알림(미접속·마감 임박)을 다시 예약한다.
+  // 앱으로 돌아올 때마다 "지금 접속"으로 기록
+  useEffect(() => {
+    const send = () => syncWidget({ profile, done, demoDays: days, notifyOn, items, saved });
+    send();
+    const onVisible = () => document.visibilityState === 'visible' && send();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [profile, done, days, notifyOn, items, saved]);
   const mood = moodOf(days);
-  const message = profile ? messageFor(mood, { name: profile.name, done, track }) : '';
+  const message = profile ? messageFor(mood, { done, track }) : '';
   const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
 
@@ -134,7 +137,6 @@ export default function App() {
         today={today}
         saved={!!saved[detail.id]}
         onSave={toggleSave}
-        onSource={() => setToast('예시 데이터라 원문이 없어요. 실제 공고를 모으면 원문 링크로 연결돼요.')}
       />
     );
   } else if (tab === 'home') {
@@ -148,6 +150,7 @@ export default function App() {
         items={items}
         today={today}
         saved={saved}
+        urgent={urgentSaved(items, saved, today)}
         onOpen={setDetailId}
         onSave={toggleSave}
         onTab={goTab}

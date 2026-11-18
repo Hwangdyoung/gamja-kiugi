@@ -1,8 +1,17 @@
 import { BookmarkIcon, ExternalIcon } from '../components/Icons.jsx';
 import { ddayLabel, formatDate } from '../lib/opportunities.js';
+import { RESEARCHED_AT } from '../lib/data.js';
+
+const host = (url) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+};
 
 /* 기회 상세: 주최 기관, 마감일, 대상, 내 경로의 몇 단계인지, 원문 링크 (기획안 5장) */
-export default function OpportunityDetail({ item, today, saved, onSave, onSource }) {
+export default function OpportunityDetail({ item, today, saved, onSave }) {
   return (
     <div className="screen detail">
       <div className="detail-head">
@@ -23,6 +32,12 @@ export default function OpportunityDetail({ item, today, saved, onSave, onSource
           <dt>마감일</dt>
           <dd>{formatDate(item.deadline)}</dd>
         </div>
+        {item.when && (
+          <div>
+            <dt>모집 시기</dt>
+            <dd>{item.when}</dd>
+          </div>
+        )}
         <div>
           <dt>대상</dt>
           <dd>{item.target}</dd>
@@ -35,19 +50,23 @@ export default function OpportunityDetail({ item, today, saved, onSave, onSource
         </div>
         <div>
           <dt>출처</dt>
-          <dd className="muted">프로토타입 예시 데이터 · 실제 공고 아님</dd>
+          <dd className="muted">{host(item.src)}</dd>
         </div>
       </dl>
+
+      <p className="disclaimer">
+        {RESEARCHED_AT}에 조사한 내용이에요. 일정과 조건은 바뀔 수 있으니 지원 전에 원문에서 꼭 확인해 주세요.
+      </p>
 
       <div className="detail-actions">
         <button type="button" className={`btn outline${saved ? ' on' : ''}`} aria-pressed={saved} onClick={() => onSave(item.id)}>
           <BookmarkIcon on={saved} size={18} />
           {saved ? '스크랩됨' : '스크랩'}
         </button>
-        <button type="button" className="btn primary grow" onClick={onSource}>
+        <a className="btn primary grow" href={item.src} target="_blank" rel="noopener noreferrer">
           원문 보기
           <ExternalIcon />
-        </button>
+        </a>
       </div>
     </div>
   );

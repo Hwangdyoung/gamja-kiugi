@@ -1,9 +1,9 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, within, cleanup } from '@testing-library/react';
 import App from '../App.jsx';
 import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
-import { notificationSchedule, notifyDecision } from '../lib/notify.js';
+import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, urgentSaved } from '../lib/notify.js';
 import { MAJORS, TYPES } from '../lib/data.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
@@ -39,12 +39,43 @@ describe('표정·문구·알림 규칙', () => {
     expect(notifyDecision(4, false).send).toBe(false);
   });
   it('iPhone 앱이 예약할 4주 치 알림: 날짜·표정·문구', () => {
-    const plan = notificationSchedule({ name: '하늘', done: [true, false, false, false], track: MAJORS.dmc.tracks.mkt });
+    const plan = notificationSchedule({ done: [true, false, false, false], track: MAJORS.dmc.tracks.mkt });
     expect(plan.map((p) => [p.day, p.mood])).toEqual([
       [2, 'neutral'], [4, 'annoyed'], [7, 'angry'], [14, 'angry'], [21, 'angry'], [28, 'angry'],
     ]);
     expect(plan[1].body).toBe('2단계 아직이야? 서울 갈 거야?');
     expect(plan[2].body).toBe('감자가 화났다. 춘천 공고 확인하러 와.');
+  });
+});
+
+describe('마감 임박 알림 (P1)', () => {
+  const now = new Date(2026, 10, 16, 12, 0);
+  const today = new Date(2026, 10, 16);
+  const item = (id, dueDays) => ({ id, title: id, deadline: dueDays == null ? null : new Date(2026, 10, 16 + dueDays) });
+
+  it('스크랩한 기회만, 마감 3일 전·하루 전 오전 10시에 알린다', () => {
+    const items = [item('A', 10), item('B', 10), item('상시', null)];
+    const plan = deadlineSchedule(items, { A: true, 상시: true }, now);
+    expect(plan.map((p) => new Date(p.at))).toEqual([new Date(2026, 10, 23, 10), new Date(2026, 10, 25, 10)]);
+    expect(plan[1].body).toBe("내일 마감이야! 'A' 지금 확인해.");
+  });
+
+  it('이미 지난 알림 시각은 빼고, 미접속 알림과 같은 날이면 하루 한 번만 (마감 알림 우선)', () => {
+    // 마감 5일 뒤 → 3일 전 = 2일째(미접속 무표정 알림과 같은 날), 하루 전 = 4일째(짜증 알림과 같은 날)
+    const items = [item('A', 5), item('지난', 2)];
+    const plan = notificationPlan({ done: [false, false, false, false], track: MAJORS.dmc.tracks.mkt, items, saved: { A: true, 지난: true }, now });
+    const days = plan.map((p) => Math.round((p.at - today.getTime()) / 86400000 - 10 / 24));
+    expect(days).toEqual([1, 2, 4, 7, 14, 21, 28]);
+    expect(plan.filter((p) => p.kind === 'due').map((p) => p.body)).toEqual([
+      "내일 마감이야! '지난' 지금 확인해.",
+      "감자가 조마조마해. 'A' 마감 3일 남았어.",
+      "내일 마감이야! 'A' 지금 확인해.",
+    ]);
+  });
+
+  it('홈에는 스크랩한 기회 중 마감 3일 이내만 보인다', () => {
+    const items = [item('A', 2), item('B', 5), item('C', 0)];
+    expect(urgentSaved(items, { A: true, B: true, C: true }, today).map((i) => i.id)).toEqual(['C', 'A']);
   });
 });
 
@@ -59,23 +90,30 @@ describe('기회 데이터', () => {
   it('마감 지난 기회는 열린 기회에서 빠진다', () => {
     const today = new Date(2026, 10, 16);
     const items = buildItems({ name: 'a', major: 'dmc', track: 'mkt' }, today);
-    const contest = items.find((it) => it.title === '지역 상권 홍보 공모전');
+    const contest = items.find((it) => it.title === '2026 춘천 디카시 공모전');
     expect(ddayLabel(contest, today)).toBe('마감');
     expect(isOpen(contest, today)).toBe(false);
   });
 });
 
 describe('화면 흐름', () => {
+  // 기회 마감일이 실제 날짜라서, 조사한 날(2026.11.18) 기준으로 화면을 확인한다
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 18, 12));
+  });
+  afterEach(() => vi.useRealTimers());
+
   const start = (name = '하늘') => {
     render(<App />);
-    fireEvent.click(screen.getByText('내 경로 만들기'));
+    fireEvent.click(screen.getByText('감자 키우기 시작'));
     expect(screen.getByRole('alert').textContent).toBe('이름을 입력해 주세요.');
     fireEvent.change(screen.getByLabelText('이름'), { target: { value: name } });
     expect(document.querySelector('.brand-lg').textContent).toBe('감자 키우기');
-    expect(document.querySelector('.landing-char').textContent).toContain(`${name}, 같이 춘천에서 커 보자.`);
+    expect(document.querySelector('.hero-bubble').textContent).toContain(`${name}, 같이 춘천에서 커 보자.`);
     fireEvent.click(screen.getByLabelText(/디지털미디어콘텐츠/));
     fireEvent.click(screen.getByLabelText('마케팅형'));
-    fireEvent.click(screen.getByText('내 경로 만들기'));
+    fireEvent.click(screen.getByText('감자 키우기 시작'));
   };
 
   it('시작 설정 → 홈 → 기회 상세 → 스크랩', () => {
@@ -90,9 +128,9 @@ describe('화면 흐름', () => {
     expect(document.querySelector('.push')).toBeTruthy();
 
     // 추천 기회 → 상세
-    fireEvent.click(screen.getByText('지역 축제 SNS 서포터즈 모집'));
+    fireEvent.click(screen.getByText('춘천인재육성장학재단 서포터즈'));
     expect(screen.getByText('기회 상세')).toBeTruthy();
-    expect(screen.getByText('지역 축제 사무국')).toBeTruthy();
+    expect(screen.getByText('(재)춘천인재육성장학재단')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /^스크랩$/ }));
     expect(screen.getByText('스크랩됨')).toBeTruthy();
   });
@@ -101,7 +139,7 @@ describe('화면 흐름', () => {
     start();
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('기회'));
     expect(screen.getByText(/마감 지난 1건은 숨겼어요/)).toBeTruthy();
-    expect(screen.queryByText('지역 상권 홍보 공모전')).toBeNull();
+    expect(screen.queryByText('2026 춘천 디카시 공모전')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '인턴' }));
     expect(document.querySelectorAll('.opp')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '전체' }));

@@ -17,7 +17,7 @@ export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, 
         <label className="toggle-row">
           <span>
             <b>푸시 알림</b>
-            <small>캐릭터 표정이 바뀌는 날 알려드려요. 밤 9시~아침 9시에는 보내지 않아요.</small>
+            <small>캐릭터 표정이 바뀌는 날과, 스크랩한 기회 마감 3일 전·하루 전에 알려드려요. 하루 한 번까지, 오전 10시에만 보내요.</small>
           </span>
           <input type="checkbox" role="switch" checked={notifyOn} onChange={(e) => onNotify(e.target.checked)} />
         </label>
