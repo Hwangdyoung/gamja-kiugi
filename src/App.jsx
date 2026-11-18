@@ -3,7 +3,9 @@ import { doneCount, getTrack, messageFor, moodOf } from './lib/growth.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import { urgentSaved } from './lib/notify.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
-import { exportText, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
+import { exportText, setEventSink, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
+import { authEnabled, currentUser, onAuthChange, pullProgress, pushEvent, pushProgress, signOut } from './lib/auth.js';
+import Login from './screens/Login.jsx';
 import * as storage from './lib/storage.js';
 import { isNativeApp, listenNotificationOpen, sendTestNotification, syncWidget } from './lib/nativeWidget.js';
 import Onboarding from './screens/Onboarding.jsx';
@@ -40,6 +42,67 @@ export default function App() {
   const [nameDraft, setNameDraft] = useState(''); // 시작 화면에서 입력 중인 이름
   const [toast, setToast] = useState('');
   const [days, setDays] = useState(0); // 시연용 미접속 일수
+
+  // 로그인 (Supabase 설정이 있을 때만). 로그인 없이 둘러보기를 고르면 기기에만 저장한다
+  const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(!authEnabled());
+  const [showLogin, setShowLogin] = useState(false);
+  const [guest, setGuest] = useState(() => {
+    try {
+      return localStorage.getItem('gamja:guest') === '1';
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    if (!authEnabled()) return undefined;
+    currentUser().then((u) => {
+      setUser(u);
+      setAuthReady(true);
+    });
+    return onAuthChange(setUser);
+  }, []);
+  useEffect(() => {
+    setEventSink(user ? (type, data) => pushEvent(user.id, type, data) : null);
+  }, [user]);
+  // 로그인 상태에서 진행 상황이 바뀌면 1초 뒤 계정에 저장
+  useEffect(() => {
+    if (!user || !profile) return undefined;
+    const t = setTimeout(() => pushProgress(user.id, { profile, done, saved, notifyOn }), 1000);
+    return () => clearTimeout(t);
+  }, [user, profile, done, saved, notifyOn]);
+
+  const onLoggedIn = async (u) => {
+    setUser(u);
+    setShowLogin(false);
+    setGuest(false);
+    try {
+      localStorage.removeItem('gamja:guest');
+    } catch {
+      /* 무시 */
+    }
+    // 계정에 저장된 게 있으면 그걸로 이어서, 없으면 이 기기 진행 상황을 계정에 올린다
+    const remote = await pullProgress(u.id);
+    if (remote && getTrack(remote.profile)) {
+      setProfile(remote.profile);
+      setDone(remote.done ?? EMPTY_DONE);
+      setSaved(remote.saved ?? {});
+      setNotifyOn(remote.notifyOn ?? true);
+      setToast('저장된 감자를 불러왔어요.');
+    } else if (profile) {
+      pushProgress(u.id, { profile, done, saved, notifyOn });
+      setToast('이 기기의 감자를 계정에 저장했어요.');
+    }
+  };
+  const browseAsGuest = () => {
+    setGuest(true);
+    setShowLogin(false);
+    try {
+      localStorage.setItem('gamja:guest', '1');
+    } catch {
+      /* 무시 */
+    }
+  };
 
   // 춘천 기회 데이터: 저장본 → 앱 기본값으로 바로 그리고, 최신 파일을 받으면 바꾼다
   const [oppData, setOppData] = useState(() => cachedData() ?? BUNDLED);
@@ -169,10 +232,22 @@ export default function App() {
     setMode(null);
     setNameDraft('');
     setDays(0);
+    setGuest(false);
+    try {
+      localStorage.removeItem('gamja:guest');
+    } catch {
+      /* 무시 */
+    }
+    if (user) signOut().then(() => setUser(null));
   };
 
   let screen;
-  if (!profile) {
+  const needLogin = authEnabled() && authReady && !user && ((!profile && !guest) || showLogin);
+  if (!authReady) {
+    screen = null;
+  } else if (needLogin) {
+    screen = <Login onDone={onLoggedIn} onGuest={browseAsGuest} />;
+  } else if (!profile) {
     screen = <Onboarding nameDraft={nameDraft} onNameDraft={setNameDraft} onSubmit={saveProfile} />;
   } else if (detail) {
     screen = (
@@ -243,7 +318,7 @@ export default function App() {
   return (
     <div className="stage">
       <div className="phone" aria-label={`${appName} 앱 화면`}>
-        {profile && (
+        {profile && !needLogin && (
           <header className="appbar">
             {detail ? (
               <button type="button" className="icon-btn" aria-label="뒤로" onClick={() => setDetailId(null)}>
@@ -261,11 +336,11 @@ export default function App() {
           </header>
         )}
 
-        <div className="content" ref={scrollRef}>
+        <div className={`content${profile && !detail && tab === 'home' ? ' is-home' : ''}`} ref={scrollRef}>
           {screen}
         </div>
 
-        {profile && <TabBar tab={detail ? null : tab} onTab={goTab} />}
+        {profile && !needLogin && <TabBar tab={detail ? null : tab} onTab={goTab} />}
 
         {toast && (
           <div className="toast" role="status">
@@ -285,6 +360,17 @@ export default function App() {
             onDays={setDays}
             mood={mood}
             metrics={metricsSummary()}
+            account={authEnabled() ? { email: user?.email ?? null } : null}
+            onLogin={() => {
+              setSettingsOpen(false);
+              setShowLogin(true);
+            }}
+            onLogout={() =>
+              signOut().then(() => {
+                setUser(null);
+                setToast('로그아웃했어요. 이 기기에는 그대로 남아 있어요.');
+              })
+            }
             onCopyMetrics={() =>
               navigator.clipboard
                 ?.writeText(exportText())

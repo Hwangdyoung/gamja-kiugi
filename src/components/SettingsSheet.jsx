@@ -4,7 +4,7 @@ import { MOODS } from '../lib/data.js';
 /* 설정: 이름·전공·직무 수정, 푸시 알림 켜고 끄기 (기획안 7장)
    + 발표용 시연: iPhone 앱에서는 폰 화면 밖 시연 도구를 볼 수 없어서 여기에도 둔다.
      슬라이더를 움직이고 홈 화면으로 나가면 위젯 표정이 바뀐다. */
-export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, onSave, onClose, days, onDays, mood, onTestNotification, metrics, onCopyMetrics }) {
+export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, onSave, onClose, days, onDays, mood, onTestNotification, metrics, onCopyMetrics, account, onLogin, onLogout }) {
   return (
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" role="dialog" aria-modal="true" aria-label="설정" onClick={(e) => e.stopPropagation()}>
@@ -14,6 +14,23 @@ export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, 
             닫기
           </button>
         </div>
+        {account && (
+          <div className="account-row">
+            <span>
+              <b>{account.email ? '로그인됨' : '로그인 안 함'}</b>
+              <small>{account.email ?? '로그인하면 진행 상황이 계정에 저장돼요.'}</small>
+            </span>
+            {account.email ? (
+              <button type="button" className="btn outline sm" onClick={onLogout}>
+                로그아웃
+              </button>
+            ) : (
+              <button type="button" className="btn primary sm" onClick={onLogin}>
+                로그인
+              </button>
+            )}
+          </div>
+        )}
         <label className="toggle-row">
           <span>
             <b>푸시 알림</b>
@@ -59,7 +76,7 @@ export default function SettingsSheet({ profile, doneCount, notifyOn, onNotify, 
               <div><dt>접속한 날</dt><dd>{metrics.openDays}일{metrics.returnedAfter7Days ? ' · 7일 뒤 재방문' : ''}</dd></div>
               <div><dt>알림으로 연 횟수</dt><dd>{metrics.notificationOpens}회</dd></div>
             </dl>
-            <small>이름·전공은 기록하지 않아요. 테스트가 끝나면 아래 버튼으로 복사해 팀에 보내 주세요.</small>
+            <small>이름·학과는 기록하지 않아요. 테스트가 끝나면 아래 버튼으로 복사해 팀에 보내 주세요.</small>
             <button type="button" className="btn outline sm" onClick={onCopyMetrics}>
               지표 복사
             </button>

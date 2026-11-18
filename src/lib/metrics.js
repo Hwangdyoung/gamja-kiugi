@@ -28,12 +28,19 @@ function write(m) {
   }
 }
 
+/* 로그인했으면 이벤트를 계정에도 보낸다 (App이 연결) */
+let sink = null;
+export const setEventSink = (fn) => {
+  sink = fn;
+};
+
 /* 이벤트 하나 기록. type: onboarding_view · onboarding_done · source_open · save · step_done · notification_open */
 export function track(type, data = {}, now = Date.now()) {
   const m = read();
   m.events.push({ type, ts: now, ...data });
   if (m.events.length > MAX_EVENTS) m.events = m.events.slice(-MAX_EVENTS);
   write(m);
+  sink?.(type, data);
 }
 
 /* 앱을 연 날 기록 (하루 한 번) */

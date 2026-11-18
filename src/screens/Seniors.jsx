@@ -21,7 +21,7 @@ export default function Seniors({ profile }) {
         no="04"
         en="SENIORS"
         title="먼저 남아 본 선배들."
-        lead={`춘천에 남은 ${major.label} 전공 선배가 지나온 길이에요. 내 직무 선배가 먼저 나와요.`}
+        lead={`춘천에 남은 ${major.label} 계열 선배가 지나온 길이에요. 내 직무 선배가 먼저 나와요.`}
       />
 
       <p className="disclaimer">

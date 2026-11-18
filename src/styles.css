@@ -598,3 +598,62 @@ button { cursor: pointer; }
 .sheet-metrics dt { color: var(--ink-2); }
 .sheet-metrics dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
 .sheet-metrics small { font-size: 12px; color: var(--ink-3); }
+
+/* ---------- 시작 설정: 학교·학과 ---------- */
+.field-row { display: grid; grid-template-columns: 1fr 1.3fr; gap: 10px; }
+select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 28px; }
+.field-hint { font-size: 12.5px; margin-top: -6px; color: var(--ok); font-weight: 600; }
+.field-hint.warn { color: var(--caution-ink); }
+
+/* ---------- 홈 (v2): 큰 감자 + 끌어올리는 패널 ---------- */
+.content.is-home { overflow: hidden; position: relative; }
+.home {
+  --hero: oklch(0.96 0.03 230);
+  position: relative; height: 100%; overflow: hidden;
+  background: linear-gradient(180deg, var(--hero) 0%, var(--app) 70%);
+  transition: background 0.4s;
+}
+/* 감자 표정에 따라 배경 기운이 바뀐다 (워치와 같은 생각) */
+.home[data-mood='neutral'] { --hero: oklch(0.95 0.005 240); }
+.home[data-mood='annoyed'] { --hero: oklch(0.95 0.06 75); }
+.home[data-mood='angry'] { --hero: oklch(0.93 0.07 35); }
+.home-hero { height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px 20px 28px; text-align: center; }
+.home-hi { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+.home-hi b { color: var(--primary); }
+.home-bubble {
+  position: relative; max-width: 260px; padding: 10px 14px; font-size: 14px; font-weight: 600; line-height: 1.45;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.home-bubble::after {
+  content: ''; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; translate: -50% 0; rotate: 45deg;
+  background: var(--surface); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.home-grow { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.grow-dots { display: flex; gap: 4px; }
+.grow-dots i { width: 22px; height: 6px; border-radius: 3px; background: var(--line-2); }
+.grow-dots i.on { background: var(--ok); }
+.grow-count { font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.home-panel {
+  position: absolute; left: 0; right: 0; bottom: 0; top: 60%;
+  display: grid; grid-template-rows: auto 1fr;
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  box-shadow: 0 -1px 0 var(--line), 0 -12px 28px -16px oklch(0.3 0.05 240 / 30%);
+  transition: top 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.home-panel.open { top: 10px; }
+.home-panel.dragging { transition: none; }
+.panel-handle { display: grid; place-items: center; height: 26px; border: 0; background: transparent; cursor: grab; touch-action: none; }
+.panel-handle i { width: 40px; height: 5px; border-radius: 3px; background: var(--line-2); }
+.panel-body { overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 12px; padding: 2px 16px 24px; }
+@media (prefers-reduced-motion: reduce) { .home-panel { transition: none; } }
+
+/* ---------- 로그인 ---------- */
+.login { padding-top: 28px; gap: 18px; }
+.login .brand-lg { font-size: 18px; text-align: left; }
+.code-input { font-size: 24px; letter-spacing: 0.5em; text-align: center; font-variant-numeric: tabular-nums; }
+.login .guest { justify-self: center; }
+.account-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-lg); }
+.account-row > span { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.account-row small { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; }

@@ -5,7 +5,7 @@ import ProfileForm from '../components/ProfileForm.jsx';
    ① 감자가 말을 거는 첫 화면 → ② 이 앱이 해 주는 세 가지 → ③ 안 오면 감자가 화난다 → ④ 세 가지 입력.
    입력은 한 화면에 그대로 둔다(단계를 나누면 시작 설정 완료율이 떨어짐, 기획안 11장). */
 const HOW = [
-  { no: '01', title: '전공별 4단계 경로', desc: '서포터즈부터 취업까지, 춘천에서 밟을 순서를 보여줘요.' },
+  { no: '01', title: '학과별 4단계 경로', desc: '서포터즈부터 취업까지, 춘천에서 밟을 순서를 보여줘요.' },
   { no: '02', title: '춘천 기회 한 목록', desc: '공고뿐 아니라 공모전·프로젝트·현장실습까지 모았어요.' },
   { no: '03', title: '감자가 챙겨 줘요', desc: '마감 임박이나 오래 안 들어오면 감자가 알려줘요.' },
 ];
@@ -38,7 +38,7 @@ export default function Onboarding({ nameDraft, onNameDraft, onSubmit }) {
           <br />
           직접 확인해 보세요.
         </h1>
-        <p className="lead">전공과 관심 직무만 고르면 춘천에서 갈 수 있는 길과 지금 열린 기회를 보여드려요.</p>
+        <p className="lead">학과와 관심 직무만 고르면 춘천에서 갈 수 있는 길과 지금 열린 기회를 보여드려요.</p>
       </section>
 
       <ol className="how">
@@ -70,7 +70,7 @@ export default function Onboarding({ nameDraft, onNameDraft, onSubmit }) {
 
       <section className="landing-form">
         <p className="kicker">
-          <span>START / </span>세 가지만 알려줘
+          <span>START / </span>나를 알려줘
         </p>
         <ProfileForm submitLabel="감자 키우기 시작" onNameDraft={onNameDraft} onSubmit={onSubmit} />
         <p className="fine">로그인 없이 이 기기에만 저장되고, 언제든 설정에서 바꿀 수 있어요.</p>

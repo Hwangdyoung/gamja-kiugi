@@ -67,8 +67,8 @@ const SENIOR_QA = {
 
 export const MAJORS = {
   dmc: {
-    label: '디지털미디어콘텐츠',
-    sub: '콘텐츠 · 미디어 · 홍보',
+    label: '미디어·콘텐츠',
+    sub: '영상 · 홍보 · 콘텐츠 기획',
     tracks: {
       mkt: {
         label: '마케팅형',
@@ -93,8 +93,8 @@ export const MAJORS = {
     },
   },
   bio: {
-    label: '바이오메디컬',
-    sub: '연구 · 실험 · 품질',
+    label: '바이오·의생명',
+    sub: '연구 · 실험 · 품질관리',
     tracks: {
       res: {
         label: '연구형',
