@@ -5,6 +5,8 @@ import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
 import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, urgentSaved } from '../lib/notify.js';
 import { MAJORS, TYPES } from '../lib/data.js';
+import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
+import { summary, track, trackOpen } from '../lib/metrics.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
 const memory = new Map();
@@ -83,9 +85,24 @@ describe('기회 데이터', () => {
   it('모든 기회 유형은 기획안의 6가지 칩 중 하나다', () => {
     Object.values(MAJORS).forEach((m) =>
       Object.values(m.tracks).forEach((t) =>
-        t.levels.forEach((l) => l.o.forEach((o) => expect(TYPES).toContain(o.type))),
+        expect(t.levels).toHaveLength(4),
       ),
     );
+    BUNDLED.opportunities.forEach((o) => expect(TYPES).toContain(o.type));
+    expect(isValidData(BUNDLED)).toBe(true);
+  });
+  it('JSON 데이터: 모양이 틀린 파일은 버리고, 받은 최신 파일로 목록을 만든다', async () => {
+    expect(isValidData({ opportunities: [], paths: {} })).toBe(false);
+    expect(isValidData({ ...BUNDLED, opportunities: [{ ...BUNDLED.opportunities[0], type: '이상한유형' }] })).toBe(false);
+    const fresh = structuredClone(BUNDLED);
+    fresh.opportunities[0].title = '새로 바뀐 공고';
+    const d = await fetchLatest({ fetchImpl: async () => ({ ok: true, json: async () => fresh }) });
+    expect(d).toEqual(fresh);
+    expect(cachedData()).toEqual(fresh);
+    const first = fresh.opportunities[0].id;
+    const items = buildItems({ name: 'a', major: 'dmc', track: 'mkt' }, new Date(2026, 10, 18), d);
+    expect(items.find((it) => it.id === first).title).toBe('새로 바뀐 공고');
+    expect(await fetchLatest({ fetchImpl: async () => { throw new Error('offline'); } })).toBeNull();
   });
   it('마감 지난 기회는 열린 기회에서 빠진다', () => {
     const today = new Date(2026, 10, 16);
@@ -93,6 +110,25 @@ describe('기회 데이터', () => {
     const contest = items.find((it) => it.title === '2026 춘천 디카시 공모전');
     expect(ddayLabel(contest, today)).toBe('마감');
     expect(isOpen(contest, today)).toBe(false);
+  });
+});
+
+describe('테스트 지표 (기획안 11장)', () => {
+  it('원문 조회, 스크랩, 접속일, 7일 재방문, 마감 알림 뒤 원문 조회를 센다', () => {
+    const d0 = new Date(2026, 10, 1, 12).getTime();
+    const day = 86400000;
+    trackOpen(d0);
+    track('onboarding_done', {}, d0);
+    track('save', { id: 'a', on: true }, d0);
+    track('save', { id: 'b', on: true }, d0);
+    track('save', { id: 'b', on: false }, d0);
+    track('source_open', { id: 'a' }, d0);
+    trackOpen(d0 + 3 * day);
+    track('notification_open', { kind: 'due', id: 'a' }, d0 + 8 * day);
+    trackOpen(d0 + 8 * day);
+    track('source_open', { id: 'a' }, d0 + 8 * day + 60000);
+    const m = summary();
+    expect(m).toMatchObject({ onboardingDone: true, saved: 1, sourceOpens: 2, sourceOpenedItems: 1, openDays: 3, returnedAfter7Days: true, notificationOpens: 1, dueNotificationThenSource: 1 });
   });
 });
 
@@ -159,6 +195,10 @@ describe('화면 흐름', () => {
     fireEvent.click(boxes[1]);
     expect(screen.getByText('2 / 4단계 완료')).toBeTruthy();
     expect(JSON.parse(localStorage.getItem('oo-kiugi:v2')).done).toEqual([true, true, false, false]);
+    // 단계를 마친 만큼 홈 감자 머리 위에 싹이 자란다
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('홈'));
+    expect(document.querySelector('.phone .sprout').getAttribute('data-grow')).toBe('2');
+    expect(screen.getByText('잎 난 감자')).toBeTruthy();
 
     fireEvent.click(screen.getByLabelText('설정'));
     fireEvent.click(screen.getByLabelText(/바이오메디컬/));

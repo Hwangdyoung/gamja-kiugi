@@ -22,6 +22,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         completionHandler([.banner, .list, .sound])
     }
 
+    /// 감자 알림을 누르면: 알림에 담긴 목적지("opp:<기회 id>" 또는 "home")를 웹 화면에 넘겨 그 화면을 연다.
+    /// 앱이 꺼져 있다가 알림으로 켜졌을 때는 웹이 아직 준비 전이라, 보관해 두었다가 웹이 가져가게 한다.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let info = response.notification.request.content.userInfo
+        let target = info["target"] as? String ?? "home"
+        let kind = info["kind"] as? String ?? "away"
+        GamjaNotificationTarget.pending = ["target": target, "kind": kind]
+        NotificationCenter.default.post(name: .gamjaNotificationOpened, object: nil)
+        completionHandler()
+    }
+
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -68,8 +81,25 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "WidgetBridge"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "update", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "testNotification", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "testNotification", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "consumeNotificationTarget", returnType: CAPPluginReturnPromise)
     ]
+
+    override public func load() {
+        // 앱이 켜져 있을 때 알림을 누르면 바로 웹에 알린다
+        NotificationCenter.default.addObserver(forName: .gamjaNotificationOpened, object: nil, queue: .main) { [weak self] _ in
+            guard let self, let pending = GamjaNotificationTarget.pending else { return }
+            GamjaNotificationTarget.pending = nil
+            self.notifyListeners("notificationOpen", data: pending)
+        }
+    }
+
+    /// 앱이 알림으로 켜졌다면 그 목적지를 한 번만 돌려준다 (없으면 빈 값)
+    @objc func consumeNotificationTarget(_ call: CAPPluginCall) {
+        let pending = GamjaNotificationTarget.pending ?? [:]
+        GamjaNotificationTarget.pending = nil
+        call.resolve(pending)
+    }
 
     @objc func update(_ call: CAPPluginCall) {
         NSLog("[GamjaWidget] update 호출: %@", String(describing: call.options))
@@ -113,6 +143,15 @@ public class WidgetBridgePlugin: CAPPlugin, CAPBridgedPlugin {
     }
 }
 
+/// 알림을 눌러 들어온 목적지를 웹이 가져갈 때까지 보관
+enum GamjaNotificationTarget {
+    static var pending: [String: String]?
+}
+
+extension Notification.Name {
+    static let gamjaNotificationOpened = Notification.Name("gamjaNotificationOpened")
+}
+
 // MARK: - 감자 미접속 알림 (기획안 7장)
 // 기기 안에서 미리 예약하는 로컬 알림이라 서버가 필요 없다.
 // iPhone이 잠겨 있고 Apple Watch를 차고 있으면 iOS가 같은 알림을 워치로 자동으로 넘긴다.
@@ -148,7 +187,9 @@ enum GamjaNotifications {
                     guard fireDate > Date() else { continue }
                     let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
                     add(id: "\(prefix)\(i)", mood: mood, body: body,
-                        trigger: UNCalendarNotificationTrigger(dateMatching: parts, repeats: false))
+                        trigger: UNCalendarNotificationTrigger(dateMatching: parts, repeats: false),
+                        target: item["target"] as? String ?? "home",
+                        kind: item["kind"] as? String ?? "away")
                     count += 1
                 }
                 NSLog("[GamjaWidget] 알림 %d개 예약", count)
@@ -156,8 +197,10 @@ enum GamjaNotifications {
         }
     }
 
-    static func add(id: String, mood: String, body: String, trigger: UNNotificationTrigger) {
+    static func add(id: String, mood: String, body: String, trigger: UNNotificationTrigger,
+                    target: String = "home", kind: String = "away") {
         let content = UNMutableNotificationContent()
+        content.userInfo = ["target": target, "kind": kind]
         content.title = "감자 키우기"
         content.body = body
         content.sound = .default

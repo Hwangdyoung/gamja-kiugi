@@ -2,8 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { doneCount, getTrack, messageFor, moodOf } from './lib/growth.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import { urgentSaved } from './lib/notify.js';
+import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
+import { exportText, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
 import * as storage from './lib/storage.js';
-import { isNativeApp, sendTestNotification, syncWidget } from './lib/nativeWidget.js';
+import { isNativeApp, listenNotificationOpen, sendTestNotification, syncWidget } from './lib/nativeWidget.js';
 import Onboarding from './screens/Onboarding.jsx';
 import Home from './screens/Home.jsx';
 import Opportunities from './screens/Opportunities.jsx';
@@ -39,6 +41,40 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [days, setDays] = useState(0); // 시연용 미접속 일수
 
+  // 춘천 기회 데이터: 저장본 → 앱 기본값으로 바로 그리고, 최신 파일을 받으면 바꾼다
+  const [oppData, setOppData] = useState(() => cachedData() ?? BUNDLED);
+  useEffect(() => {
+    const refresh = () => fetchLatest({ native: isNativeApp() }).then((d) => d && setOppData(d));
+    refresh();
+    const onVisible = () => document.visibilityState === 'visible' && refresh();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+
+  // 기획안 11장 지표: 앱을 연 날, 시작 화면을 본 적
+  useEffect(() => {
+    trackOpen();
+    const onVisible = () => document.visibilityState === 'visible' && trackOpen();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+  useEffect(() => {
+    if (!profile) logEvent('onboarding_view');
+  }, [!profile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 알림을 누르고 들어오면 그 화면으로: 마감 알림 → 그 기회 상세, 미접속 알림 → 홈(다음 단계)
+  useEffect(
+    () =>
+      listenNotificationOpen(({ target, kind }) => {
+        const id = target.startsWith('opp:') ? target.slice(4) : null;
+        logEvent('notification_open', { kind, id });
+        setSettingsOpen(false);
+        setTab('home');
+        setDetailId(id);
+      }),
+    []
+  );
+
   const scrollRef = useRef(null);
   const today = useMemo(() => startOfToday(), []);
 
@@ -67,7 +103,7 @@ export default function App() {
 
   const track = getTrack(profile);
   // 마감이 지난 기회는 목록에서 자동으로 내린다 (기획안 8장)
-  const all = useMemo(() => buildItems(profile, today), [profile, today]);
+  const all = useMemo(() => buildItems(profile, today, oppData), [profile, today, oppData]);
   const items = useMemo(
     () =>
       all
@@ -91,7 +127,14 @@ export default function App() {
   const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
 
-  const toggleSave = (id) => setSaved((s) => ({ ...s, [id]: !s[id] }));
+  const toggleSave = (id) => {
+    logEvent('save', { id, on: !saved[id] });
+    setSaved((s) => ({ ...s, [id]: !s[id] }));
+  };
+  const toggleStep = (i) => {
+    if (!done[i]) logEvent('step_done', { step: i + 1 });
+    setDone((d) => d.map((v, j) => (j === i ? !v : v)));
+  };
   const goTab = (t) => {
     setDetailId(null);
     setTab(t);
@@ -99,6 +142,7 @@ export default function App() {
 
   const saveProfile = (next) => {
     const changed = !profile || profile.major !== next.major || profile.track !== next.track;
+    if (!profile) logEvent('onboarding_done');
     setProfile(next);
     if (changed) {
       setDone(EMPTY_DONE);
@@ -137,6 +181,8 @@ export default function App() {
         today={today}
         saved={!!saved[detail.id]}
         onSave={toggleSave}
+        researchedAt={oppData.researchedAt}
+        onSource={() => logEvent('source_open', { id: detail.id })}
       />
     );
   } else if (tab === 'home') {
@@ -186,7 +232,7 @@ export default function App() {
         done={done}
         items={items}
         today={today}
-        onToggle={(i) => setDone((d) => d.map((v, j) => (j === i ? !v : v)))}
+        onToggle={toggleStep}
         onOpen={setDetailId}
       />
     );
@@ -238,6 +284,13 @@ export default function App() {
             days={days}
             onDays={setDays}
             mood={mood}
+            metrics={metricsSummary()}
+            onCopyMetrics={() =>
+              navigator.clipboard
+                ?.writeText(exportText())
+                .then(() => setToast('지표를 복사했어요. 팀 단톡방에 붙여 넣어 주세요.'))
+                .catch(() => setToast('복사하지 못했어요.'))
+            }
             onTestNotification={!isNativeApp() ? null : () =>
               sendTestNotification({ mood, body: message })
                 .then(() => setToast('10초 뒤에 알림이 와요. 지금 iPhone을 잠그면 Apple Watch에도 떠요.'))

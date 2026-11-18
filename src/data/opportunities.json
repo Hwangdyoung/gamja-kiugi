@@ -1,0 +1,250 @@
+{
+  "researchedAt": "2026.11.18",
+  "opportunities": [
+    {
+      "id": "cc-talent-supporters",
+      "title": "춘천인재육성장학재단 서포터즈",
+      "type": "서포터즈",
+      "org": "(재)춘천인재육성장학재단",
+      "due": null,
+      "target": "춘천시에 주소를 둔 대학(원)생 10명 내외",
+      "src": "https://biz.kangwon.ac.kr/biz/community/notice.do?mode=view&articleNo=563635",
+      "when": "매년 6월 모집 (2026년 6.8~6.22, 활동 7~12월)"
+    },
+    {
+      "id": "knu-rise-supporters",
+      "title": "강원대 RISE(앵커)사업단 대학생 서포터즈",
+      "type": "서포터즈",
+      "org": "강원대학교 RISE사업단",
+      "due": null,
+      "target": "강원대 춘천캠퍼스 재학생 약 10명",
+      "src": "https://scphys.kangwon.ac.kr/physics/community/notice.do?mode=view&articleNo=564581",
+      "when": "2026년 2기 6.22~7.3 모집"
+    },
+    {
+      "id": "cc-travel-sns-contest",
+      "title": "2026 춘천여행 SNS 공모전",
+      "type": "공모전",
+      "org": "춘천시",
+      "due": "2026-11-20",
+      "target": "누구나 (유튜브·인스타그램·블로그)",
+      "src": "https://linkareer.com/activity/310916",
+      "when": null
+    },
+    {
+      "id": "cc-dica-poem-contest",
+      "title": "2026 춘천 디카시 공모전",
+      "type": "공모전",
+      "org": "춘천 디카시 공모전 운영처",
+      "due": "2026-08-31",
+      "target": "누구나",
+      "src": "https://ilovecontest.com/bbs/board.php?bo_table=contest&wr_id=5523",
+      "when": null
+    },
+    {
+      "id": "future-work-experience",
+      "title": "미래내일 일경험 사업 (프로젝트형)",
+      "type": "인턴",
+      "org": "강원대학교 산학협력단 미래내일 일경험 사업단",
+      "due": null,
+      "target": "만 15~34세 미취업 청년 (재학생 가능)",
+      "src": "https://www.economicpost.co.kr/177778",
+      "when": "상·하반기 모집 (2026 하반기 ~9.6)"
+    },
+    {
+      "id": "work24-chuncheon",
+      "title": "고용24 청년 일경험 · 춘천 공고",
+      "type": "인턴",
+      "org": "고용노동부 고용24",
+      "due": null,
+      "target": "청년",
+      "src": "https://yw.work24.go.kr/search?query=%EC%B6%98%EC%B2%9C",
+      "when": "수시로 올라오는 춘천 일경험 공고 목록"
+    },
+    {
+      "id": "cccf-jobs",
+      "title": "춘천문화재단 채용",
+      "type": "취업",
+      "org": "춘천문화재단",
+      "due": null,
+      "target": "공고별 상이",
+      "src": "https://www.cccf.or.kr/home/community/job",
+      "when": "수시 채용 (2026년 2차 4.16~4.20 등)"
+    },
+    {
+      "id": "gica-jobs",
+      "title": "강원정보문화산업진흥원 채용",
+      "type": "취업",
+      "org": "강원정보문화산업진흥원",
+      "due": null,
+      "target": "공고별 상이",
+      "src": "https://www.gica.or.kr/Home/H40000/H40300/boardList",
+      "when": "수시 공개채용 (2026년 2차 5.15~5.25 등)"
+    },
+    {
+      "id": "cc-mime-festival-call",
+      "title": "춘천마임축제 국내참가작 공모",
+      "type": "공모전",
+      "org": "춘천마임축제",
+      "due": null,
+      "target": "누구나 (공연 팀)",
+      "src": "https://www.contestkorea.com/sub/view.php?int_gbn=1&Txt_bcode=031810001&str_no=202512090032",
+      "when": "매년 11월~1월 접수 (지난 공모 11.1~1.5)"
+    },
+    {
+      "id": "knu-plant-career-intern",
+      "title": "진로탐색 인턴십",
+      "type": "인턴",
+      "org": "강원대 식물의학전공",
+      "due": null,
+      "target": "강원대 재학생",
+      "src": "https://plantmedicine.kangwon.ac.kr/applybio/community/under-notice.do?mode=view&articleNo=560753",
+      "when": "매년 초 모집 (2026년 1차 ~2월)"
+    },
+    {
+      "id": "knu-bio-job-talk",
+      "title": "바이오 분야 직무 상담 (휴젤·바디텍메드 등)",
+      "type": "프로젝트",
+      "org": "강원대 생명건강공학과",
+      "due": null,
+      "target": "재학생",
+      "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
+      "when": "학기마다 열림 · 학과 공지 확인"
+    },
+    {
+      "id": "knu-bio-undergrad-research",
+      "title": "학과 연구실 학부연구생",
+      "type": "프로젝트",
+      "org": "강원대 생명건강공학과",
+      "due": null,
+      "target": "재학생",
+      "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
+      "when": "연구실별 수시 모집 · 학과 공지 확인"
+    },
+    {
+      "id": "knu-winter-field",
+      "title": "강원대 동계 현장실습학기제",
+      "type": "현장실습",
+      "org": "강원대학교 대학일자리플러스센터",
+      "due": null,
+      "target": "강원대 재학생",
+      "src": "https://internship.kangwon.ac.kr/",
+      "when": "2026 동계 12.22~2.21 진행 · 신청은 현장실습 시스템 공지 확인"
+    },
+    {
+      "id": "cbf-jobs",
+      "title": "춘천바이오산업진흥원 공개채용",
+      "type": "취업",
+      "org": "(재)춘천바이오산업진흥원",
+      "due": null,
+      "target": "공고별 상이 (연구개발 원급 등)",
+      "src": "https://www.cbf.or.kr/main.php",
+      "when": "수시 공개채용 (2026년 4차 9.30 공고)"
+    },
+    {
+      "id": "eubio-jobs",
+      "title": "유바이오로직스 채용",
+      "type": "취업",
+      "org": "(주)유바이오로직스",
+      "due": null,
+      "target": "신입·경력 (품질·생산·연구)",
+      "src": "https://www.saramin.co.kr/zf_user/company-info/view-inner-recruit/csn/RVVzNTRkekV1dVc3S2pKVDd0TTcwUT09/company_nm/(%EC%A3%BC)%EC%9C%A0%EB%B0%94%EC%9D%B4%EC%98%A4%EB%A1%9C%EC%A7%81%EC%8A%A4",
+      "when": "부문별 수시 채용"
+    },
+    {
+      "id": "bio-matching-day",
+      "title": "바이오 분야 기업면접 매칭데이",
+      "type": "취업",
+      "org": "이노비즈협회 강원지회 (강원형 미래인력 양성사업)",
+      "due": null,
+      "target": "바이오·식품 분야 구직 청년",
+      "src": "https://www.kwnews.co.kr/article/20261112501216",
+      "when": "2026.11.12 춘천ICT벤처센터 개최 · 도내 13개사 참여"
+    },
+    {
+      "id": "hugel-qc-jobs",
+      "title": "휴젤 춘천 거두공장 품질관리 채용",
+      "type": "취업",
+      "org": "휴젤(주)",
+      "due": null,
+      "target": "이공계 학사 이상 신입·경력",
+      "src": "https://www.saramin.co.kr/zf_user/company-info/view-inner-recruit/csn/QnNLM001SFRBWGk1ODlCcHd4NlNTUT09/company_nm/%ED%9C%B4%EC%A0%A4(%EC%A3%BC)",
+      "when": "수시 채용 (QC 이화학·미생물시험 등)"
+    }
+  ],
+  "paths": {
+    "dmc.mkt": [
+      [
+        "cc-talent-supporters",
+        "knu-rise-supporters"
+      ],
+      [
+        "cc-travel-sns-contest",
+        "cc-dica-poem-contest"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "cccf-jobs",
+        "gica-jobs"
+      ]
+    ],
+    "dmc.plan": [
+      [
+        "cc-travel-sns-contest",
+        "cc-dica-poem-contest"
+      ],
+      [
+        "cc-mime-festival-call",
+        "cc-talent-supporters"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gica-jobs",
+        "cccf-jobs"
+      ]
+    ],
+    "bio.res": [
+      [
+        "knu-plant-career-intern",
+        "knu-bio-job-talk"
+      ],
+      [
+        "knu-bio-undergrad-research",
+        "future-work-experience"
+      ],
+      [
+        "knu-winter-field",
+        "work24-chuncheon"
+      ],
+      [
+        "cbf-jobs",
+        "eubio-jobs"
+      ]
+    ],
+    "bio.qa": [
+      [
+        "knu-bio-job-talk",
+        "knu-plant-career-intern"
+      ],
+      [
+        "bio-matching-day",
+        "future-work-experience"
+      ],
+      [
+        "knu-winter-field",
+        "work24-chuncheon"
+      ],
+      [
+        "hugel-qc-jobs",
+        "eubio-jobs",
+        "cbf-jobs"
+      ]
+    ]
+  }
+}

@@ -30,3 +30,19 @@ export function sendTestNotification({ mood, body }) {
   if (!isNativeApp()) return Promise.reject(new Error('iPhone 앱에서만 보낼 수 있어요.'));
   return WidgetBridge.testNotification({ mood, body });
 }
+
+/* 감자 알림을 눌러 앱이 열렸을 때 갈 곳. onOpen({ target: 'opp:<id>' | 'home', kind: 'due' | 'away' })
+   - 앱이 꺼져 있다가 알림으로 켜진 경우: 켜지자마자 한 번 가져온다
+   - 앱이 켜져 있을 때 누른 경우: 이벤트로 받는다
+   돌려주는 함수를 부르면 듣기를 멈춘다. 웹에서는 아무것도 하지 않는다. */
+export function listenNotificationOpen(onOpen) {
+  if (!isNativeApp()) return () => {};
+  let handle;
+  WidgetBridge.consumeNotificationTarget()
+    .then((r) => r?.target && onOpen(r))
+    .catch(() => {});
+  WidgetBridge.addListener('notificationOpen', (r) => r?.target && onOpen(r)).then((h) => {
+    handle = h;
+  });
+  return () => handle?.remove();
+}

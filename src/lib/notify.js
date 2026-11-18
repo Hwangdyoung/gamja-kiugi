@@ -55,7 +55,7 @@ export function deadlineSchedule(items, saved, now = new Date()) {
     DEADLINE_BEFORE.forEach((before) => {
       const at = item.deadline.getTime() - before * DAY_MS + SEND_HOUR * HOUR_MS;
       if (at <= now.getTime()) return;
-      out.push({ at, kind: 'due', mood: before === 1 ? 'annoyed' : 'neutral', body: deadlineMessage(item, before) });
+      out.push({ at, kind: 'due', id: item.id, target: `opp:${item.id}`, mood: before === 1 ? 'annoyed' : 'neutral', body: deadlineMessage(item, before) });
     });
   });
   return out;
@@ -69,6 +69,7 @@ export function notificationPlan({ done, track, items, saved, now = new Date() }
   const away = notificationSchedule({ done, track }).map((p) => ({
     at: start.getTime() + p.day * DAY_MS + SEND_HOUR * HOUR_MS,
     kind: 'away',
+    target: 'home',
     mood: p.mood,
     body: p.body,
   }));

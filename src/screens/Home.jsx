@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Mascot from '../components/Mascot.jsx';
+import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
 import OpportunityCard from '../components/OpportunityCard.jsx';
 import PageHead from '../components/PageHead.jsx';
 import { ChevronIcon, SearchIcon } from '../components/Icons.jsx';
@@ -49,12 +49,14 @@ export default function Home({ name, track, mood, message, done, items, today, s
 
       <section className="card status">
         <div className="status-top">
-          <Mascot mood={mood} size={96} />
+          <Mascot mood={mood} size={96} grow={dc} />
           <p className="bubble" aria-live="polite">{message}</p>
         </div>
         <div className="progress">
           <div className="progress-label">
-            <span>내 성장 경로</span>
+            <span>
+              내 성장 경로 · <span className="grow-label">{GROW_LABELS[dc]}</span>
+            </span>
             <b>{dc} / 4단계 완료</b>
           </div>
           <div className="bar" role="progressbar" aria-label="성장 경로 진행" aria-valuemin={0} aria-valuemax={4} aria-valuenow={dc}>

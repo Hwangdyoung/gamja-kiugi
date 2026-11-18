@@ -1,6 +1,5 @@
 import { BookmarkIcon, ExternalIcon } from '../components/Icons.jsx';
 import { ddayLabel, formatDate } from '../lib/opportunities.js';
-import { RESEARCHED_AT } from '../lib/data.js';
 
 const host = (url) => {
   try {
@@ -11,7 +10,7 @@ const host = (url) => {
 };
 
 /* 기회 상세: 주최 기관, 마감일, 대상, 내 경로의 몇 단계인지, 원문 링크 (기획안 5장) */
-export default function OpportunityDetail({ item, today, saved, onSave }) {
+export default function OpportunityDetail({ item, today, saved, onSave, researchedAt, onSource }) {
   return (
     <div className="screen detail">
       <div className="detail-head">
@@ -55,7 +54,7 @@ export default function OpportunityDetail({ item, today, saved, onSave }) {
       </dl>
 
       <p className="disclaimer">
-        {RESEARCHED_AT}에 조사한 내용이에요. 일정과 조건은 바뀔 수 있으니 지원 전에 원문에서 꼭 확인해 주세요.
+        {researchedAt}에 조사한 내용이에요. 일정과 조건은 바뀔 수 있으니 지원 전에 원문에서 꼭 확인해 주세요.
       </p>
 
       <div className="detail-actions">
@@ -63,7 +62,7 @@ export default function OpportunityDetail({ item, today, saved, onSave }) {
           <BookmarkIcon on={saved} size={18} />
           {saved ? '스크랩됨' : '스크랩'}
         </button>
-        <a className="btn primary grow" href={item.src} target="_blank" rel="noopener noreferrer">
+        <a className="btn primary grow" href={item.src} target="_blank" rel="noopener noreferrer" onClick={onSource}>
           원문 보기
           <ExternalIcon />
         </a>
