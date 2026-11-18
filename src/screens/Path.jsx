@@ -35,6 +35,7 @@ export default function Path({ profile, track, done, items, today, onToggle, onO
                 </p>
                 <h3>{level.t}</h3>
                 <p className="muted">{level.d}</p>
+                {opps.length === 0 && <p className="step-empty">이 단계에 맞는 춘천 기회를 조사하고 있어요.</p>}
                 {opps.length > 0 && (
                   <ul className="step-opps">
                     {opps.map((it) => (

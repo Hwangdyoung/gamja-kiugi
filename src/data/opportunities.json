@@ -170,6 +170,106 @@
       "target": "이공계 학사 이상 신입·경력",
       "src": "https://www.saramin.co.kr/zf_user/company-info/view-inner-recruit/csn/QnNLM001SFRBWGk1ODlCcHd4NlNTUT09/company_nm/%ED%9C%B4%EC%A0%A4(%EC%A3%BC)",
       "when": "수시 채용 (QC 이화학·미생물시험 등)"
+    },
+    {
+      "id": "cc-streetreporter",
+      "title": "춘천시 도시재생 스트리트리포터",
+      "type": "서포터즈",
+      "org": "춘천시 도시재생지원센터",
+      "due": null,
+      "target": "대학생·청년",
+      "src": "https://thinkyou.co.kr/mobile/contest/64538/",
+      "when": "2026년 모집 마감 · 다음 기수 공고 확인"
+    },
+    {
+      "id": "policy-contest",
+      "title": "대학생 정책 아이디어 공모전",
+      "type": "공모전",
+      "org": "한국정책분석평가학회",
+      "due": "2026-11-26",
+      "target": "전국 대학생 (춘천 외 전국 공모)",
+      "src": "https://linkareer.com/activity/358719",
+      "when": null
+    },
+    {
+      "id": "gw-joblink",
+      "title": "강원특별자치도 일자리 정보 모음",
+      "type": "취업",
+      "org": "강원특별자치도",
+      "due": null,
+      "target": "도민·청년",
+      "src": "https://state.gwd.go.kr/portal/partinfo/investmentEconomy/jobInformation/joblink",
+      "when": "도·시군·공공기관 채용과 강원청년포털 바로가기"
+    },
+    {
+      "id": "gojobs",
+      "title": "나라일터 공공기관 채용",
+      "type": "취업",
+      "org": "인사혁신처 나라일터",
+      "due": null,
+      "target": "공고별 상이",
+      "src": "https://www.gojobs.go.kr",
+      "when": "춘천 근무 공공기관 공고를 지역으로 검색"
+    },
+    {
+      "id": "gwtp-jobs",
+      "title": "강원테크노파크 채용",
+      "type": "취업",
+      "org": "(재)강원테크노파크",
+      "due": null,
+      "target": "공고별 상이",
+      "src": "https://gwtp.applyin.co.kr",
+      "when": "수시 공개채용 (2026년 춘천 근무 R&D·사업운영 분야 포함)"
+    },
+    {
+      "id": "ccei-startup",
+      "title": "강원창조경제혁신센터 창업 프로그램",
+      "type": "프로젝트",
+      "org": "강원창조경제혁신센터",
+      "due": null,
+      "target": "예비창업 대학생·청년",
+      "src": "https://ccei.creativekorea.or.kr/gangwon",
+      "when": "수시 · 예비창업 교육과 공모"
+    },
+    {
+      "id": "knuh-nurse",
+      "title": "강원대학교병원 신규 간호사 채용",
+      "type": "취업",
+      "org": "강원대학교병원",
+      "due": null,
+      "target": "간호학과 졸업예정자",
+      "src": "https://www.knuh.or.kr",
+      "when": "매년 12~1월 공채 (2026년 12.23~1.6)"
+    },
+    {
+      "id": "hallym-nurse",
+      "title": "한림대학교의료원 신입간호사 모집",
+      "type": "취업",
+      "org": "한림대학교의료원 (춘천성심병원 포함)",
+      "due": null,
+      "target": "간호학과 졸업예정자",
+      "src": "https://www.hallym.or.kr",
+      "when": "매년 10월 (2026년 10.13~10.22)"
+    },
+    {
+      "id": "gwe-jobs",
+      "title": "강원특별자치도교육청 채용",
+      "type": "취업",
+      "org": "강원특별자치도교육청",
+      "due": null,
+      "target": "공고별 상이",
+      "src": "https://www.gwe.go.kr",
+      "when": "수시 (기간제 교사·교육공무직 등)"
+    },
+    {
+      "id": "cc-museum",
+      "title": "국립춘천박물관 학예 청년인턴·기간제",
+      "type": "인턴",
+      "org": "국립춘천박물관",
+      "due": null,
+      "target": "인문·역사 전공 청년",
+      "src": "https://chuncheon.museum.go.kr",
+      "when": "비정기 (문체부 청년인턴 학예 분야 등)"
     }
   ],
   "paths": {
@@ -244,6 +344,317 @@
         "hugel-qc-jobs",
         "eubio-jobs",
         "cbf-jobs"
+      ]
+    ],
+    "human.culture": [
+      [
+        "cc-museum"
+      ],
+      [
+        "cc-talent-supporters",
+        "cc-streetreporter"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "cccf-jobs",
+        "gojobs"
+      ]
+    ],
+    "human.write": [
+      [
+        "cc-dica-poem-contest",
+        "cc-travel-sns-contest"
+      ],
+      [
+        "cc-streetreporter",
+        "knu-rise-supporters"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gica-jobs",
+        "cccf-jobs"
+      ]
+    ],
+    "social.public": [
+      [
+        "gw-joblink"
+      ],
+      [
+        "cc-streetreporter",
+        "cc-talent-supporters"
+      ],
+      [
+        "work24-chuncheon",
+        "future-work-experience"
+      ],
+      [
+        "gojobs",
+        "cccf-jobs"
+      ]
+    ],
+    "social.policy": [
+      [
+        "policy-contest"
+      ],
+      [
+        "cc-streetreporter"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gojobs",
+        "gw-joblink"
+      ]
+    ],
+    "biz.office": [
+      [
+        "cc-talent-supporters",
+        "knu-rise-supporters"
+      ],
+      [
+        "ccei-startup"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gwtp-jobs",
+        "gica-jobs"
+      ]
+    ],
+    "biz.tour": [
+      [
+        "cc-travel-sns-contest",
+        "cc-dica-poem-contest"
+      ],
+      [
+        "cc-talent-supporters",
+        "cc-streetreporter"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "cccf-jobs",
+        "gw-joblink"
+      ]
+    ],
+    "edu.teacher": [
+      [
+        "cc-museum"
+      ],
+      [
+        "cc-talent-supporters",
+        "knu-rise-supporters"
+      ],
+      [
+        "knu-winter-field",
+        "future-work-experience"
+      ],
+      [
+        "gwe-jobs",
+        "gojobs"
+      ]
+    ],
+    "edu.eduprog": [
+      [
+        "cc-museum",
+        "cc-talent-supporters"
+      ],
+      [
+        "ccei-startup"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "cccf-jobs",
+        "gwe-jobs"
+      ]
+    ],
+    "it.dev": [
+      [
+        "ccei-startup"
+      ],
+      [
+        "knu-winter-field"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gica-jobs",
+        "gwtp-jobs"
+      ]
+    ],
+    "it.data": [
+      [
+        "ccei-startup"
+      ],
+      [
+        "policy-contest"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gwtp-jobs",
+        "gica-jobs"
+      ]
+    ],
+    "eng.rnd": [
+      [],
+      [
+        "ccei-startup"
+      ],
+      [
+        "knu-winter-field",
+        "future-work-experience"
+      ],
+      [
+        "gwtp-jobs",
+        "gojobs"
+      ]
+    ],
+    "eng.field": [
+      [
+        "gw-joblink"
+      ],
+      [
+        "knu-winter-field"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gwtp-jobs",
+        "gojobs"
+      ]
+    ],
+    "natural.research": [
+      [],
+      [
+        "bio-matching-day"
+      ],
+      [
+        "knu-winter-field",
+        "future-work-experience"
+      ],
+      [
+        "cbf-jobs",
+        "gwtp-jobs"
+      ]
+    ],
+    "natural.analysis": [
+      [
+        "knu-bio-job-talk"
+      ],
+      [
+        "knu-winter-field"
+      ],
+      [
+        "bio-matching-day"
+      ],
+      [
+        "hugel-qc-jobs",
+        "eubio-jobs"
+      ]
+    ],
+    "health.nurse": [
+      [],
+      [],
+      [],
+      [
+        "knuh-nurse",
+        "hallym-nurse"
+      ]
+    ],
+    "health.medtech": [
+      [],
+      [
+        "knu-winter-field"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gojobs",
+        "gw-joblink"
+      ]
+    ],
+    "arts.perform": [
+      [
+        "cc-mime-festival-call"
+      ],
+      [
+        "cc-talent-supporters"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "cccf-jobs",
+        "gojobs"
+      ]
+    ],
+    "arts.sport": [
+      [],
+      [
+        "cc-talent-supporters",
+        "knu-rise-supporters"
+      ],
+      [
+        "future-work-experience",
+        "work24-chuncheon"
+      ],
+      [
+        "gojobs",
+        "gw-joblink"
+      ]
+    ],
+    "agri.smartfarm": [
+      [
+        "gw-joblink"
+      ],
+      [],
+      [
+        "knu-winter-field",
+        "future-work-experience"
+      ],
+      [
+        "gojobs",
+        "cbf-jobs"
+      ]
+    ],
+    "agri.food": [
+      [
+        "knu-bio-job-talk"
+      ],
+      [
+        "knu-winter-field"
+      ],
+      [
+        "bio-matching-day"
+      ],
+      [
+        "hugel-qc-jobs",
+        "eubio-jobs"
       ]
     ]
   }

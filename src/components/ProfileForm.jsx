@@ -1,41 +1,29 @@
 import { useState } from 'react';
 import { MAJORS } from '../lib/data.js';
-import { FIELDS, SCHOOLS, fieldOf, guessField } from '../lib/fields.js';
 
-/* 시작 설정: 이름 · 학교 · 학과 · (계열 자동) · 관심 직무 (기획안 5장, v2에서 학과 검색 추가)
-   학교마다 같은 공부를 하는 학과도 이름이 달라서, 학과 이름을 쓰면 계열을 찾아 경로를 고른다.
+/* 시작 설정: 이름 · 학교 · 계열 · 관심 직무 (기획안 5장)
+   학교마다 학과 이름이 달라서 학과 대신 계열(12개)을 고른다. 경로와 기회도 계열 단위로 만든다.
    시작 화면과 설정 시트가 같이 쓴다. */
+export const SCHOOLS = ['강원대학교', '한림대학교', '춘천교육대학교', '한림성심대학교', '송곡대학교', '기타'];
+
 export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNameDraft, onSubmit }) {
   const [name, setName] = useState(profile?.name ?? '');
   const [school, setSchool] = useState(profile?.school ?? '');
-  const [dept, setDept] = useState(profile?.dept ?? '');
-  const [major, setMajor] = useState(profile?.major ?? null);
-  const [picked, setPicked] = useState(!!profile?.major); // 계열을 직접 골랐는지(그럼 자동 추천이 덮어쓰지 않음)
+  const [major, setMajor] = useState(profile?.major ?? '');
   const [track, setTrack] = useState(profile?.track ?? null);
   const [err, setErr] = useState('');
 
-  const guess = guessField(dept);
-  const guessReady = guess && MAJORS[guess];
   const willReset =
     profile && doneCount > 0 && (major !== profile.major || (track && track !== profile.track));
-
-  const onDept = (v) => {
-    setDept(v);
-    setErr('');
-    const g = guessField(v);
-    if (!picked && g && MAJORS[g] && g !== major) {
-      setMajor(g);
-      setTrack(null);
-    }
-  };
 
   const submit = (e) => {
     e.preventDefault();
     const v = name.trim();
     if (!v) return setErr('이름을 입력해 주세요.');
+    if (!school) return setErr('학교를 선택해 주세요.');
     if (!major) return setErr('계열을 선택해 주세요.');
     if (!track) return setErr('관심 직무를 선택해 주세요.');
-    onSubmit({ name: v, school, dept: dept.trim(), major, track });
+    onSubmit({ name: v, school, major, track });
   };
 
   return (
@@ -57,64 +45,47 @@ export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNam
         />
       </div>
 
-      <div className="field-row">
-        <div className="field">
-          <label htmlFor="school">학교</label>
-          <select id="school" className="input" value={school} onChange={(e) => setSchool(e.target.value)}>
-            <option value="">선택 안 함</option>
-            {SCHOOLS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="field">
-          <label htmlFor="dept">학과</label>
-          <input
-            id="dept"
-            className="input"
-            type="text"
-            maxLength={20}
-            placeholder="예: 미디어커뮤니케이션"
-            value={dept}
-            onChange={(e) => onDept(e.target.value)}
-          />
-        </div>
-      </div>
-      {dept.trim().length >= 2 && (
-        <p className={`field-hint${guess && !guessReady ? ' warn' : ''}`} role="status">
-          {!guess && '이 학과는 자동으로 못 찾았어요. 아래에서 가까운 계열을 골라 주세요.'}
-          {guessReady && `${fieldOf(guess).label} 계열 경로로 안내할게요.`}
-          {guess && !guessReady && `${fieldOf(guess).label} 계열은 아직 준비 중이에요. 지금은 아래 두 계열 중 가까운 쪽을 골라 주세요.`}
-        </p>
-      )}
-
-      <fieldset className="field">
-        <legend>계열</legend>
-        <div className="choices two">
-          {FIELDS.filter((f) => MAJORS[f.id]).map((f) => (
-            <label key={f.id} className="choice">
-              <input
-                type="radio"
-                name="major"
-                value={f.id}
-                checked={major === f.id}
-                onChange={() => {
-                  setMajor(f.id);
-                  setPicked(true);
-                  setTrack(null);
-                  setErr('');
-                }}
-              />
-              <span>
-                <b>{f.label}</b>
-                <small>{MAJORS[f.id].sub}</small>
-              </span>
-            </label>
+      <div className="field">
+        <label htmlFor="school">학교</label>
+        <select
+          id="school"
+          className="input"
+          value={school}
+          onChange={(e) => {
+            setSchool(e.target.value);
+            setErr('');
+          }}
+        >
+          <option value="">학교 선택</option>
+          {SCHOOLS.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
-        </div>
-      </fieldset>
+        </select>
+      </div>
+
+      <div className="field">
+        <label htmlFor="major">계열</label>
+        <select
+          id="major"
+          className="input"
+          value={major}
+          onChange={(e) => {
+            setMajor(e.target.value);
+            setTrack(null);
+            setErr('');
+          }}
+        >
+          <option value="">계열 선택</option>
+          {Object.entries(MAJORS).map(([k, m]) => (
+            <option key={k} value={k}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+        {major && <p className="field-hint">{MAJORS[major].sub}</p>}
+      </div>
 
       <fieldset className="field">
         <legend>관심 직무</legend>
@@ -139,7 +110,7 @@ export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNam
             ))}
           </div>
         ) : (
-          <p className="hint">학과를 쓰거나 계열을 먼저 골라 주세요.</p>
+          <p className="hint">계열을 먼저 골라 주세요.</p>
         )}
       </fieldset>
 

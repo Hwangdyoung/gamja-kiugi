@@ -1,13 +1,24 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, within, cleanup } from '@testing-library/react';
 import App from '../App.jsx';
+
+// 이 파일은 로그인 없는(기기 저장) 흐름을 본다. .env.local 에 Supabase 키가 있어도 로그인은 끈다
+vi.mock('../lib/auth.js', () => ({
+  authEnabled: () => false,
+  currentUser: async () => null,
+  onAuthChange: () => () => {},
+  signInOrUp: async () => ({}),
+  pullProgress: async () => null,
+  pushProgress: async () => {},
+  pushEvent: () => {},
+  signOut: async () => {},
+}));
 import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
 import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, urgentSaved } from '../lib/notify.js';
 import { MAJORS, TYPES } from '../lib/data.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
 import { summary, track, trackOpen } from '../lib/metrics.js';
-import { guessField } from '../lib/fields.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
 const memory = new Map();
@@ -114,18 +125,6 @@ describe('기회 데이터', () => {
   });
 });
 
-describe('학과 → 계열', () => {
-  it('학교마다 다른 학과 이름을 같은 계열로 묶는다', () => {
-    expect(guessField('디지털미디어콘텐츠전공')).toBe('dmc');
-    expect(guessField('영상문화학과')).toBe('dmc');
-    expect(guessField('바이오메디컬학과')).toBe('bio');
-    expect(guessField('생명건강공학과')).toBe('bio');
-    expect(guessField('컴퓨터공학과')).toBe('it');
-    expect(guessField('국')).toBeNull();
-    expect(guessField('체육학과')).toBeNull();
-  });
-});
-
 describe('테스트 지표 (기획안 11장)', () => {
   it('원문 조회, 스크랩, 접속일, 7일 재방문, 마감 알림 뒤 원문 조회를 센다', () => {
     const d0 = new Date(2026, 10, 1, 12).getTime();
@@ -155,15 +154,16 @@ describe('화면 흐름', () => {
 
   const start = (name = '하늘') => {
     render(<App />);
+    // 1쪽 소개 → 시작하기 → 2쪽 나를 알려줘
+    fireEvent.click(screen.getByText('시작하기'));
     fireEvent.click(screen.getByText('감자 키우기 시작'));
     expect(screen.getByRole('alert').textContent).toBe('이름을 입력해 주세요.');
     fireEvent.change(screen.getByLabelText('이름'), { target: { value: name } });
-    expect(document.querySelector('.brand-lg').textContent).toBe('감자 키우기');
     expect(document.querySelector('.hero-bubble').textContent).toContain(`${name}, 같이 춘천에서 커 보자.`);
-    // 학과 이름을 쓰면 계열이 자동으로 골라진다
-    fireEvent.change(screen.getByLabelText('학과'), { target: { value: '미디어커뮤니케이션학과' } });
-    expect(screen.getByText('미디어·콘텐츠 계열 경로로 안내할게요.')).toBeTruthy();
-    expect(screen.getByLabelText(/미디어·콘텐츠/).checked).toBe(true);
+    fireEvent.change(screen.getByLabelText('학교'), { target: { value: '한림대학교' } });
+    // 계열 12개 중 고르기
+    expect(screen.getByLabelText('계열').querySelectorAll('option')).toHaveLength(13);
+    fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'dmc' } });
     fireEvent.click(screen.getByLabelText('마케팅형'));
     fireEvent.click(screen.getByText('감자 키우기 시작'));
   };
@@ -217,7 +217,7 @@ describe('화면 흐름', () => {
     expect(screen.getByText('잎 난 감자')).toBeTruthy();
 
     fireEvent.click(screen.getByLabelText('설정'));
-    fireEvent.click(screen.getByLabelText(/바이오·의생명/));
+    fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'bio' } });
     expect(screen.getByText(/완료한 단계 2개가 초기화/)).toBeTruthy();
     fireEvent.click(screen.getByLabelText('연구형'));
     fireEvent.click(screen.getByText('저장'));

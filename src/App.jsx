@@ -248,7 +248,7 @@ export default function App() {
   } else if (needLogin) {
     screen = <Login onDone={onLoggedIn} onGuest={browseAsGuest} />;
   } else if (!profile) {
-    screen = <Onboarding nameDraft={nameDraft} onNameDraft={setNameDraft} onSubmit={saveProfile} />;
+    screen = <Onboarding nameDraft={nameDraft} onNameDraft={setNameDraft} onSubmit={saveProfile} signedIn={!!user} />;
   } else if (detail) {
     screen = (
       <OpportunityDetail
