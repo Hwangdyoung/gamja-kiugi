@@ -44,8 +44,8 @@ describe('표정·문구·알림 규칙', () => {
     const track = MAJORS.bio.tracks.res;
     const all = [true, true, true, true];
     expect(messageFor('happy', { name: '하늘', done: [false, false, false, false], track })).toBe('감자가 오늘도 성장 중!');
-    expect(messageFor('angry', { name: '지수', done: all, track })).toBe('감자가 화났다. 춘천 공고 확인하러 와.');
-    expect(messageFor('happy', { name: '하늘', done: all, track })).toContain('연구자의 길');
+    expect(messageFor('angry', { name: '지수', done: all, track })).toBe('감자가 화났다. 새 기회 확인하러 와.');
+    expect(messageFor('happy', { name: '하늘', done: all, track })).toContain('연구자로 지원할 이력');
   });
   it('표정이 바뀌는 날과, 분노 이후 주 1회만 알림을 보낸다', () => {
     const sendDays = Array.from({ length: 22 }, (_, d) => d).filter((d) => notifyDecision(d, true).send);
@@ -57,8 +57,8 @@ describe('표정·문구·알림 규칙', () => {
     expect(plan.map((p) => [p.day, p.mood])).toEqual([
       [2, 'neutral'], [4, 'annoyed'], [7, 'angry'], [14, 'angry'], [21, 'angry'], [28, 'angry'],
     ]);
-    expect(plan[1].body).toBe('2단계 아직이야? 서울 갈 거야?');
-    expect(plan[2].body).toBe('감자가 화났다. 춘천 공고 확인하러 와.');
+    expect(plan[1].body).toBe('2단계 아직이야? 이대로 졸업할 거야?');
+    expect(plan[2].body).toBe('감자가 화났다. 새 기회 확인하러 와.');
   });
 });
 
@@ -159,7 +159,7 @@ describe('화면 흐름', () => {
     fireEvent.click(screen.getByText('감자 키우기 시작'));
     expect(screen.getByRole('alert').textContent).toBe('이름을 입력해 주세요.');
     fireEvent.change(screen.getByLabelText('이름'), { target: { value: name } });
-    expect(document.querySelector('.hero-bubble').textContent).toContain(`${name}, 같이 춘천에서 커 보자.`);
+    expect(document.querySelector('.hero-bubble').textContent).toContain(`${name}, 춘천에서도 같이 커 보자.`);
     fireEvent.change(screen.getByLabelText('학교'), { target: { value: '한림대학교' } });
     // 계열 12개 중 고르기
     expect(screen.getByLabelText('계열').querySelectorAll('option')).toHaveLength(13);
@@ -199,7 +199,7 @@ describe('화면 흐름', () => {
     expect(document.querySelectorAll('.opp')).toHaveLength(2);
     fireEvent.change(screen.getByLabelText('기회 검색'), { target: { value: '' } });
     fireEvent.click(screen.getByText('경험부터 쌓고 싶어요'));
-    const types = [...document.querySelectorAll('.opp .tag')].map((e) => e.textContent);
+    const types = [...document.querySelectorAll('.opp .tag:not(.online)')].map((e) => e.textContent);
     types.forEach((t) => expect(['서포터즈', '공모전', '프로젝트']).toContain(t));
   });
 

@@ -1,7 +1,7 @@
 // 워치 앱과 워치 컴플리케이션이 함께 쓰는 감자 상태 계산
 // (같은 파일이 GamjaWatch, GamjaWatch Watch App 두 폴더에 들어 있다. 고칠 때는 둘 다 고친다.)
 // 표정 규칙은 웹 앱 src/lib/growth.js, iPhone 위젯 GamjaWidget.swift와 같다.
-// 워치 문구는 화면이 작아서 "감자 화났다!!" + 줄바꿈 + "춘천 공고 당장 확인해"처럼 두 줄로 짧게 쓴다.
+// 워치 문구는 화면이 작아서 "감자 화났다!!" + 줄바꿈 + "새 기회 당장 확인해"처럼 두 줄로 짧게 쓴다.
 
 import SwiftUI
 
@@ -41,7 +41,7 @@ struct GamjaState {
     let mood: Mood
     /// 첫 줄: "감자 화났다!!"
     let title: String
-    /// 둘째 줄: "춘천 공고 당장 확인해"
+    /// 둘째 줄: "새 기회 당장 확인해"
     let sub: String
 
     /// 두 줄을 한 줄로 (공간이 넉넉하지 않은 곳)
@@ -70,10 +70,10 @@ struct GamjaState {
 
     static func lines(mood: Mood, name n: String, nextStep: Int) -> (String, String) {
         switch mood {
-        case .happy: return nextStep == 0 ? ("\(n) 다 컸다!!", "이제 춘천에서 일하자") : ("\(n) 신났다!!", "오늘도 같이 크자")
-        case .neutral: return ("\(n) 멈췄다!!", "춘천 공고 한 번만 봐 줘")
-        case .annoyed: return ("\(n) 짜증났다!!", nextStep == 0 ? "다 해놓고 서울 갈 거야?" : "\(nextStep)단계 언제 할 거야?")
-        case .angry: return ("\(n) 화났다!!", "춘천 공고 당장 확인해")
+        case .happy: return nextStep == 0 ? ("\(n) 다 컸다!!", "이제 어디든 지원해") : ("\(n) 신났다!!", "오늘도 같이 크자")
+        case .neutral: return ("\(n) 멈췄다!!", "새 기회 한 번만 봐 줘")
+        case .annoyed: return ("\(n) 짜증났다!!", nextStep == 0 ? "다 해놓고 멈출 거야?" : "\(nextStep)단계 언제 할 거야?")
+        case .angry: return ("\(n) 화났다!!", "새 기회 당장 확인해")
         }
     }
 

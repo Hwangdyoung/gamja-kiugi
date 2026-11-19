@@ -60,7 +60,7 @@ describe('로그인 (이메일·비밀번호)', () => {
   it('로그인 없이 둘러보기 → 예전처럼 시작 설정', async () => {
     render(<App />);
     fireEvent.click(await screen.findByText('로그인 없이 둘러보기'));
-    await waitFor(() => expect(screen.getByText('춘천엔 일자리 없다며?', { exact: false })).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('춘천이라 할 게 없다며?', { exact: false })).toBeTruthy());
     expect(localStorage.getItem('gamja:guest')).toBe('1');
   });
 });

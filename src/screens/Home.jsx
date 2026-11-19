@@ -111,8 +111,8 @@ export default function Home({ name, track, mood, message, done, items, today, s
             <SearchIcon size={18} />
             <input
               type="search"
-              placeholder="춘천 기회 검색"
-              aria-label="춘천 기회 검색"
+              placeholder="기회 검색"
+              aria-label="기회 검색"
               value={q}
               onFocus={() => setOpen(true)}
               onChange={(e) => setQ(e.target.value)}

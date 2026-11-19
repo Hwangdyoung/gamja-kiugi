@@ -17,6 +17,7 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
         <p className="kicker">OPPORTUNITY</p>
         <span className="opp-meta">
           <span className="tag">{item.type}</span>
+          {item.online && <span className="tag online">온라인</span>}
           <span className="dday">{ddayLabel(item, today)}</span>
         </span>
         <h1>{item.title}</h1>
@@ -37,6 +38,10 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
             <dd>{item.when}</dd>
           </div>
         )}
+        <div>
+          <dt>참여 방식</dt>
+          <dd>{item.online ? '온라인 (춘천에서도 참여)' : '춘천·강원 현장'}</dd>
+        </div>
         <div>
           <dt>대상</dt>
           <dd>{item.target}</dd>

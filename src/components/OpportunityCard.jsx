@@ -10,6 +10,7 @@ export default function OpportunityCard({ item, today, saved, onOpen, onSave }) 
       <button type="button" className="opp-main" onClick={() => onOpen(item.id)}>
         <span className="opp-meta">
           <span className="tag">{item.type}</span>
+          {item.online && <span className="tag online">온라인</span>}
           <span className={`dday${urgent ? ' urgent' : ''}`}>{ddayLabel(item, today)}</span>
         </span>
         <span className="opp-title">{item.title}</span>

@@ -6,8 +6,8 @@ import ProfileForm from '../components/ProfileForm.jsx';
    ① 감자가 말을 거는 첫 화면 → ② 이 앱이 해 주는 세 가지 → ③ 안 오면 감자가 화난다 → ④ 세 가지 입력.
    1쪽: 소개(감자·앱이 하는 일·표정 변화) → "시작하기" → 2쪽: 나를 알려줘(이름·학교·계열·직무). */
 const HOW = [
-  { no: '01', title: '계열별 4단계 경로', desc: '서포터즈부터 취업까지, 춘천에서 밟을 순서를 보여줘요.' },
-  { no: '02', title: '춘천 기회 한 목록', desc: '공고뿐 아니라 공모전·프로젝트·현장실습까지 모았어요.' },
+  { no: '01', title: '계열별 4단계 경로', desc: '탐색부터 직무 지원까지, 춘천에 있는 동안 밟을 순서를 보여줘요.' },
+  { no: '02', title: '지금 할 수 있는 기회 한 목록', desc: '춘천에서 하는 활동에, 춘천에서도 온라인으로 할 수 있는 공모전·기자단까지 모았어요.' },
   { no: '03', title: '감자가 챙겨 줘요', desc: '마감 임박이나 오래 안 들어오면 감자가 알려줘요.' },
 ];
 
@@ -35,7 +35,7 @@ export default function Onboarding({ nameDraft, onNameDraft, onSubmit, signedIn 
         <section className="hero">
           <Mascot mood="happy" size={96} />
           <p className="hero-bubble" aria-live="polite">
-            {nameDraft ? `${nameDraft}, 같이 춘천에서 커 보자.` : '이름부터 알려줘. 내가 불러 줄게.'}
+            {nameDraft ? `${nameDraft}, 춘천에서도 같이 커 보자.` : '이름부터 알려줘. 내가 불러 줄게.'}
           </p>
         </section>
         <section className="landing-form">
@@ -60,18 +60,18 @@ export default function Onboarding({ nameDraft, onNameDraft, onSubmit, signedIn 
       <section className="hero">
         <Mascot mood="happy" size={112} />
         <p className="hero-bubble" aria-live="polite">
-          안녕, 나는 감자. 춘천에서 같이 클래?
+          안녕, 나는 감자. 춘천에 있는 동안 같이 클래?
         </p>
       </section>
 
       <section className="landing">
-        <p className="kicker">YOUR CAREER, IN CHUNCHEON</p>
+        <p className="kicker">BUILD YOUR CAREER, FROM CHUNCHEON</p>
         <h1 className="headline xl">
-          춘천엔 일자리 없다며?
+          춘천이라 할 게 없다며?
           <br />
-          직접 확인해 보세요.
+          전공 경험, 여기서도 쌓여요.
         </h1>
-        <p className="lead">계열과 관심 직무만 고르면 춘천에서 갈 수 있는 길과 지금 열린 기회를 보여드려요.</p>
+        <p className="lead">계열과 관심 직무만 고르면 춘천에 있는 동안 쌓을 경험과 지금 열린 기회를 보여드려요. 쌓은 이력은 어디에 지원하든 써요.</p>
       </section>
 
       <ol className="how">

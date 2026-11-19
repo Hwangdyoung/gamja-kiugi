@@ -270,13 +270,70 @@
       "target": "인문·역사 전공 청년",
       "src": "https://chuncheon.museum.go.kr",
       "when": "비정기 (문체부 청년인턴 학예 분야 등)"
+    },
+    {
+      "id": "policy-reporters",
+      "title": "대한민국 정책기자단",
+      "type": "서포터즈",
+      "org": "문화체육관광부",
+      "due": null,
+      "target": "정책에 관심 있는 국민 누구나 · 취재와 기사 작성은 온라인으로",
+      "src": "https://www.korea.kr/etc/noticeList.do",
+      "when": "매년 1~2월 모집 (2026년 1.19~2.5, 활동 3~12월)",
+      "where": "온라인"
+    },
+    {
+      "id": "travel-leader",
+      "title": "대한민국 구석구석 대학생 기자단 '트래블리더'",
+      "type": "서포터즈",
+      "org": "한국관광공사",
+      "due": null,
+      "target": "대학생 · 춘천·강원 여행 콘텐츠로도 활동",
+      "src": "https://thinkyou.co.kr/contest/60689/",
+      "when": "매년 1~2월 모집 (18기 2026.1.23~2.19, 활동 3~11월)",
+      "where": "온라인"
+    },
+    {
+      "id": "ossca",
+      "title": "오픈소스 컨트리뷰션 아카데미 (참여형)",
+      "type": "프로젝트",
+      "org": "오픈소스 포털(oss.kr)",
+      "due": null,
+      "target": "대학생 포함 누구나 · 멘토와 오픈소스 프로젝트에 기여",
+      "src": "https://www.oss.kr",
+      "when": "매년 5~6월 멘티 모집 (2026년 5.12~6.14, 활동 약 13주)",
+      "where": "온라인"
+    },
+    {
+      "id": "public-data-startup",
+      "title": "범정부 공공데이터·AI 활용 창업경진대회",
+      "type": "공모전",
+      "org": "행정안전부",
+      "due": null,
+      "target": "제한 없음 · 공공데이터로 만든 아이디어·서비스",
+      "src": "https://www.theteams.kr/activities/page/314393/lc",
+      "when": "매년 3~9월 접수 (제14회 2026.3.2~9.1)",
+      "where": "온라인"
+    },
+    {
+      "id": "fiscal-data-contest",
+      "title": "재정데이터 분석 대학생 경진대회",
+      "type": "공모전",
+      "org": "기획예산처",
+      "due": null,
+      "target": "대학(원)생 5인 이내 팀",
+      "src": "https://www.theteams.kr/activities/page/323063/lc",
+      "when": "2026년 7.6~8.26 접수 (매년 여름 열림)",
+      "where": "온라인"
     }
   ],
   "paths": {
     "dmc.mkt": [
       [
         "cc-talent-supporters",
-        "knu-rise-supporters"
+        "knu-rise-supporters",
+        "travel-leader",
+        "policy-reporters"
       ],
       [
         "cc-travel-sns-contest",
@@ -370,7 +427,8 @@
       ],
       [
         "cc-streetreporter",
-        "knu-rise-supporters"
+        "knu-rise-supporters",
+        "policy-reporters"
       ],
       [
         "future-work-experience",
@@ -387,7 +445,8 @@
       ],
       [
         "cc-streetreporter",
-        "cc-talent-supporters"
+        "cc-talent-supporters",
+        "policy-reporters"
       ],
       [
         "work24-chuncheon",
@@ -400,7 +459,8 @@
     ],
     "social.policy": [
       [
-        "policy-contest"
+        "policy-contest",
+        "fiscal-data-contest"
       ],
       [
         "cc-streetreporter"
@@ -420,7 +480,8 @@
         "knu-rise-supporters"
       ],
       [
-        "ccei-startup"
+        "ccei-startup",
+        "public-data-startup"
       ],
       [
         "future-work-experience",
@@ -438,7 +499,8 @@
       ],
       [
         "cc-talent-supporters",
-        "cc-streetreporter"
+        "cc-streetreporter",
+        "travel-leader"
       ],
       [
         "future-work-experience",
@@ -485,7 +547,9 @@
     ],
     "it.dev": [
       [
-        "ccei-startup"
+        "ccei-startup",
+        "ossca",
+        "public-data-startup"
       ],
       [
         "knu-winter-field"
@@ -504,7 +568,9 @@
         "ccei-startup"
       ],
       [
-        "policy-contest"
+        "policy-contest",
+        "public-data-startup",
+        "fiscal-data-contest"
       ],
       [
         "future-work-experience",

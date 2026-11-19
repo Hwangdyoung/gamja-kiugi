@@ -56,9 +56,9 @@ private func message(mood: Mood, name: String, nextStep: Int) -> String {
     case .neutral:
         return "\(n)\(i) 멈춰 있어요."
     case .annoyed:
-        return allDone ? "4단계까지 와놓고 서울 갈 거야?" : "\(nextStep)단계 아직이야? 서울 갈 거야?"
+        return allDone ? "4단계까지 와놓고 여기서 멈출 거야?" : "\(nextStep)단계 아직이야? 이대로 졸업할 거야?"
     case .angry:
-        return "\(n)\(i) 화났다. 춘천 공고 확인하러 와."
+        return "\(n)\(i) 화났다. 새 기회 확인하러 와."
     }
 }
 

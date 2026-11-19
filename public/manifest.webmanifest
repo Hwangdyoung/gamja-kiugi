@@ -1,7 +1,7 @@
 {
   "name": "감자 키우기",
   "short_name": "감자 키우기",
-  "description": "춘천에서 내 전공으로 갈 수 있는 4단계 경로와 기회",
+  "description": "춘천에 있는 동안 전공 경험을 쌓는 4단계 경로와 기회",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",

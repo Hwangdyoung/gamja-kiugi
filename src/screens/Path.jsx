@@ -11,8 +11,8 @@ export default function Path({ profile, track, done, items, today, onToggle, onO
       <PageHead
         no="03"
         en="MY PATH"
-        title="4단계면 춘천에서 일한다."
-        lead={`${MAJORS[profile.major].label} · ${track.label} 경로예요. 끝낸 단계는 완료로 표시하세요.`}
+        title="4단계면 어디든 지원할 수 있다."
+        lead={`${MAJORS[profile.major].label} · ${track.label} 경로예요. 끝낸 단계는 완료로 표시하세요. 4단계 채용 공고는 강원 지역만 보여주지만, 쌓은 이력은 어디에 지원하든 써요.`}
       />
       <div className="path-progress">
         <div className="bar" role="progressbar" aria-label="성장 경로 진행" aria-valuemin={0} aria-valuemax={4} aria-valuenow={dc}>
@@ -35,7 +35,7 @@ export default function Path({ profile, track, done, items, today, onToggle, onO
                 </p>
                 <h3>{level.t}</h3>
                 <p className="muted">{level.d}</p>
-                {opps.length === 0 && <p className="step-empty">이 단계에 맞는 춘천 기회를 조사하고 있어요.</p>}
+                {opps.length === 0 && <p className="step-empty">이 단계에 맞는 기회를 조사하고 있어요.</p>}
                 {opps.length > 0 && (
                   <ul className="step-opps">
                     {opps.map((it) => (

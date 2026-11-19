@@ -11,7 +11,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
     if (modeSet && !modeSet.includes(it.type)) return false;
     if (type === '스크랩' && !saved[it.id]) return false;
     if (type !== '전체' && type !== '스크랩' && it.type !== type) return false;
-    if (query && !`${it.title} ${it.org} ${it.type} ${it.target}`.toLowerCase().includes(query)) return false;
+    if (query && !`${it.title} ${it.org} ${it.type} ${it.target}${it.online ? ' 온라인' : ''}`.toLowerCase().includes(query)) return false;
     return true;
   });
   const savedCount = items.filter((it) => saved[it.id]).length;
@@ -21,8 +21,8 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
       <PageHead
         no="02"
         en="OPPORTUNITIES"
-        title="춘천엔 없다며? 여기 있는데."
-        lead="내 경로에 맞는 서포터즈·공모전·프로젝트·인턴·현장실습·채용이에요. 마감 지난 기회는 자동으로 내려요."
+        title="할 게 없다며? 여기 있는데."
+        lead="내 경로에 맞는 서포터즈·공모전·프로젝트·인턴·현장실습·채용이에요. 춘천에서 하는 것과 온라인으로 하는 것을 같이 모았고, 마감 지난 기회는 자동으로 내려요."
       />
 
       <div className="searchbar">
@@ -58,7 +58,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
         {query && ` · "${q.trim()}" 검색`}
         {hiddenCount > 0 && ` · 마감 지난 ${hiddenCount}건은 숨겼어요`}
       </p>
-      <p className="disclaimer">프로토타입 예시 데이터예요. 실제 공고가 아니며, 출시 전 공식 출처에서 모은 공고로 바꿉니다.</p>
+      <p className="disclaimer">조사한 시점 기준이에요. 지원 전에 원문 공고를 꼭 확인해 주세요.</p>
 
       {list.length ? (
         <div className="list">

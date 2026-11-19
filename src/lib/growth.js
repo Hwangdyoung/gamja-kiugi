@@ -28,12 +28,12 @@ export function messageFor(mood, { done, track }) {
   const full = doneCount(done) >= 4;
   if (mood === 'happy') {
     return full
-      ? `축하합니다! ${name}${josa(name, '은', '는')} ${track.goal || '춘천에서 직장인이 되었습니다.'}`
+      ? `축하합니다! ${name}${josa(name, '은', '는')} ${track.goal || '어디든 지원할 이력을 갖췄습니다.'}`
       : `${name}${i} 오늘도 성장 중!`;
   }
   if (mood === 'neutral') return `${name}${i} 멈춰 있어요.`;
   if (mood === 'annoyed') {
-    return full ? '4단계까지 와놓고 서울 갈 거야?' : `${nextIndex(done) + 1}단계 아직이야? 서울 갈 거야?`;
+    return full ? '4단계까지 와놓고 여기서 멈출 거야?' : `${nextIndex(done) + 1}단계 아직이야? 이대로 졸업할 거야?`;
   }
-  return `${name}${i} 화났다. 춘천 공고 확인하러 와.`;
+  return `${name}${i} 화났다. 새 기회 확인하러 와.`;
 }

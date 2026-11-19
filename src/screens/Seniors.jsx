@@ -20,12 +20,12 @@ export default function Seniors({ profile }) {
       <PageHead
         no="04"
         en="SENIORS"
-        title="먼저 남아 본 선배들."
-        lead={`춘천에 남은 ${major.label} 계열 선배가 지나온 길이에요. 내 직무 선배가 먼저 나와요.`}
+        title="먼저 해 본 선배들."
+        lead={`춘천에서 학교 다니며 경험을 쌓은 ${major.label} 계열 선배들이에요. 지금은 춘천에도, 수도권에도 있어요. 내 직무 선배가 먼저 나와요.`}
       />
 
       <p className="disclaimer">
-        지금은 실제 춘천 프로그램을 바탕으로 만든 가상 사례예요. 춘천에 남은 졸업생 인터뷰를 마치면 실제 이야기로 바뀌어요.
+        지금은 실제 춘천 프로그램을 바탕으로 만든 가상 사례예요. 졸업생 인터뷰를 마치면 실제 이야기로 바뀌어요.
       </p>
 
       {stories.length ? (
@@ -58,7 +58,7 @@ export default function Seniors({ profile }) {
           <p>
             <b>선배 인터뷰를 진행하고 있어요.</b>
           </p>
-          <p className="muted small">춘천에 남은 졸업생의 동의를 받아 익명으로 소개할 예정이에요.</p>
+          <p className="muted small">춘천에서 학교를 다닌 졸업생의 동의를 받아 익명으로 소개할 예정이에요.</p>
         </div>
       )}
     </div>

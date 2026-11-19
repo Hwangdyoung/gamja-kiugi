@@ -206,6 +206,7 @@ button { cursor: pointer; }
   font-size: 12px;
   font-weight: 600;
 }
+.tag.online { background: var(--ok-soft); color: oklch(0.38 0.1 155); border-color: transparent; margin-left: 4px; }
 .dday { font-size: 12px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .dday.urgent { color: var(--risk); }
 

@@ -41,6 +41,7 @@ export function buildItems(profile, today = startOfToday(), data = BUNDLED) {
         deadline: parseDate(x.due),
         src: x.src,
         when: x.when ?? null,
+        online: x.where === '온라인',
         step: i,
         stepTitle: track.levels[i]?.t ?? '',
       });
