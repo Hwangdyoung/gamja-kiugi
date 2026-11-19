@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getTrack, messageFor, moodOf } from './lib/growth.js';
 import { migrateDone, progressOf } from './lib/roadmap.js';
-import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
-import { urgentSaved } from './lib/notify.js';
+import { buildItems, isOpen, opensIn, startOfToday } from './lib/opportunities.js';
+import { DEFAULT_PREFS, urgentSaved } from './lib/notify.js';
+import { resumeText } from './lib/resume.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
 import { exportText, setEventSink, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
 import { authEnabled, currentUser, onAuthChange, pullProgress, pushEvent, pushProgress, signOut } from './lib/auth.js';
@@ -34,6 +35,8 @@ export default function App() {
   const [log, setLog] = useState(() => (validStored ? validStored.log ?? toLog(validStored.profile, validStored.done) : {}));
   const [saved, setSaved] = useState(validStored?.saved ?? {});
   const [notifyOn, setNotifyOn] = useState(validStored?.notifyOn ?? true);
+  // 알림 세부 설정과 화면 모드 (이 기기에만 저장)
+  const [prefs, setPrefs] = useState(() => ({ ...DEFAULT_PREFS, theme: 'system', ...(validStored?.prefs ?? {}) }));
 
   // 화면 상태
   const [tab, setTab] = useState('home');
@@ -146,8 +149,20 @@ export default function App() {
   const today = useMemo(() => startOfToday(), []);
 
   useEffect(() => {
-    if (profile) storage.save({ profile, log, saved, notifyOn });
-  }, [profile, log, saved, notifyOn]);
+    if (profile) storage.save({ profile, log, saved, notifyOn, prefs });
+  }, [profile, log, saved, notifyOn, prefs]);
+
+  // 화면 모드: 시스템이면 기기 설정을 따라간다
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
+    const apply = () => {
+      const dark = prefs.theme === 'dark' || (prefs.theme === 'system' && !!mq?.matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    };
+    apply();
+    mq?.addEventListener?.('change', apply);
+    return () => mq?.removeEventListener?.('change', apply);
+  }, [prefs.theme]);
 
   // 화면이 바뀌면 맨 위부터 보여준다
   useEffect(() => {
@@ -182,12 +197,12 @@ export default function App() {
   // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보내고 알림(미접속·마감 임박)을 다시 예약한다.
   // 앱으로 돌아올 때마다 "지금 접속"으로 기록
   useEffect(() => {
-    const send = () => syncWidget({ profile, log, demoDays: days, notifyOn, items, saved });
+    const send = () => syncWidget({ profile, log, demoDays: days, notifyOn, prefs, items, saved });
     send();
     const onVisible = () => document.visibilityState === 'visible' && send();
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [profile, log, days, notifyOn, items, saved]);
+  }, [profile, log, days, notifyOn, prefs, items, saved]);
   const progress = useMemo(() => progressOf(profile, log), [profile, log]);
   const mood = moodOf(days);
   const message = profile ? messageFor(mood, { progress }) : '';
@@ -208,6 +223,11 @@ export default function App() {
       const { [id]: _gone, ...rest } = l;
       return rest;
     });
+  const copyResume = () =>
+    navigator.clipboard
+      ?.writeText(resumeText(profile, progress, log))
+      .then(() => setToast('이력서 초안을 복사했어요. 메모장이나 지원서에 붙여 넣어 보세요.'))
+      .catch(() => setToast('복사하지 못했어요.'));
   const goTab = (t) => {
     setDetailId(null);
     setTab(t);
@@ -234,6 +254,7 @@ export default function App() {
     setLog({});
     setSaved({});
     setNotifyOn(true);
+    setPrefs({ ...DEFAULT_PREFS, theme: 'system' });
     setTab('home');
     setDetailId(null);
     setSettingsOpen(false);
@@ -281,6 +302,7 @@ export default function App() {
         today={today}
         saved={saved}
         urgent={urgentSaved(items, saved, today)}
+        soon={items.filter((it) => opensIn(it, today) !== null)}
         onOpen={setDetailId}
         onSave={toggleSave}
         onTab={goTab}
@@ -319,6 +341,7 @@ export default function App() {
         onRecord={recordTask}
         onClear={clearTask}
         onOpen={setDetailId}
+        onCopyResume={copyResume}
       />
     );
   } else {
@@ -363,6 +386,13 @@ export default function App() {
             profile={profile}
             notifyOn={notifyOn}
             onNotify={setNotifyOn}
+            prefs={prefs}
+            onPrefs={setPrefs}
+            recordCount={progress.count}
+            onCopyResume={copyResume}
+            researchedAt={oppData.researchedAt}
+            oppCount={all.length}
+            onReset={reset}
             onSave={saveProfile}
             onClose={() => setSettingsOpen(false)}
             days={days}

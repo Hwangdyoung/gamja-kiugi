@@ -44,6 +44,7 @@ export function buildItems(profile, today = startOfToday(), data = BUNDLED) {
         deadline: parseDate(x.due),
         src: x.src,
         when: x.when ?? null,
+        months: x.months ?? [],
         online: x.where === '온라인',
         ours: !!x.school && x.school === profile.school,
         step: i,
@@ -67,7 +68,11 @@ export const isOpen = (item, today) => {
 
 export function ddayLabel(item, today) {
   const left = daysLeft(item, today);
-  if (left === null) return item.when ? '정기·수시' : '상시';
+  if (left === null) {
+    const soon = opensIn(item, today ?? startOfToday());
+    if (soon !== null) return soon === 0 ? '이번 달 열림' : '다음 달 열림';
+    return item.when ? '정기·수시' : '상시';
+  }
   if (left < 0) return '마감';
   return left === 0 ? 'D-DAY' : `D-${left}`;
 }
@@ -79,3 +84,13 @@ export function formatDate(d) {
 }
 
 export const majorLabel = (profile) => MAJORS[profile.major].label;
+
+/* 정기 모집이 곧 열리는지: 이번 달이면 0, 다음 달이면 1, 아니면 null.
+   마감일이 있는(지금 모집 중인) 기회는 빼고, 모집 달(months)을 아는 정기 프로그램만 본다 */
+export function opensIn(item, today = startOfToday()) {
+  if (item.deadline || !item.months?.length) return null;
+  const m = today.getMonth() + 1;
+  if (item.months.includes(m)) return 0;
+  if (item.months.includes((m % 12) + 1)) return 1;
+  return null;
+}

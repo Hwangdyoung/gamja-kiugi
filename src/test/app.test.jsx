@@ -15,7 +15,8 @@ vi.mock('../lib/auth.js', () => ({
 }));
 import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
-import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, urgentSaved } from '../lib/notify.js';
+import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, openingSchedule, urgentSaved } from '../lib/notify.js';
+import { resumeText } from '../lib/resume.js';
 import { MAJORS, TYPES } from '../lib/data.js';
 import { migrateDone, progressOf, roadmap } from '../lib/roadmap.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
@@ -61,6 +62,10 @@ describe('표정·문구·알림 규칙', () => {
     const log = Object.fromEntries([...stages[2].tasks, ...stages[3].tasks].map((t) => [t.id, { note: 'x', at: null }]));
     expect(progressOf(profile, log).next.stage).toBe(0);
     expect(progressOf(profile, log).grow).toBe(2);
+    // 이력서 초안: 남긴 기록만, 학년 순서로
+    const text = resumeText(profile, progressOf(profile, { 'dmc.mkt.g1': { note: '카드뉴스 3편', at: '2026-06-20T03:00:00Z' } }), { 'dmc.mkt.g1': { note: '카드뉴스 3편', at: '2026-06-20T03:00:00Z' } });
+    expect(text).toContain('■ 1학년 · 탐색\n- (서포터즈) 지역 기관 SNS 서포터즈: 카드뉴스 3편 (2026.6)');
+    expect(text).not.toContain('2학년');
     // 예전 4단계 체크는 내 직무 할 일 기록으로 옮긴다
     expect(Object.keys(migrateDone(profile, [true, false, true, false]))).toEqual(['dmc.mkt.g1', 'dmc.mkt.g3']);
   });
@@ -103,6 +108,17 @@ describe('마감 임박 알림 (P1)', () => {
       "감자가 조마조마해. 'A' 마감 3일 남았어.",
       "내일 마감이야! 'A' 지금 확인해.",
     ]);
+  });
+
+  it('알림 세부 설정: 미접속 알림만 끄기, 보내는 시각 바꾸기, 정기 모집이 열리는 달 1일 알림', () => {
+    const progress = progressOf({ name: 'a', grade: 1, major: 'dmc', track: 'mkt' }, {});
+    const items = [item('A', 5)];
+    const noAway = notificationPlan({ progress, items, saved: { A: true }, now, prefs: { away: false, due: true, hour: 19 } });
+    expect(noAway.map((p) => [p.kind, new Date(p.at).getHours()])).toEqual([['due', 19], ['due', 19]]);
+    expect(notificationPlan({ progress, items, saved: { A: true }, now, prefs: { away: true, due: false, hour: 10 } }).every((p) => p.kind === 'away')).toBe(true);
+    const periodic = { id: 'P', title: '간호사 공채', deadline: null, months: [12] };
+    const open = openingSchedule([periodic], { P: true }, now);
+    expect(open.map((p) => [new Date(p.at), p.body])).toEqual([[new Date(2026, 11, 1, 10), "감자가 챙겨 왔어. '간호사 공채' 이번 달에 모집이 열려."]]);
   });
 
   it('홈에는 스크랩한 기회 중 마감 3일 이내만 보인다', () => {
@@ -228,7 +244,8 @@ describe('화면 흐름', () => {
     fireEvent.change(screen.getByLabelText('기회 검색'), { target: { value: '재단' } });
     expect(document.querySelectorAll('.opp')).toHaveLength(2);
     fireEvent.change(screen.getByLabelText('기회 검색'), { target: { value: '' } });
-    fireEvent.click(screen.getByText('경험부터 쌓고 싶어요'));
+    fireEvent.click(screen.getByRole('tab', { name: '경험 쌓기' }));
+    expect(screen.queryByRole('button', { name: '인턴' })).toBeNull();
     const types = [...document.querySelectorAll('.opp .tag:not(.online)')].map((e) => e.textContent);
     types.forEach((t) => expect(['서포터즈', '공모전', '프로젝트']).toContain(t));
   });
@@ -237,14 +254,20 @@ describe('화면 흐름', () => {
     start();
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('로드맵'));
     expect(screen.getByText('기록 0 / 12')).toBeTruthy();
-    for (let k = 0; k < 3; k++) {
-      fireEvent.click(screen.getAllByText('했어요 · 한 줄 남기기')[0]);
+    // 지금 학년(1학년) 탭이 열려 있고, 할 일은 한 줄씩 접혀 있다가 눌러서 펼친다
+    expect(screen.getByRole('tab', { name: /1학년/ }).getAttribute('aria-selected')).toBe('true');
+    ['지역 기관 SNS 서포터즈', '진로·직무 상담 받기', '관심 직무 채용 공고 3개 읽기'].forEach((title, k) => {
+      if (k > 0) fireEvent.click(screen.getByText(title));
+      fireEvent.click(screen.getByText('했어요 · 한 줄 남기기'));
       const input = screen.getByPlaceholderText(/뭘 했고 뭐가 남았나요/);
       fireEvent.change(input, { target: { value: `기록 ${k + 1}` } });
       fireEvent.click(screen.getByText('기록하기'));
-    }
+    });
     expect(screen.getByText('기록 3 / 12')).toBeTruthy();
+    // 내 기록 탭: 학년별로 모아 본다
+    fireEvent.click(screen.getByRole('tab', { name: /내 기록/ }));
     expect(screen.getByText('기록 1')).toBeTruthy();
+    expect(screen.getByText('이력서 초안으로 복사')).toBeTruthy();
     expect(Object.keys(JSON.parse(localStorage.getItem('oo-kiugi:v2')).log)).toEqual(['dmc.mkt.g1', 'g1-counsel', 'g1-posts']);
     // 기록 3개마다 감자 머리 위 싹이 한 칸 자란다
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('홈'));
@@ -252,6 +275,12 @@ describe('화면 흐름', () => {
     expect(screen.getByText('새싹 감자')).toBeTruthy();
 
     fireEvent.click(screen.getByLabelText('설정'));
+    // 알림 세부 설정·화면 모드
+    fireEvent.click(screen.getByRole('radio', { name: '어둡게' }));
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    fireEvent.click(screen.getByLabelText('미접속 알림'));
+    expect(JSON.parse(localStorage.getItem('oo-kiugi:v2')).prefs).toMatchObject({ away: false, due: true, theme: 'dark' });
+    fireEvent.click(screen.getByText('수정'));
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'bio' } });
     fireEvent.click(screen.getByLabelText('연구형'));
     fireEvent.click(screen.getByText('저장'));

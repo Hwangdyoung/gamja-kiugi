@@ -7,8 +7,9 @@
 
    파일 모양:
    { researchedAt: "2026.11.18",
-     opportunities: [{ id, title, type, org, due: "YYYY-MM-DD"|null, target, src, when|null }, …],
-     paths: { "dmc.mkt": [[1단계 기회 id…], [2단계…], [3단계…], [4단계…]], … } } */
+     opportunities: [{ id, title, type, org, due: "YYYY-MM-DD"|null, target, src, when|null,
+                       where?: "온라인", school?: "강원대학교"(재학생 전용), months?: [모집이 열리는 달] }, …],
+     paths: { "dmc.mkt": [[1학년 할 일의 기회 id…], [2학년…], [3학년…], [4학년…]], … } } */
 import bundled from '../data/opportunities.json';
 import { MAJORS, TYPES } from './data.js';
 

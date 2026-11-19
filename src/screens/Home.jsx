@@ -7,7 +7,7 @@ import { ChevronIcon, SearchIcon } from '../components/Icons.jsx';
    - 감자 영역: 인사 · 말풍선 · 표정(접속) · 머리 위 싹(기록 3개마다 한 칸) · 학년 4칸 진행 점
    - 패널(접힘): 다음 단계와 마감 임박이 바로 보인다. 손잡이를 끌어올리거나 누르면 펼쳐져 검색·추천 기회를 본다.
    기획안 6장 홈 구성(검색창, 캐릭터와 말풍선, 진행 상황, 다음 단계, 추천 기회)은 그대로, 배치만 바꿨다. */
-export default function Home({ name, progress, mood, message, items, today, saved, urgent = [], onOpen, onSave, onTab, onSearch }) {
+export default function Home({ name, progress, mood, message, items, today, saved, urgent = [], soon = [], onOpen, onSave, onTab, onSearch }) {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const [drag, setDrag] = useState(null); // 끄는 중이면 손가락이 움직인 거리(px)
@@ -105,6 +105,21 @@ export default function Home({ name, progress, mood, message, items, today, save
                   <OpportunityCard key={it.id} item={it} today={today} saved onOpen={onOpen} onSave={onSave} />
                 ))}
               </div>
+            </section>
+          )}
+
+          {soon.length > 0 && (
+            <section className="section" aria-label="곧 열리는 정기 모집">
+              <div className="section-head">
+                <h2>곧 열려요</h2>
+                <span className="muted small">이번 달·다음 달 정기 모집</span>
+              </div>
+              <div className="list">
+                {soon.slice(0, 3).map((it) => (
+                  <OpportunityCard key={it.id} item={it} today={today} saved={!!saved[it.id]} onOpen={onOpen} onSave={onSave} />
+                ))}
+              </div>
+              <p className="fine">스크랩해 두면 모집이 열리는 달 1일에 감자가 알려 줘요.</p>
             </section>
           )}
 

@@ -9,7 +9,7 @@ const WidgetBridge = registerPlugin('WidgetBridge');
 
 export const isNativeApp = () => Capacitor.isNativePlatform();
 
-export function syncWidget({ profile, log = {}, demoDays, notifyOn, items = [], saved = {} }) {
+export function syncWidget({ profile, log = {}, demoDays, notifyOn, prefs, items = [], saved = {} }) {
   if (!isNativeApp()) return;
   const progress = progressOf(profile, log);
   WidgetBridge.update({
@@ -19,7 +19,7 @@ export function syncWidget({ profile, log = {}, demoDays, notifyOn, items = [], 
     nextStep: progress.next ? progress.next.stage + 1 : 0,
     demoDays,
     // 미접속 알림 + 스크랩한 기회 마감 임박 알림. 알림을 끄면 빈 목록 → 예약된 감자 알림이 모두 지워진다
-    notifications: profile && notifyOn ? notificationPlan({ progress, items, saved }) : [],
+    notifications: profile && notifyOn ? notificationPlan({ progress, items, saved, prefs }) : [],
   }).catch(() => {
     /* App Group 설정이 안 됐으면 위젯만 갱신되지 않는다. 앱 사용에는 지장 없음 */
   });

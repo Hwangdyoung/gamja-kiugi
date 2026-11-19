@@ -9,7 +9,10 @@
       "due": null,
       "target": "춘천시에 주소를 둔 대학(원)생 10명 내외",
       "src": "https://biz.kangwon.ac.kr/biz/community/notice.do?mode=view&articleNo=563635",
-      "when": "매년 6월 모집 (2026년 6.8~6.22, 활동 7~12월)"
+      "when": "매년 6월 모집 (2026년 6.8~6.22, 활동 7~12월)",
+      "months": [
+        6
+      ]
     },
     {
       "id": "knu-rise-supporters",
@@ -20,7 +23,10 @@
       "target": "강원대 춘천캠퍼스 재학생 약 10명",
       "src": "https://scphys.kangwon.ac.kr/physics/community/notice.do?mode=view&articleNo=564581",
       "when": "2026년 2기 6.22~7.3 모집",
-      "school": "강원대학교"
+      "school": "강원대학교",
+      "months": [
+        6
+      ]
     },
     {
       "id": "cc-travel-sns-contest",
@@ -90,7 +96,10 @@
       "due": null,
       "target": "누구나 (공연 팀)",
       "src": "https://www.contestkorea.com/sub/view.php?int_gbn=1&Txt_bcode=031810001&str_no=202512090032",
-      "when": "매년 11월~1월 접수 (지난 공모 11.1~1.5)"
+      "when": "매년 11월~1월 접수 (지난 공모 11.1~1.5)",
+      "months": [
+        11
+      ]
     },
     {
       "id": "knu-plant-career-intern",
@@ -101,7 +110,10 @@
       "target": "강원대 재학생",
       "src": "https://plantmedicine.kangwon.ac.kr/applybio/community/under-notice.do?mode=view&articleNo=560753",
       "when": "매년 초 모집 (2026년 1차 ~2월)",
-      "school": "강원대학교"
+      "school": "강원대학교",
+      "months": [
+        1
+      ]
     },
     {
       "id": "knu-bio-job-talk",
@@ -244,7 +256,10 @@
       "due": null,
       "target": "간호학과 졸업예정자",
       "src": "https://www.knuh.or.kr",
-      "when": "매년 12~1월 공채 (2026년 12.23~1.6)"
+      "when": "매년 12~1월 공채 (2026년 12.23~1.6)",
+      "months": [
+        12
+      ]
     },
     {
       "id": "hallym-nurse",
@@ -254,7 +269,10 @@
       "due": null,
       "target": "간호학과 졸업예정자",
       "src": "https://www.hallym.or.kr",
-      "when": "매년 10월 (2026년 10.13~10.22)"
+      "when": "매년 10월 (2026년 10.13~10.22)",
+      "months": [
+        10
+      ]
     },
     {
       "id": "gwe-jobs",
@@ -285,7 +303,10 @@
       "target": "정책에 관심 있는 국민 누구나 · 취재와 기사 작성은 온라인으로",
       "src": "https://www.korea.kr/etc/noticeList.do",
       "when": "매년 1~2월 모집 (2026년 1.19~2.5, 활동 3~12월)",
-      "where": "온라인"
+      "where": "온라인",
+      "months": [
+        1
+      ]
     },
     {
       "id": "travel-leader",
@@ -296,7 +317,10 @@
       "target": "대학생 · 춘천·강원 여행 콘텐츠로도 활동",
       "src": "https://academy.visitkorea.or.kr/macademy/notice/bbs/detail.do?seq=3575",
       "when": "매년 1~2월 모집 (18기 2026.1.23~2.19, 활동 3~11월)",
-      "where": "온라인"
+      "where": "온라인",
+      "months": [
+        1
+      ]
     },
     {
       "id": "ossca",
@@ -307,7 +331,10 @@
       "target": "대학생 포함 누구나 · 멘토와 오픈소스 프로젝트에 기여",
       "src": "https://www.oss.kr",
       "when": "매년 5~6월 멘티 모집 (2026년 5.12~6.14, 활동 약 13주)",
-      "where": "온라인"
+      "where": "온라인",
+      "months": [
+        5
+      ]
     },
     {
       "id": "public-data-startup",
@@ -318,7 +345,10 @@
       "target": "제한 없음 · 아이디어 기획 부문은 개발 전 아이디어로도 참가",
       "src": "https://www.mois.go.kr/frt/bbs/type013/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000006&nttId=127805",
       "when": "매년 4월 공고 (제14회 2026.4.8 공고 · 기관별 예선 → 9월 본선 → 11월 왕중왕전)",
-      "where": "온라인"
+      "where": "온라인",
+      "months": [
+        4
+      ]
     },
     {
       "id": "fiscal-data-contest",
@@ -329,7 +359,10 @@
       "target": "대학(원) 재학·휴학생 · 1박 2일 교육과 온라인 멘토링",
       "src": "https://policy.hanyang.ac.kr/front/communication/notice/notice-view?id=2259",
       "when": "매년 여름 (2026년 6.21까지 신청, 7.6~8.9 대회)",
-      "where": "온라인"
+      "where": "온라인",
+      "months": [
+        6
+      ]
     }
   ],
   "paths": {

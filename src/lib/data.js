@@ -15,6 +15,7 @@ export const GROUPS = {
    화면에도 가상 사례라고 표시한다. 실제 인터뷰를 하면 이 자리를 바꾼다. */
 const SENIOR_MKT = {
   who: '선배 A',
+  region: '춘천',
   profile: '디지털미디어콘텐츠 19학번',
   now: '춘천 지역 문화기관 홍보 담당 · 2년 차',
   steps: [
@@ -28,6 +29,7 @@ const SENIOR_MKT = {
 };
 const SENIOR_PLAN = {
   who: '선배 B',
+  region: '수도권',
   profile: '디지털미디어콘텐츠 18학번',
   now: '판교 콘텐츠 회사 기획자 · 3년 차',
   steps: [
@@ -41,6 +43,7 @@ const SENIOR_PLAN = {
 };
 const SENIOR_RES = {
   who: '선배 C',
+  region: '춘천',
   profile: '바이오메디컬 18학번',
   now: '춘천 바이오 지원기관 연구원 · 2년 차',
   steps: [
@@ -54,6 +57,7 @@ const SENIOR_RES = {
 };
 const SENIOR_QA = {
   who: '선배 D',
+  region: '수도권',
   profile: '바이오메디컬 19학번',
   now: '경기 바이오 기업 품질관리(QC) · 1년 차',
   steps: [
