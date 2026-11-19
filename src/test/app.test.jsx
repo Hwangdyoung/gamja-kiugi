@@ -17,6 +17,7 @@ import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
 import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, openingSchedule, urgentSaved } from '../lib/notify.js';
 import { resumeText } from '../lib/resume.js';
+import { dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from '../lib/care.js';
 import { MAJORS, TYPES } from '../lib/data.js';
 import { migrateDone, progressOf, roadmap } from '../lib/roadmap.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
@@ -81,6 +82,23 @@ describe('표정·문구·알림 규칙', () => {
     ]);
     expect(plan[1].body).toBe('2학년 할 일 아직이야? 이대로 졸업할 거야?');
     expect(plan[2].body).toBe('감자가 화났다. 새 기회 확인하러 와.');
+  });
+});
+
+describe('감자 돌보기: 물·햇빛·거름은 진로 행동으로만 생긴다', () => {
+  it('물은 하루 한 번, 햇빛·거름은 같은 행동에 한 번만, 주면 기운이 오르고 하루마다 빠진다', () => {
+    const d1 = new Date(2026, 10, 20, 12);
+    let c = dailyWater(emptyCare(), d1);
+    expect(dailyWater(c, new Date(2026, 10, 20, 18)).stock.water).toBe(1);
+    c = earn(c, 'sun', 'src:a').care;
+    const again = earn(c, 'sun', 'src:a');
+    expect([c.stock.sun, again.got]).toEqual([1, false]);
+    c = earn(c, 'compost', 'rec:x').care;
+    c = give(c, 'compost', d1);
+    expect([c.stock.compost, c.vital]).toEqual([0, 95]);
+    expect(give(c, 'compost', d1)).toBeNull();
+    expect(vitalOf(c, new Date(2026, 10, 23, 12))).toBe(59);
+    expect([isSleepTime(new Date(2026, 10, 20, 23, 30)), isSleepTime(new Date(2026, 10, 20, 12))]).toEqual([true, false]);
   });
 });
 
@@ -220,6 +238,15 @@ describe('화면 흐름', () => {
     expect(screen.getByText('1학년 추천 기회')).toBeTruthy();
     expect(document.querySelector('.home-hi').textContent).toBe('하늘, 1학년엔 이것부터 해 볼까?');
 
+    // 살아 있는 감자: 누르면 한마디, 첫 접속 물 1개를 주면 고마워한다, 햇빛이 없으면 얻는 법을 알려준다
+    fireEvent.click(screen.getByLabelText('감자 쓰다듬기'));
+    expect(document.querySelector('.home-bubble').textContent).toBe('왜 불러?');
+    fireEvent.click(screen.getByLabelText('물 주기, 1개 있음'));
+    expect(document.querySelector('.home-bubble').textContent).toBe('물 맛 좋다~');
+    expect(screen.getByLabelText('물 주기, 0개 있음')).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('햇빛 주기, 0개 있음'));
+    expect(document.querySelector('.home-bubble').textContent).toBe('햇빛은 기회 원문을 열거나 스크랩하면 생겨.');
+
     // 시연 도구: 7일 → 분노, 알림 발송
     fireEvent.change(document.getElementById('days'), { target: { value: '7' } });
     expect(document.querySelector('.phone .mascot').getAttribute('data-mood')).toBe('angry');
@@ -231,6 +258,9 @@ describe('화면 흐름', () => {
     expect(screen.getByText('(재)춘천인재육성장학재단')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /^스크랩$/ }));
     expect(screen.getByText('스크랩됨')).toBeTruthy();
+    // 처음 스크랩하면 햇빛 1개
+    expect(screen.getByText('햇빛 1개를 받았어요. 홈에서 감자에게 줘 보세요.')).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem('oo-kiugi:v2')).care.stock).toMatchObject({ water: 0, sun: 1 });
   });
 
   it('기회 탭: 마감 숨김, 칩, 검색, 빠른 필터', () => {

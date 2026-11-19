@@ -49,7 +49,28 @@ function Sprout({ grow }) {
   );
 }
 
-export default function Mascot({ mood = 'happy', size = 120, grow = 0 }) {
+/* 눈꺼풀: 웃음·무표정 그림의 눈 위에 살색 타원 + 감은 눈 선을 덮는다.
+   blink면 가끔 깜빡이고, sleeping이면 계속 감고 있다. (짜증·분노 그림은 눈 모양이 달라 깜빡이지 않는다) */
+const SKIN = '#e0ba7e';
+const EYES = [
+  [111, 240],
+  [181, 239],
+];
+function Eyelids({ sleeping }) {
+  return (
+    <svg className={`eyelids${sleeping ? ' closed' : ''}`} viewBox="0 0 300 348" aria-hidden="true">
+      {EYES.map(([x, y]) => (
+        <g key={x}>
+          <ellipse cx={x} cy={y} rx="10" ry="12" fill={SKIN} />
+          <path d={`M${x - 8} ${y + 1} Q${x} ${y + 7} ${x + 8} ${y + 1}`} fill="none" stroke={INK} strokeWidth="4" strokeLinecap="round" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+export default function Mascot({ mood = 'happy', size = 120, grow = 0, blink = false, sleeping = false }) {
+  const lids = (blink || sleeping) && (mood === 'happy' || mood === 'neutral');
   return (
     <span className="mascot-wrap" data-mood={mood} style={{ width: size, height: Math.round(size * 1.16) }}>
       <img
@@ -61,6 +82,7 @@ export default function Mascot({ mood = 'happy', size = 120, grow = 0 }) {
         alt={`감자 캐릭터, 표정 ${MOODS[mood]}${grow ? `, ${GROW_LABELS[grow]}` : ''}`}
         draggable="false"
       />
+      {lids && <Eyelids sleeping={sleeping} />}
       <Sprout grow={grow} />
     </span>
   );

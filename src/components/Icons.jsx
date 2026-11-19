@@ -85,3 +85,23 @@ export const BellIcon = (p) => (
     <path d="M10 20a2 2 0 0 0 4 0" />
   </Svg>
 );
+/* 감자 돌보기: 물 · 햇빛 · 거름 */
+export const DropIcon = (p) => (
+  <Svg {...p}>
+    <path d="M12 3.5c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0c0-3.3 3-6.5 6-10.5Z" />
+  </Svg>
+);
+export const SunIcon = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" />
+  </Svg>
+);
+export const SproutIcon = (p) => (
+  <Svg {...p}>
+    <path d="M12 20v-8" />
+    <path d="M12 12c0-3.5 2.5-6 6.5-6 0 3.5-2.5 6-6.5 6Z" />
+    <path d="M12 14c0-3-2.2-5-5.5-5 0 3 2.2 5 5.5 5Z" />
+    <path d="M7 20h10" />
+  </Svg>
+);

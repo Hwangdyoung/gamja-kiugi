@@ -1,14 +1,43 @@
 import { useRef, useState } from 'react';
-import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
+import { GROW_LABELS } from '../components/Mascot.jsx';
+import LivePotato from '../components/LivePotato.jsx';
+import { CARE, CARE_KINDS, SLEEPY, TICKLE, pokeLine, vitalLabel } from '../lib/care.js';
 import OpportunityCard from '../components/OpportunityCard.jsx';
-import { ChevronIcon, SearchIcon } from '../components/Icons.jsx';
+import { ChevronIcon, DropIcon, SearchIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
+
+const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
 
 /* 홈 (v2): 위쪽은 큰 감자, 아래는 끌어올리는 패널.
-   - 감자 영역: 인사 · 말풍선 · 표정(접속) · 머리 위 싹(기록 3개마다 한 칸) · 학년 4칸 진행 점
+   - 감자 영역: 인사 · 말풍선 · 살아 있는 감자(누르면 반응) · 머리 위 싹(기록 3개마다 한 칸) · 학년 4칸 진행 점
+     · 물/햇빛/거름 주기(진로 행동으로 모은 것) · 기운
    - 패널(접힘): 다음 단계와 마감 임박이 바로 보인다. 손잡이를 끌어올리거나 누르면 펼쳐져 검색·추천 기회를 본다.
    기획안 6장 홈 구성(검색창, 캐릭터와 말풍선, 진행 상황, 다음 단계, 추천 기회)은 그대로, 배치만 바꿨다. */
-export default function Home({ name, progress, mood, message, items, today, saved, urgent = [], soon = [], onOpen, onSave, onTab, onSearch }) {
+export default function Home({ name, progress, mood, message, items, today, saved, urgent = [], soon = [], care, vital = 60, sleeping = false, onGive, onOpen, onSave, onTab, onSearch }) {
   const [q, setQ] = useState('');
+  // 감자를 누르거나 돌보면 말풍선이 잠깐 바뀐다
+  const [say, setSay] = useState(null);
+  const [fx, setFx] = useState(null);
+  const sayTimer = useRef(null);
+  const fxTimer = useRef(null);
+  const count = useRef(0);
+  const speak = (text) => {
+    setSay(text);
+    clearTimeout(sayTimer.current);
+    sayTimer.current = setTimeout(() => setSay(null), 2600);
+  };
+  const onPoke = (kind) => {
+    const n = count.current++;
+    speak(sleeping ? SLEEPY[n % SLEEPY.length] : kind === 'tickle' ? TICKLE[n % TICKLE.length] : pokeLine(mood, n));
+  };
+  const giveCare = (kind) => {
+    if (!care || care.stock[kind] < 1) return speak(CARE[kind].how);
+    onGive(kind);
+    setFx(null);
+    requestAnimationFrame(() => setFx(kind));
+    clearTimeout(fxTimer.current);
+    fxTimer.current = setTimeout(() => setFx(null), 1500);
+    speak(sleeping ? '음냐… 고마워…' : CARE[kind].thanks[count.current++ % CARE[kind].thanks.length]);
+  };
   const [open, setOpen] = useState(false);
   const [drag, setDrag] = useState(null); // 끄는 중이면 손가락이 움직인 거리(px)
   const start = useRef(null);
@@ -55,9 +84,9 @@ export default function Home({ name, progress, mood, message, items, today, save
           )}
         </p>
         <p className="home-bubble" aria-live="polite">
-          {message}
+          {say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : message)}
         </p>
-        <Mascot mood={mood} size={168} grow={grow} />
+        <LivePotato mood={mood} size={150} grow={grow} vital={vital} fx={fx} sleeping={sleeping} onPoke={onPoke} />
         <div className="home-grow">
           <span className="grow-label">{GROW_LABELS[grow]}</span>
           <span className="grow-dots" role="progressbar" aria-label="로드맵 진행" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.count}>
@@ -69,6 +98,32 @@ export default function Home({ name, progress, mood, message, items, today, save
             기록 {progress.count} / {progress.total}
           </b>
         </div>
+        {care && (
+          <div className="care-row" role="group" aria-label="감자 돌보기">
+            {CARE_KINDS.map((k) => {
+              const Icon = CARE_ICON[k];
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  className={`care-btn care-${k}${care.stock[k] ? '' : ' empty'}`}
+                  aria-label={`${CARE[k].label} 주기, ${care.stock[k]}개 있음`}
+                  onClick={() => giveCare(k)}
+                >
+                  <Icon size={18} />
+                  <span>{CARE[k].label}</span>
+                  <b>{care.stock[k]}</b>
+                </button>
+              );
+            })}
+            <span className="vital" title={`기운 ${vital}`}>
+              <small>{vitalLabel(vital)}</small>
+              <span className="vital-bar" role="meter" aria-label="감자 기운" aria-valuemin={0} aria-valuemax={100} aria-valuenow={vital}>
+                <i style={{ width: `${vital}%` }} />
+              </span>
+            </span>
+          </div>
+        )}
       </section>
 
       <section className={`home-panel${open ? ' open' : ''}${drag != null ? ' dragging' : ''}`} style={dragStyle} aria-label="오늘 할 일과 기회">

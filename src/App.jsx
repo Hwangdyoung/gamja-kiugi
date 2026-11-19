@@ -4,6 +4,7 @@ import { migrateDone, progressOf } from './lib/roadmap.js';
 import { buildItems, isOpen, opensIn, startOfToday } from './lib/opportunities.js';
 import { DEFAULT_PREFS, urgentSaved } from './lib/notify.js';
 import { resumeText } from './lib/resume.js';
+import { CARE, dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from './lib/care.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
 import { exportText, setEventSink, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
 import { authEnabled, currentUser, onAuthChange, pullProgress, pushEvent, pushProgress, signOut } from './lib/auth.js';
@@ -35,6 +36,8 @@ export default function App() {
   const [log, setLog] = useState(() => (validStored ? validStored.log ?? toLog(validStored.profile, validStored.done) : {}));
   const [saved, setSaved] = useState(validStored?.saved ?? {});
   const [notifyOn, setNotifyOn] = useState(validStored?.notifyOn ?? true);
+  // 감자 돌보기: 물·햇빛·거름과 기운 (이 기기에만 저장)
+  const [care, setCare] = useState(() => ({ ...emptyCare(), ...(validStored?.care ?? {}) }));
   // 알림 세부 설정과 화면 모드 (이 기기에만 저장)
   const [prefs, setPrefs] = useState(() => ({ ...DEFAULT_PREFS, theme: 'system', ...(validStored?.prefs ?? {}) }));
 
@@ -48,6 +51,7 @@ export default function App() {
   const [nameDraft, setNameDraft] = useState(''); // 시작 화면에서 입력 중인 이름
   const [toast, setToast] = useState('');
   const [days, setDays] = useState(0); // 시연용 미접속 일수
+  const [clock, setClock] = useState('auto'); // 시연용 감자 시간: 지금 시각 · 낮 · 밤
 
   // 로그인 (Supabase 설정이 있을 때만). 로그인 없이 둘러보기를 고르면 기기에만 저장한다
   const [user, setUser] = useState(null);
@@ -149,8 +153,32 @@ export default function App() {
   const today = useMemo(() => startOfToday(), []);
 
   useEffect(() => {
-    if (profile) storage.save({ profile, log, saved, notifyOn, prefs });
-  }, [profile, log, saved, notifyOn, prefs]);
+    if (profile) storage.save({ profile, log, saved, notifyOn, prefs, care });
+  }, [profile, log, saved, notifyOn, prefs, care]);
+
+  // 하루 첫 접속이면 물 1개 (앱으로 돌아올 때도 확인)
+  useEffect(() => {
+    if (!profile) return undefined;
+    const water = () => setCare((c) => dailyWater(c, new Date()));
+    water();
+    const onVisible = () => document.visibilityState === 'visible' && water();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [!!profile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 진로 행동을 하면 햇빛·거름이 생긴다 (같은 행동은 한 번만)
+  const reward = (kind, key) => {
+    const r = earn(care, kind, key);
+    if (r.care !== care) setCare(r.care);
+    if (r.got) setToast(`${CARE[kind].label} 1개를 받았어요. 홈에서 감자에게 줘 보세요.`);
+  };
+  const giveCare = (kind) => {
+    const next = give(care, kind, new Date());
+    if (next) {
+      setCare(next);
+      logEvent('care_give', { kind });
+    }
+  };
 
   // 화면 모드: 시스템이면 기기 설정을 따라간다
   useEffect(() => {
@@ -211,11 +239,15 @@ export default function App() {
 
   const toggleSave = (id) => {
     logEvent('save', { id, on: !saved[id] });
+    if (!saved[id]) reward('sun', `save:${id}`);
     setSaved((s) => ({ ...s, [id]: !s[id] }));
   };
   // 할 일을 끝내면 한 줄 기록을 남긴다. 기록을 지우면 다시 안 한 일이 된다
   const recordTask = (id, note) => {
-    if (!log[id]) logEvent('step_done', { task: id });
+    if (!log[id]) {
+      logEvent('step_done', { task: id });
+      reward('compost', `rec:${id}`);
+    }
     setLog((l) => ({ ...l, [id]: { note, at: new Date().toISOString() } }));
   };
   const clearTask = (id) =>
@@ -255,6 +287,7 @@ export default function App() {
     setSaved({});
     setNotifyOn(true);
     setPrefs({ ...DEFAULT_PREFS, theme: 'system' });
+    setCare(emptyCare());
     setTab('home');
     setDetailId(null);
     setSettingsOpen(false);
@@ -288,7 +321,10 @@ export default function App() {
         saved={!!saved[detail.id]}
         onSave={toggleSave}
         researchedAt={oppData.researchedAt}
-        onSource={() => logEvent('source_open', { id: detail.id })}
+        onSource={() => {
+          logEvent('source_open', { id: detail.id });
+          reward('sun', `src:${detail.id}`);
+        }}
       />
     );
   } else if (tab === 'home') {
@@ -303,6 +339,10 @@ export default function App() {
         saved={saved}
         urgent={urgentSaved(items, saved, today)}
         soon={items.filter((it) => opensIn(it, today) !== null)}
+        care={care}
+        vital={vitalOf(care)}
+        sleeping={clock === 'auto' ? isSleepTime() : clock === 'night'}
+        onGive={giveCare}
         onOpen={setDetailId}
         onSave={toggleSave}
         onTab={goTab}
@@ -439,6 +479,8 @@ export default function App() {
           setTab('home');
         }}
         onReset={reset}
+        clock={clock}
+        onClock={setClock}
       />
     </div>
   );
