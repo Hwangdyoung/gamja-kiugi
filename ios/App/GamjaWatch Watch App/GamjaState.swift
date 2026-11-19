@@ -70,9 +70,9 @@ struct GamjaState {
 
     static func lines(mood: Mood, name n: String, nextStep: Int) -> (String, String) {
         switch mood {
-        case .happy: return nextStep == 0 ? ("\(n) 다 컸다!!", "이제 어디든 지원해") : ("\(n) 신났다!!", "오늘도 같이 크자")
+        case .happy: return nextStep == 0 ? ("\(n) 다 컸다!!", "이제 지원서 쓰자") : ("\(n) 신났다!!", "오늘도 같이 크자")
         case .neutral: return ("\(n) 멈췄다!!", "새 기회 한 번만 봐 줘")
-        case .annoyed: return ("\(n) 짜증났다!!", nextStep == 0 ? "다 해놓고 멈출 거야?" : "\(nextStep)단계 언제 할 거야?")
+        case .annoyed: return ("\(n) 짜증났다!!", nextStep == 0 ? "다 해놓고 지원 안 해?" : "\(nextStep)학년 거 언제 해?")
         case .angry: return ("\(n) 화났다!!", "새 기회 당장 확인해")
         }
     }

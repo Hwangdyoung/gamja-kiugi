@@ -259,7 +259,6 @@ export const MAJORS = {
     tracks: {
       res: {
         label: '연구형',
-        goal: '연구자로 지원할 이력을 갖췄습니다.',
         senior: SENIOR_RES,
         levels: [
           { tag: '탐색', t: '관련 연구실·직무 탐색', d: '어떤 연구실과 기업이 있는지 직접 찾아가 물어봐요.' },

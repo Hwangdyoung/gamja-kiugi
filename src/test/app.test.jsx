@@ -17,6 +17,7 @@ import { messageFor, moodOf } from '../lib/growth.js';
 import { buildItems, ddayLabel, isOpen } from '../lib/opportunities.js';
 import { deadlineSchedule, notificationPlan, notificationSchedule, notifyDecision, urgentSaved } from '../lib/notify.js';
 import { MAJORS, TYPES } from '../lib/data.js';
+import { migrateDone, progressOf, roadmap } from '../lib/roadmap.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
 import { summary, track, trackOpen } from '../lib/metrics.js';
 
@@ -40,12 +41,28 @@ describe('표정·문구·알림 규칙', () => {
       'happy', 'happy', 'neutral', 'neutral', 'annoyed', 'annoyed', 'angry', 'angry',
     ]);
   });
-  it('사용자 이름과 상관없이 주어는 감자이고, 4단계를 마치면 직무별 축하 문구를 보여준다', () => {
-    const track = MAJORS.bio.tracks.res;
-    const all = [true, true, true, true];
-    expect(messageFor('happy', { name: '하늘', done: [false, false, false, false], track })).toBe('감자가 오늘도 성장 중!');
-    expect(messageFor('angry', { name: '지수', done: all, track })).toBe('감자가 화났다. 새 기회 확인하러 와.');
-    expect(messageFor('happy', { name: '하늘', done: all, track })).toContain('연구자로 지원할 이력');
+  it('주어는 늘 감자이고, 다 기록해도 "취업 성공"이 아니라 "지원서 써 보자"로 끝난다', () => {
+    const profile = { name: '하늘', school: '한림대학교', grade: 2, major: 'bio', track: 'res' };
+    const none = progressOf(profile, {});
+    const all = Object.fromEntries(none.stages.flatMap((s) => s.tasks).map((t) => [t.id, { note: '함', at: null }]));
+    expect(messageFor('happy', { progress: none })).toBe('감자가 오늘도 성장 중!');
+    expect(messageFor('annoyed', { progress: none })).toBe('2학년 할 일 아직이야? 이대로 졸업할 거야?');
+    expect(messageFor('angry', { progress: progressOf(profile, all) })).toBe('감자가 화났다. 새 기회 확인하러 와.');
+    expect(messageFor('happy', { progress: progressOf(profile, all) })).toBe('감자가 다 컸다. 이 기록으로 지원서 써 보자.');
+  });
+  it('학년별 로드맵: 학년마다 할 일 3개(내 직무 1 + 공통 2), 지금 학년부터 다음 할 일을 고른다', () => {
+    const profile = { name: 'a', school: '강원대학교', grade: 3, major: 'dmc', track: 'mkt' };
+    const stages = roadmap(profile);
+    expect(stages.map((s) => s.tasks.length)).toEqual([3, 3, 3, 3]);
+    expect(stages.map((s) => s.tasks.filter((t) => t.own).length)).toEqual([1, 1, 1, 1]);
+    const p = progressOf(profile, {});
+    expect([p.current, p.next.stage, p.next.task.id]).toEqual([2, 2, 'dmc.mkt.g3']);
+    // 지금 학년과 뒤 학년을 다 하면, 지나간 학년의 안 한 일로 돌아간다
+    const log = Object.fromEntries([...stages[2].tasks, ...stages[3].tasks].map((t) => [t.id, { note: 'x', at: null }]));
+    expect(progressOf(profile, log).next.stage).toBe(0);
+    expect(progressOf(profile, log).grow).toBe(2);
+    // 예전 4단계 체크는 내 직무 할 일 기록으로 옮긴다
+    expect(Object.keys(migrateDone(profile, [true, false, true, false]))).toEqual(['dmc.mkt.g1', 'dmc.mkt.g3']);
   });
   it('표정이 바뀌는 날과, 분노 이후 주 1회만 알림을 보낸다', () => {
     const sendDays = Array.from({ length: 22 }, (_, d) => d).filter((d) => notifyDecision(d, true).send);
@@ -53,11 +70,11 @@ describe('표정·문구·알림 규칙', () => {
     expect(notifyDecision(4, false).send).toBe(false);
   });
   it('iPhone 앱이 예약할 4주 치 알림: 날짜·표정·문구', () => {
-    const plan = notificationSchedule({ done: [true, false, false, false], track: MAJORS.dmc.tracks.mkt });
+    const plan = notificationSchedule({ progress: progressOf({ name: 'a', grade: 2, major: 'dmc', track: 'mkt' }, {}) });
     expect(plan.map((p) => [p.day, p.mood])).toEqual([
       [2, 'neutral'], [4, 'annoyed'], [7, 'angry'], [14, 'angry'], [21, 'angry'], [28, 'angry'],
     ]);
-    expect(plan[1].body).toBe('2단계 아직이야? 이대로 졸업할 거야?');
+    expect(plan[1].body).toBe('2학년 할 일 아직이야? 이대로 졸업할 거야?');
     expect(plan[2].body).toBe('감자가 화났다. 새 기회 확인하러 와.');
   });
 });
@@ -77,7 +94,8 @@ describe('마감 임박 알림 (P1)', () => {
   it('이미 지난 알림 시각은 빼고, 미접속 알림과 같은 날이면 하루 한 번만 (마감 알림 우선)', () => {
     // 마감 5일 뒤 → 3일 전 = 2일째(미접속 무표정 알림과 같은 날), 하루 전 = 4일째(짜증 알림과 같은 날)
     const items = [item('A', 5), item('지난', 2)];
-    const plan = notificationPlan({ done: [false, false, false, false], track: MAJORS.dmc.tracks.mkt, items, saved: { A: true, 지난: true }, now });
+    const progress = progressOf({ name: 'a', grade: 1, major: 'dmc', track: 'mkt' }, {});
+    const plan = notificationPlan({ progress, items, saved: { A: true, 지난: true }, now });
     const days = plan.map((p) => Math.round((p.at - today.getTime()) / 86400000 - 10 / 24));
     expect(days).toEqual([1, 2, 4, 7, 14, 21, 28]);
     expect(plan.filter((p) => p.kind === 'due').map((p) => p.body)).toEqual([
@@ -115,6 +133,14 @@ describe('기회 데이터', () => {
     const items = buildItems({ name: 'a', major: 'dmc', track: 'mkt' }, new Date(2026, 10, 18), d);
     expect(items.find((it) => it.id === first).title).toBe('새로 바뀐 공고');
     expect(await fetchLatest({ fetchImpl: async () => { throw new Error('offline'); } })).toBeNull();
+  });
+  it('학교 재학생 전용 기회는 내 학교일 때만 보이고 "우리 학교"로 표시한다', () => {
+    const at = new Date(2026, 10, 18);
+    const knu = buildItems({ name: 'a', school: '강원대학교', major: 'dmc', track: 'mkt' }, at);
+    const hallym = buildItems({ name: 'a', school: '한림대학교', major: 'dmc', track: 'mkt' }, at);
+    expect(knu.find((it) => it.id === 'knu-rise-supporters').ours).toBe(true);
+    expect(hallym.find((it) => it.id === 'knu-rise-supporters')).toBeUndefined();
+    expect(hallym.find((it) => it.id === 'cc-talent-supporters').stepTitle).toBe('1학년 · 지역 기관 SNS 서포터즈');
   });
   it('마감 지난 기회는 열린 기회에서 빠진다', () => {
     const today = new Date(2026, 10, 16);
@@ -161,6 +187,9 @@ describe('화면 흐름', () => {
     fireEvent.change(screen.getByLabelText('이름'), { target: { value: name } });
     expect(document.querySelector('.hero-bubble').textContent).toContain(`${name}, 춘천에서도 같이 커 보자.`);
     fireEvent.change(screen.getByLabelText('학교'), { target: { value: '한림대학교' } });
+    fireEvent.click(screen.getByText('감자 키우기 시작'));
+    expect(screen.getByRole('alert').textContent).toBe('학년을 선택해 주세요.');
+    fireEvent.change(screen.getByLabelText('학년'), { target: { value: '1' } });
     // 계열 12개 중 고르기
     expect(screen.getByLabelText('계열').querySelectorAll('option')).toHaveLength(13);
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'dmc' } });
@@ -172,7 +201,8 @@ describe('화면 흐름', () => {
     start();
     expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
     expect(screen.getByText('감자가 오늘도 성장 중!')).toBeTruthy();
-    expect(screen.getByText('다음 단계 추천 기회')).toBeTruthy();
+    expect(screen.getByText('1학년 추천 기회')).toBeTruthy();
+    expect(document.querySelector('.home-hi').textContent).toBe('하늘, 1학년엔 이것부터 해 볼까?');
 
     // 시연 도구: 7일 → 분노, 알림 발송
     fireEvent.change(document.getElementById('days'), { target: { value: '7' } });
@@ -203,25 +233,29 @@ describe('화면 흐름', () => {
     types.forEach((t) => expect(['서포터즈', '공모전', '프로젝트']).toContain(t));
   });
 
-  it('내 경로 완료 → 설정에서 전공 변경 경고 → 초기화, 기기 저장', () => {
+  it('로드맵: 할 일에 한 줄 기록 → 감자 성장, 계열을 바꿔도 공통 기록은 남는다, 기기 저장', () => {
     start();
-    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('내 경로'));
-    const boxes = screen.getAllByLabelText('완료로 표시');
-    fireEvent.click(boxes[0]);
-    fireEvent.click(boxes[1]);
-    expect(screen.getByText('2 / 4단계 완료')).toBeTruthy();
-    expect(JSON.parse(localStorage.getItem('oo-kiugi:v2')).done).toEqual([true, true, false, false]);
-    // 단계를 마친 만큼 홈 감자 머리 위에 싹이 자란다
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('로드맵'));
+    expect(screen.getByText('기록 0 / 12')).toBeTruthy();
+    for (let k = 0; k < 3; k++) {
+      fireEvent.click(screen.getAllByText('했어요 · 한 줄 남기기')[0]);
+      const input = screen.getByPlaceholderText(/뭘 했고 뭐가 남았나요/);
+      fireEvent.change(input, { target: { value: `기록 ${k + 1}` } });
+      fireEvent.click(screen.getByText('기록하기'));
+    }
+    expect(screen.getByText('기록 3 / 12')).toBeTruthy();
+    expect(screen.getByText('기록 1')).toBeTruthy();
+    expect(Object.keys(JSON.parse(localStorage.getItem('oo-kiugi:v2')).log)).toEqual(['dmc.mkt.g1', 'g1-counsel', 'g1-posts']);
+    // 기록 3개마다 감자 머리 위 싹이 한 칸 자란다
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('홈'));
-    expect(document.querySelector('.phone .sprout').getAttribute('data-grow')).toBe('2');
-    expect(screen.getByText('잎 난 감자')).toBeTruthy();
+    expect(document.querySelector('.phone .sprout').getAttribute('data-grow')).toBe('1');
+    expect(screen.getByText('새싹 감자')).toBeTruthy();
 
     fireEvent.click(screen.getByLabelText('설정'));
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'bio' } });
-    expect(screen.getByText(/완료한 단계 2개가 초기화/)).toBeTruthy();
     fireEvent.click(screen.getByLabelText('연구형'));
     fireEvent.click(screen.getByText('저장'));
-    expect(screen.getByText('0 / 4단계 완료')).toBeTruthy();
+    expect(screen.getByText('기록 2 / 12')).toBeTruthy();
 
     // 다시 열어도 저장된 프로필로 시작
     cleanup();

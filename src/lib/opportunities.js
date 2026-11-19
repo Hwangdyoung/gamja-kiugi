@@ -1,5 +1,6 @@
 import { MAJORS } from './data.js';
 import { getTrack } from './growth.js';
+import { STAGES } from './roadmap.js';
 import { BUNDLED } from './opportunityData.js';
 
 const DAY = 86400000;
@@ -17,8 +18,9 @@ export function parseDate(s) {
   return new Date(y, m - 1, d);
 }
 
-/* 기회 카드 목록. 내 경로의 기회를 단계 순서대로, 같은 기회는 한 번만 모은다.
-   각 기회에 실제 마감일(deadline)과 몇 단계인지(step)를 붙인다.
+/* 기회 카드 목록. 내 경로의 기회를 학년 순서대로, 같은 기회는 한 번만 모은다.
+   각 기회에 실제 마감일(deadline)과 몇 학년 할 일인지(step: 0~3)를 붙인다.
+   학교 재학생 전용 기회(school)는 내 학교일 때만 넣고 "우리 학교"로 표시한다. 학교를 모르면(예전 프로필) 그대로 둔다.
    data = 기회 데이터(src/data/opportunities.json 모양). 안 넘기면 앱에 넣은 기본값 */
 export function buildItems(profile, today = startOfToday(), data = BUNDLED) {
   const track = getTrack(profile);
@@ -31,6 +33,7 @@ export function buildItems(profile, today = startOfToday(), data = BUNDLED) {
     ids.forEach((id) => {
       const x = byId.get(id);
       if (!x || seen.has(id)) return;
+      if (x.school && profile.school && x.school !== profile.school) return;
       seen.add(id);
       out.push({
         id,
@@ -42,8 +45,9 @@ export function buildItems(profile, today = startOfToday(), data = BUNDLED) {
         src: x.src,
         when: x.when ?? null,
         online: x.where === '온라인',
+        ours: !!x.school && x.school === profile.school,
         step: i,
-        stepTitle: track.levels[i]?.t ?? '',
+        stepTitle: `${STAGES[i].grade}학년 · ${track.levels[i]?.t ?? ''}`,
       });
     });
   });

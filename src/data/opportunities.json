@@ -19,7 +19,8 @@
       "due": null,
       "target": "강원대 춘천캠퍼스 재학생 약 10명",
       "src": "https://scphys.kangwon.ac.kr/physics/community/notice.do?mode=view&articleNo=564581",
-      "when": "2026년 2기 6.22~7.3 모집"
+      "when": "2026년 2기 6.22~7.3 모집",
+      "school": "강원대학교"
     },
     {
       "id": "cc-travel-sns-contest",
@@ -99,7 +100,8 @@
       "due": null,
       "target": "강원대 재학생",
       "src": "https://plantmedicine.kangwon.ac.kr/applybio/community/under-notice.do?mode=view&articleNo=560753",
-      "when": "매년 초 모집 (2026년 1차 ~2월)"
+      "when": "매년 초 모집 (2026년 1차 ~2월)",
+      "school": "강원대학교"
     },
     {
       "id": "knu-bio-job-talk",
@@ -109,7 +111,8 @@
       "due": null,
       "target": "재학생",
       "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
-      "when": "학기마다 열림 · 학과 공지 확인"
+      "when": "학기마다 열림 · 학과 공지 확인",
+      "school": "강원대학교"
     },
     {
       "id": "knu-bio-undergrad-research",
@@ -119,7 +122,8 @@
       "due": null,
       "target": "재학생",
       "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
-      "when": "연구실별 수시 모집 · 학과 공지 확인"
+      "when": "연구실별 수시 모집 · 학과 공지 확인",
+      "school": "강원대학교"
     },
     {
       "id": "knu-winter-field",
@@ -129,7 +133,8 @@
       "due": null,
       "target": "강원대 재학생",
       "src": "https://internship.kangwon.ac.kr/",
-      "when": "2026 동계 12.22~2.21 진행 · 신청은 현장실습 시스템 공지 확인"
+      "when": "2026 동계 12.22~2.21 진행 · 신청은 현장실습 시스템 공지 확인",
+      "school": "강원대학교"
     },
     {
       "id": "cbf-jobs",
@@ -310,20 +315,20 @@
       "type": "공모전",
       "org": "행정안전부",
       "due": null,
-      "target": "제한 없음 · 공공데이터로 만든 아이디어·서비스",
-      "src": "https://www.theteams.kr/activities/page/314393/lc",
-      "when": "매년 3~9월 접수 (제14회 2026.3.2~9.1)",
+      "target": "제한 없음 · 아이디어 기획 부문은 개발 전 아이디어로도 참가",
+      "src": "https://www.mois.go.kr/frt/bbs/type013/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000006&nttId=127805",
+      "when": "매년 4월 공고 (제14회 2026.4.8 공고 · 기관별 예선 → 9월 본선 → 11월 왕중왕전)",
       "where": "온라인"
     },
     {
       "id": "fiscal-data-contest",
       "title": "재정데이터 분석 대학생 경진대회",
       "type": "공모전",
-      "org": "기획예산처",
+      "org": "기획예산처 · 한국재정정보원",
       "due": null,
-      "target": "대학(원)생 5인 이내 팀",
-      "src": "https://www.theteams.kr/activities/page/323063/lc",
-      "when": "2026년 7.6~8.26 접수 (매년 여름 열림)",
+      "target": "대학(원) 재학·휴학생 · 1박 2일 교육과 온라인 멘토링",
+      "src": "https://policy.hanyang.ac.kr/front/communication/notice/notice-view?id=2259",
+      "when": "매년 여름 (2026년 6.21까지 신청, 7.6~8.9 대회)",
       "where": "온라인"
     }
   ],

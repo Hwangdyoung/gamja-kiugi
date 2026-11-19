@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { doneCount, getTrack, messageFor, moodOf } from './lib/growth.js';
+import { getTrack, messageFor, moodOf } from './lib/growth.js';
+import { migrateDone, progressOf } from './lib/roadmap.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import { urgentSaved } from './lib/notify.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
@@ -20,7 +21,8 @@ import DemoPanel from './components/DemoPanel.jsx';
 import { BackIcon, GearIcon } from './components/Icons.jsx';
 
 const APP_NAME = '감자 키우기';
-const EMPTY_DONE = [false, false, false, false];
+/* 계정·기기에 저장된 기록. 예전 4단계 체크(배열)면 기록으로 옮긴다 */
+const toLog = (profile, v) => (Array.isArray(v) ? migrateDone(profile, v) : v ?? {});
 
 export default function App() {
   const stored = useMemo(() => storage.load(), []);
@@ -28,7 +30,8 @@ export default function App() {
 
   // 기기에 저장하는 값 (기획안 10장: 로그인 없이 기기에 저장)
   const [profile, setProfile] = useState(validStored?.profile ?? null);
-  const [done, setDone] = useState(validStored?.done ?? EMPTY_DONE);
+  // 할 일별 한 줄 기록 { [할 일 id]: { note, at } } (학년별 로드맵)
+  const [log, setLog] = useState(() => (validStored ? validStored.log ?? toLog(validStored.profile, validStored.done) : {}));
   const [saved, setSaved] = useState(validStored?.saved ?? {});
   const [notifyOn, setNotifyOn] = useState(validStored?.notifyOn ?? true);
 
@@ -68,9 +71,10 @@ export default function App() {
   // 로그인 상태에서 진행 상황이 바뀌면 1초 뒤 계정에 저장
   useEffect(() => {
     if (!user || !profile) return undefined;
-    const t = setTimeout(() => pushProgress(user.id, { profile, done, saved, notifyOn }), 1000);
+    // 계정 표의 done 칸(jsonb)에 기록을 그대로 넣는다 (표 구조를 바꾸지 않으려고)
+    const t = setTimeout(() => pushProgress(user.id, { profile, done: log, saved, notifyOn }), 1000);
     return () => clearTimeout(t);
-  }, [user, profile, done, saved, notifyOn]);
+  }, [user, profile, log, saved, notifyOn]);
 
   const onLoggedIn = async (u) => {
     setUser(u);
@@ -85,12 +89,12 @@ export default function App() {
     const remote = await pullProgress(u.id);
     if (remote && getTrack(remote.profile)) {
       setProfile(remote.profile);
-      setDone(remote.done ?? EMPTY_DONE);
+      setLog(toLog(remote.profile, remote.done));
       setSaved(remote.saved ?? {});
       setNotifyOn(remote.notifyOn ?? true);
       setToast('저장된 감자를 불러왔어요.');
     } else if (profile) {
-      pushProgress(u.id, { profile, done, saved, notifyOn });
+      pushProgress(u.id, { profile, done: log, saved, notifyOn });
       setToast('이 기기의 감자를 계정에 저장했어요.');
     }
   };
@@ -142,8 +146,8 @@ export default function App() {
   const today = useMemo(() => startOfToday(), []);
 
   useEffect(() => {
-    if (profile) storage.save({ profile, done, saved, notifyOn });
-  }, [profile, done, saved, notifyOn]);
+    if (profile) storage.save({ profile, log, saved, notifyOn });
+  }, [profile, log, saved, notifyOn]);
 
   // 화면이 바뀌면 맨 위부터 보여준다
   useEffect(() => {
@@ -164,7 +168,6 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const track = getTrack(profile);
   // 마감이 지난 기회는 목록에서 자동으로 내린다 (기획안 8장)
   const all = useMemo(() => buildItems(profile, today, oppData), [profile, today, oppData]);
   const items = useMemo(
@@ -179,14 +182,15 @@ export default function App() {
   // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보내고 알림(미접속·마감 임박)을 다시 예약한다.
   // 앱으로 돌아올 때마다 "지금 접속"으로 기록
   useEffect(() => {
-    const send = () => syncWidget({ profile, done, demoDays: days, notifyOn, items, saved });
+    const send = () => syncWidget({ profile, log, demoDays: days, notifyOn, items, saved });
     send();
     const onVisible = () => document.visibilityState === 'visible' && send();
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [profile, done, days, notifyOn, items, saved]);
+  }, [profile, log, days, notifyOn, items, saved]);
+  const progress = useMemo(() => progressOf(profile, log), [profile, log]);
   const mood = moodOf(days);
-  const message = profile ? messageFor(mood, { done, track }) : '';
+  const message = profile ? messageFor(mood, { progress }) : '';
   const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
 
@@ -194,10 +198,16 @@ export default function App() {
     logEvent('save', { id, on: !saved[id] });
     setSaved((s) => ({ ...s, [id]: !s[id] }));
   };
-  const toggleStep = (i) => {
-    if (!done[i]) logEvent('step_done', { step: i + 1 });
-    setDone((d) => d.map((v, j) => (j === i ? !v : v)));
+  // 할 일을 끝내면 한 줄 기록을 남긴다. 기록을 지우면 다시 안 한 일이 된다
+  const recordTask = (id, note) => {
+    if (!log[id]) logEvent('step_done', { task: id });
+    setLog((l) => ({ ...l, [id]: { note, at: new Date().toISOString() } }));
   };
+  const clearTask = (id) =>
+    setLog((l) => {
+      const { [id]: _gone, ...rest } = l;
+      return rest;
+    });
   const goTab = (t) => {
     setDetailId(null);
     setTab(t);
@@ -207,8 +217,8 @@ export default function App() {
     const changed = !profile || profile.major !== next.major || profile.track !== next.track;
     if (!profile) logEvent('onboarding_done');
     setProfile(next);
+    // 계열·직무를 바꿔도 남긴 기록은 지우지 않는다 (공통 할 일 기록은 그대로 이어진다)
     if (changed) {
-      setDone(EMPTY_DONE);
       setQ('');
       setType('전체');
       setMode(null);
@@ -221,7 +231,7 @@ export default function App() {
   const reset = () => {
     storage.clear();
     setProfile(null);
-    setDone(EMPTY_DONE);
+    setLog({});
     setSaved({});
     setNotifyOn(true);
     setTab('home');
@@ -264,10 +274,9 @@ export default function App() {
     screen = (
       <Home
         name={profile.name}
-        track={track}
+        progress={progress}
         mood={mood}
         message={message}
-        done={done}
         items={items}
         today={today}
         saved={saved}
@@ -303,11 +312,12 @@ export default function App() {
     screen = (
       <Path
         profile={profile}
-        track={track}
-        done={done}
+        progress={progress}
+        log={log}
         items={items}
         today={today}
-        onToggle={toggleStep}
+        onRecord={recordTask}
+        onClear={clearTask}
         onOpen={setDetailId}
       />
     );
@@ -351,7 +361,6 @@ export default function App() {
         {settingsOpen && profile && (
           <SettingsSheet
             profile={profile}
-            doneCount={doneCount(done)}
             notifyOn={notifyOn}
             onNotify={setNotifyOn}
             onSave={saveProfile}

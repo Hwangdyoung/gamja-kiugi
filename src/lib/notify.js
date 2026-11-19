@@ -25,12 +25,12 @@ export function notifyDecision(days, enabled) {
    위 규칙으로 보내는 날만 골라 4주 치를 만든다: 2·4·7·14·21·28일째 */
 const PLAN_DAYS = 28;
 
-export function notificationSchedule({ done, track }) {
+export function notificationSchedule({ progress }) {
   const out = [];
   for (let day = 1; day <= PLAN_DAYS; day++) {
     if (!notifyDecision(day, true).send) continue;
     const mood = moodOf(day);
-    out.push({ day, mood, body: messageFor(mood, { done, track }) });
+    out.push({ day, mood, body: messageFor(mood, { progress }) });
   }
   return out;
 }
@@ -63,10 +63,10 @@ export function deadlineSchedule(items, saved, now = new Date()) {
 
 /* iPhone 앱이 예약할 알림 전체: 미접속 알림 + 마감 임박 알림.
    하루에 한 번을 넘기지 않는다(기획안 7장) → 같은 날 겹치면 마감 알림을 남긴다(할 일이 분명해서). */
-export function notificationPlan({ done, track, items, saved, now = new Date() }) {
+export function notificationPlan({ progress, items, saved, now = new Date() }) {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
-  const away = notificationSchedule({ done, track }).map((p) => ({
+  const away = notificationSchedule({ progress }).map((p) => ({
     at: start.getTime() + p.day * DAY_MS + SEND_HOUR * HOUR_MS,
     kind: 'away',
     target: 'home',

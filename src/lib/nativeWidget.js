@@ -1,5 +1,5 @@
 import { Capacitor, registerPlugin } from '@capacitor/core';
-import { getTrack } from './growth.js';
+import { progressOf } from './roadmap.js';
 import { notificationPlan } from './notify.js';
 
 /* iPhone 앱(Capacitor)으로 실행될 때만 홈 화면 위젯과 미접속 알림을 갱신한다.
@@ -9,17 +9,17 @@ const WidgetBridge = registerPlugin('WidgetBridge');
 
 export const isNativeApp = () => Capacitor.isNativePlatform();
 
-export function syncWidget({ profile, done, demoDays, notifyOn, items = [], saved = {} }) {
+export function syncWidget({ profile, log = {}, demoDays, notifyOn, items = [], saved = {} }) {
   if (!isNativeApp()) return;
-  const next = done.indexOf(false); // -1이면 모두 완료
-  const track = getTrack(profile);
+  const progress = progressOf(profile, log);
   WidgetBridge.update({
     hasProfile: !!profile,
     name: profile?.name ?? '',
-    nextStep: next === -1 ? 0 : next + 1,
+    // 다음 할 일의 학년 (1~4). 0이면 모두 기록함
+    nextStep: progress.next ? progress.next.stage + 1 : 0,
     demoDays,
     // 미접속 알림 + 스크랩한 기회 마감 임박 알림. 알림을 끄면 빈 목록 → 예약된 감자 알림이 모두 지워진다
-    notifications: profile && notifyOn ? notificationPlan({ done, track, items, saved }) : [],
+    notifications: profile && notifyOn ? notificationPlan({ progress, items, saved }) : [],
   }).catch(() => {
     /* App Group 설정이 안 됐으면 위젯만 갱신되지 않는다. 앱 사용에는 지장 없음 */
   });

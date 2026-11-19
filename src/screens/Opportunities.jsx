@@ -22,7 +22,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
         no="02"
         en="OPPORTUNITIES"
         title="할 게 없다며? 여기 있는데."
-        lead="내 경로에 맞는 서포터즈·공모전·프로젝트·인턴·현장실습·채용이에요. 춘천에서 하는 것과 온라인으로 하는 것을 같이 모았고, 마감 지난 기회는 자동으로 내려요."
+        lead="내 로드맵에 맞는 서포터즈·공모전·프로젝트·인턴·현장실습·채용이에요. 춘천에서 하는 것과 온라인으로 하는 것을 같이 모았고, 마감 지난 기회는 자동으로 내려요."
       />
 
       <div className="searchbar">

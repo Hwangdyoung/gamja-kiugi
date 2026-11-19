@@ -1,10 +1,10 @@
 import { BagIcon, ChatIcon, HomeIcon, PathIcon } from './Icons.jsx';
 
-/* 하단 탭 4개: 홈, 기회, 내 경로, 선배 (기획안 6장) */
+/* 하단 탭 4개: 홈, 기회, 로드맵, 선배 (기획안 6장) */
 export const TABS = [
   { id: 'home', label: '홈', Icon: HomeIcon },
   { id: 'opps', label: '기회', Icon: BagIcon },
-  { id: 'path', label: '내 경로', Icon: PathIcon },
+  { id: 'path', label: '로드맵', Icon: PathIcon },
   { id: 'senior', label: '선배', Icon: ChatIcon },
 ];
 

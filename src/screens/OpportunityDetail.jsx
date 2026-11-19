@@ -18,6 +18,7 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
         <span className="opp-meta">
           <span className="tag">{item.type}</span>
           {item.online && <span className="tag online">온라인</span>}
+          {item.ours && <span className="tag ours">우리 학교</span>}
           <span className="dday">{ddayLabel(item, today)}</span>
         </span>
         <h1>{item.title}</h1>
@@ -47,10 +48,8 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
           <dd>{item.target}</dd>
         </div>
         <div>
-          <dt>내 경로</dt>
-          <dd>
-            {item.step + 1}단계 · {item.stepTitle}
-          </dd>
+          <dt>내 로드맵</dt>
+          <dd>{item.stepTitle}</dd>
         </div>
         <div>
           <dt>출처</dt>

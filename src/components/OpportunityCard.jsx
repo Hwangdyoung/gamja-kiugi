@@ -11,11 +11,12 @@ export default function OpportunityCard({ item, today, saved, onOpen, onSave }) 
         <span className="opp-meta">
           <span className="tag">{item.type}</span>
           {item.online && <span className="tag online">온라인</span>}
+          {item.ours && <span className="tag ours">우리 학교</span>}
           <span className={`dday${urgent ? ' urgent' : ''}`}>{ddayLabel(item, today)}</span>
         </span>
         <span className="opp-title">{item.title}</span>
         <span className="opp-org">
-          {item.org} · 내 경로 {item.step + 1}단계
+          {item.org} · {item.step + 1}학년 할 일
         </span>
       </button>
       <button

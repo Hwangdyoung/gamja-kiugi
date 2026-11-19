@@ -54,7 +54,8 @@ describe('로그인 (이메일·비밀번호)', () => {
     fireEvent.change(screen.getByLabelText('비밀번호'), { target: { value: 'potato1' } });
     fireEvent.click(screen.getByText('시작하기'));
     await screen.findByText('저장된 감자를 불러왔어요.');
-    expect(screen.getByText('2 / 4단계 완료')).toBeTruthy();
+    // 예전 4단계 체크(1·2단계)는 내 직무 할 일 기록 2개로 옮겨진다
+    expect(screen.getByText('기록 2 / 12')).toBeTruthy();
   });
 
   it('로그인 없이 둘러보기 → 예전처럼 시작 설정', async () => {

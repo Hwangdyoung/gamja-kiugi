@@ -1,29 +1,31 @@
 import { useState } from 'react';
 import { MAJORS } from '../lib/data.js';
+import { GRADES } from '../lib/roadmap.js';
 
-/* 시작 설정: 이름 · 학교 · 계열 · 관심 직무 (기획안 5장)
-   학교마다 학과 이름이 달라서 학과 대신 계열(12개)을 고른다. 경로와 기회도 계열 단위로 만든다.
-   시작 화면과 설정 시트가 같이 쓴다. */
+/* 시작 설정: 이름 · 학교 · 학년 · 계열 · 관심 직무 (기획안 5장)
+   - 학교: 재학생 전용 프로그램(현장실습학기제, 학부연구생 등)을 내 학교 것만 보여 주려고 묻는다
+   - 학년: 로드맵에서 "지금 할 일"을 고르려고 묻는다
+   - 학교마다 학과 이름이 달라서 학과 대신 계열(12개)을 고른다.
+   시작 화면과 설정 시트가 같이 쓴다. 계열·직무를 바꿔도 남긴 기록은 지우지 않는다. */
 export const SCHOOLS = ['강원대학교', '한림대학교', '춘천교육대학교', '한림성심대학교', '송곡대학교', '기타'];
 
-export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNameDraft, onSubmit }) {
+export default function ProfileForm({ profile, submitLabel, onNameDraft, onSubmit }) {
   const [name, setName] = useState(profile?.name ?? '');
   const [school, setSchool] = useState(profile?.school ?? '');
+  const [grade, setGrade] = useState(profile?.grade ?? 0);
   const [major, setMajor] = useState(profile?.major ?? '');
   const [track, setTrack] = useState(profile?.track ?? null);
   const [err, setErr] = useState('');
-
-  const willReset =
-    profile && doneCount > 0 && (major !== profile.major || (track && track !== profile.track));
 
   const submit = (e) => {
     e.preventDefault();
     const v = name.trim();
     if (!v) return setErr('이름을 입력해 주세요.');
     if (!school) return setErr('학교를 선택해 주세요.');
+    if (!grade) return setErr('학년을 선택해 주세요.');
     if (!major) return setErr('계열을 선택해 주세요.');
     if (!track) return setErr('관심 직무를 선택해 주세요.');
-    onSubmit({ name: v, school, major, track });
+    onSubmit({ name: v, school, grade, major, track });
   };
 
   return (
@@ -63,6 +65,28 @@ export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNam
             </option>
           ))}
         </select>
+        <p className="field-hint">학교마다 재학생만 할 수 있는 프로그램이 있어서, 우리 학교 것만 골라 보여 드려요.</p>
+      </div>
+
+      <div className="field">
+        <label htmlFor="grade">학년</label>
+        <select
+          id="grade"
+          className="input"
+          value={grade}
+          onChange={(e) => {
+            setGrade(+e.target.value);
+            setErr('');
+          }}
+        >
+          <option value={0}>학년 선택</option>
+          {GRADES.map((g) => (
+            <option key={g.value} value={g.value}>
+              {g.label}
+            </option>
+          ))}
+        </select>
+        <p className="field-hint">지금 학년에 맞는 할 일부터 보여 드려요.</p>
       </div>
 
       <div className="field">
@@ -114,7 +138,6 @@ export default function ProfileForm({ profile, doneCount = 0, submitLabel, onNam
         )}
       </fieldset>
 
-      {willReset && <p className="notice">계열·직무를 바꾸면 완료한 단계 {doneCount}개가 초기화됩니다.</p>}
       {err && (
         <p className="error" role="alert">
           {err}

@@ -52,11 +52,11 @@ private func message(mood: Mood, name: String, nextStep: Int) -> String {
     let allDone = nextStep == 0
     switch mood {
     case .happy:
-        return allDone ? "축하해! \(n)\(josa(n, "은", "는")) 4단계를 다 마쳤어." : "\(n)\(i) 오늘도 성장 중!"
+        return allDone ? "\(n)\(i) 다 컸다. 이 기록으로 지원서 써 보자." : "\(n)\(i) 오늘도 성장 중!"
     case .neutral:
         return "\(n)\(i) 멈춰 있어요."
     case .annoyed:
-        return allDone ? "4단계까지 와놓고 여기서 멈출 거야?" : "\(nextStep)단계 아직이야? 이대로 졸업할 거야?"
+        return allDone ? "다 해놓고 지원 안 할 거야?" : "\(nextStep)학년 할 일 아직이야? 이대로 졸업할 거야?"
     case .angry:
         return "\(n)\(i) 화났다. 새 기회 확인하러 와."
     }
