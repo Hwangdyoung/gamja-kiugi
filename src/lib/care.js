@@ -27,8 +27,8 @@ export function vitalOf(care, now = new Date()) {
 }
 
 export function vitalLabel(v) {
-  if (v >= 70) return '기운 넘침';
-  if (v >= 40) return '괜찮음';
+  if (v >= 70) return '팔팔해';
+  if (v >= 40) return '괜찮아';
   return '시들시들';
 }
 

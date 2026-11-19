@@ -1,25 +1,25 @@
 import { useRef, useState } from 'react';
 import { GROW_LABELS } from '../components/Mascot.jsx';
 import LivePotato from '../components/LivePotato.jsx';
+import { ChevronIcon, DropIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
 import { CARE, CARE_KINDS, SLEEPY, TICKLE, pokeLine, vitalLabel } from '../lib/care.js';
-import OpportunityCard from '../components/OpportunityCard.jsx';
-import { ChevronIcon, DropIcon, SearchIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
 
 const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
 
-/* 홈 (v2): 위쪽은 큰 감자, 아래는 끌어올리는 패널.
-   - 감자 영역: 인사 · 말풍선 · 살아 있는 감자(누르면 반응) · 머리 위 싹(기록 3개마다 한 칸) · 학년 4칸 진행 점
-     · 물/햇빛/거름 주기(진로 행동으로 모은 것) · 기운
-   - 패널(접힘): 다음 단계와 마감 임박이 바로 보인다. 손잡이를 끌어올리거나 누르면 펼쳐져 검색·추천 기회를 본다.
-   기획안 6장 홈 구성(검색창, 캐릭터와 말풍선, 진행 상황, 다음 단계, 추천 기회)은 그대로, 배치만 바꿨다. */
-export default function Home({ name, progress, mood, message, items, today, saved, urgent = [], soon = [], care, vital = 60, sleeping = false, onGive, onOpen, onSave, onTab, onSearch }) {
-  const [q, setQ] = useState('');
-  // 감자를 누르거나 돌보면 말풍선이 잠깐 바뀐다
+/* 홈 (11/20): 감자가 주인공인 한 화면
+   - 가운데: 인사 · 말풍선 · 살아 있는 감자(누르면 반응), 오른쪽에 물·햇빛·거름 아이콘
+   - 감자 아래: 가진 개수 · 기운 · 성장(기록 3개마다 싹 한 칸)
+   - 아래: 탭 바 위에 떠 있는 "다음 할 일" 카드 하나. 기회 목록·검색은 기회 탭에서 본다 */
+export default function Home({ name, progress, mood, message, items, urgent = [], care, vital = 60, sleeping = false, onGive, onTab }) {
   const [say, setSay] = useState(null);
   const [fx, setFx] = useState(null);
   const sayTimer = useRef(null);
   const fxTimer = useRef(null);
   const count = useRef(0);
+  const { next, stages, current, grow } = progress;
+  const ni = next ? next.stage : -1;
+  const related = next?.task.own ? items.filter((it) => it.step === ni).length : 0;
+
   const speak = (text) => {
     setSay(text);
     clearTimeout(sayTimer.current);
@@ -38,32 +38,6 @@ export default function Home({ name, progress, mood, message, items, today, save
     fxTimer.current = setTimeout(() => setFx(null), 1500);
     speak(sleeping ? '음냐… 고마워…' : CARE[kind].thanks[count.current++ % CARE[kind].thanks.length]);
   };
-  const [open, setOpen] = useState(false);
-  const [drag, setDrag] = useState(null); // 끄는 중이면 손가락이 움직인 거리(px)
-  const start = useRef(null);
-  const { next, stages, current, grow } = progress;
-  const ni = next ? next.stage : -1;
-  const picks = (next ? items.filter((it) => it.step === ni) : items).slice(0, 3);
-  // 학년 칸: 그 학년 할 일을 다 기록했으면 채운다
-  const stageDone = stages.map((s) => s.tasks.every(progress.isDone));
-
-  // 손잡이 끌기: 위로 40px 넘게 끌면 펼치고, 아래로 40px 넘게 끌면 접는다. 거의 안 움직이면 눌러서 토글
-  const onDown = (e) => {
-    start.current = e.clientY;
-    setDrag(0);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-  };
-  const onMove = (e) => start.current != null && setDrag(e.clientY - start.current);
-  const onUp = () => {
-    if (start.current == null) return;
-    const dy = drag ?? 0;
-    if (Math.abs(dy) < 6) setOpen((o) => !o);
-    else if (dy < -40) setOpen(true);
-    else if (dy > 40) setOpen(false);
-    start.current = null;
-    setDrag(null);
-  };
-  const dragStyle = drag ? { transform: `translateY(${open ? Math.max(0, drag) : Math.min(0, drag)}px)` } : undefined;
 
   return (
     <div className="home" data-mood={mood}>
@@ -86,136 +60,82 @@ export default function Home({ name, progress, mood, message, items, today, save
         <p className="home-bubble" aria-live="polite">
           {say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : message)}
         </p>
-        <LivePotato mood={mood} size={150} grow={grow} vital={vital} fx={fx} sleeping={sleeping} onPoke={onPoke} />
-        <div className="home-grow">
-          <span className="grow-label">{GROW_LABELS[grow]}</span>
-          <span className="grow-dots" role="progressbar" aria-label="로드맵 진행" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.count}>
-            {stageDone.map((d, i) => (
-              <i key={i} className={d ? 'on' : ''} />
-            ))}
-          </span>
-          <b className="grow-count">
-            기록 {progress.count} / {progress.total}
-          </b>
-        </div>
-        {care && (
-          <div className="care-row" role="group" aria-label="감자 돌보기">
-            {CARE_KINDS.map((k) => {
-              const Icon = CARE_ICON[k];
-              return (
-                <button
-                  key={k}
-                  type="button"
-                  className={`care-btn care-${k}${care.stock[k] ? '' : ' empty'}`}
-                  aria-label={`${CARE[k].label} 주기, ${care.stock[k]}개 있음`}
-                  onClick={() => giveCare(k)}
-                >
-                  <Icon size={18} />
-                  <span>{CARE[k].label}</span>
-                  <b>{care.stock[k]}</b>
-                </button>
-              );
-            })}
-            <span className="vital" title={`기운 ${vital}`}>
-              <small>{vitalLabel(vital)}</small>
-              <span className="vital-bar" role="meter" aria-label="감자 기운" aria-valuemin={0} aria-valuemax={100} aria-valuenow={vital}>
-                <i style={{ width: `${vital}%` }} />
-              </span>
-            </span>
-          </div>
-        )}
-      </section>
 
-      <section className={`home-panel${open ? ' open' : ''}${drag != null ? ' dragging' : ''}`} style={dragStyle} aria-label="오늘 할 일과 기회">
-        <button
-          type="button"
-          className="panel-handle"
-          aria-expanded={open}
-          aria-label={open ? '패널 접기' : '패널 펼치기'}
-          onPointerDown={onDown}
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-          onPointerCancel={onUp}
-        >
-          <i />
-        </button>
-
-        <div className="panel-body">
-          <button type="button" className="card next" onClick={() => onTab('path')}>
-            <span className="next-body">
-              <span className="eyebrow">{next ? `다음 할 일 · ${ni + 1}학년 ${stages[ni].label}` : '모든 할 일 기록'}</span>
-              <span className="next-title">{next ? next.task.t : '남긴 기록으로 지원서를 써 보세요'}</span>
-            </span>
-            <ChevronIcon />
-          </button>
-
-          {urgent.length > 0 && (
-            <section className="section urgent" aria-label="마감 임박 스크랩">
-              <div className="section-head">
-                <h2>스크랩한 기회 마감 임박</h2>
-                <span className="badge warn">{urgent.length}건</span>
-              </div>
-              <div className="list">
-                {urgent.map((it) => (
-                  <OpportunityCard key={it.id} item={it} today={today} saved onOpen={onOpen} onSave={onSave} />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {soon.length > 0 && (
-            <section className="section" aria-label="곧 열리는 정기 모집">
-              <div className="section-head">
-                <h2>곧 열려요</h2>
-                <span className="muted small">이번 달·다음 달 정기 모집</span>
-              </div>
-              <div className="list">
-                {soon.slice(0, 3).map((it) => (
-                  <OpportunityCard key={it.id} item={it} today={today} saved={!!saved[it.id]} onOpen={onOpen} onSave={onSave} />
-                ))}
-              </div>
-              <p className="fine">스크랩해 두면 모집이 열리는 달 1일에 감자가 알려 줘요.</p>
-            </section>
-          )}
-
-          <form
-            className="searchbar"
-            role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSearch(q.trim());
-            }}
-          >
-            <SearchIcon size={18} />
-            <input
-              type="search"
-              placeholder="기회 검색"
-              aria-label="기회 검색"
-              value={q}
-              onFocus={() => setOpen(true)}
-              onChange={(e) => setQ(e.target.value)}
-            />
-          </form>
-
-          <section className="section">
-            <div className="section-head">
-              <h2>{next ? `${ni + 1}학년 추천 기회` : '마감이 가까운 기회'}</h2>
-              <button type="button" className="link" onClick={() => onTab('opps')}>
-                전체 보기
-              </button>
+        <div className="potato-stage">
+          <LivePotato mood={mood} size={186} grow={grow} vital={vital} fx={fx} sleeping={sleeping} onPoke={onPoke} />
+          {care && (
+            <div className="care-side" role="group" aria-label="감자 돌보기">
+              {CARE_KINDS.map((k) => {
+                const Icon = CARE_ICON[k];
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    className={`care-icon care-${k}${care.stock[k] ? '' : ' empty'}`}
+                    aria-label={`${CARE[k].label} 주기, ${care.stock[k]}개 있음`}
+                    title={`${CARE[k].label} 주기`}
+                    onClick={() => giveCare(k)}
+                  >
+                    <Icon size={22} />
+                  </button>
+                );
+              })}
             </div>
-            {picks.length ? (
-              <div className="list">
-                {picks.map((it) => (
-                  <OpportunityCard key={it.id} item={it} today={today} saved={!!saved[it.id]} onOpen={onOpen} onSave={onSave} />
-                ))}
-              </div>
-            ) : (
-              <p className="empty">지금 모집 중인 기회가 없어요.</p>
-            )}
-          </section>
+          )}
+        </div>
+
+        <div className="home-stats">
+          {care && (
+            <p className="stock-line" aria-label="가진 돌보기">
+              {CARE_KINDS.map((k) => (
+                <span key={k} className={`stock stock-${k}`}>
+                  {CARE[k].label} <b>{care.stock[k]}</b>
+                </span>
+              ))}
+            </p>
+          )}
+          <div className="vital-line">
+            <small>기운</small>
+            <span className="vital-bar" role="meter" aria-label="감자 기운" aria-valuemin={0} aria-valuemax={100} aria-valuenow={vital}>
+              <i style={{ width: `${vital}%` }} />
+            </span>
+            <small className="vital-word">{vitalLabel(vital)}</small>
+          </div>
+          <div className="home-grow">
+            <span className="grow-label">{GROW_LABELS[grow]}</span>
+            <span className="grow-dots" role="progressbar" aria-label="로드맵 진행" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.count}>
+              {stages.map((s, i) => (
+                <i key={i} className={s.tasks.every(progress.isDone) ? 'on' : ''} />
+              ))}
+            </span>
+            <b className="grow-count">
+              기록 {progress.count} / {progress.total}
+            </b>
+          </div>
         </div>
       </section>
+
+      <div className="home-float">
+        <div className="float-card">
+          <span className="eyebrow">{next ? `다음 할 일 · ${ni + 1}학년 ${stages[ni].label}` : '모든 할 일 기록'}</span>
+          <b className="float-title">{next ? next.task.t : '남긴 기록으로 지원서를 써 보세요'}</b>
+          <span className="float-sub">
+            {urgent.length > 0 ? (
+              <button type="button" className="link warn-link" onClick={() => onTab('opps')}>
+                스크랩한 기회 마감 임박 {urgent.length}건
+              </button>
+            ) : related > 0 ? (
+              `이 할 일에 맞는 기회 ${related}건이 있어요`
+            ) : (
+              stages[next ? ni : 3].goal
+            )}
+          </span>
+          <button type="button" className="pill" onClick={() => onTab('path')}>
+            {next ? '하러 가기' : '기록 보기'}
+            <ChevronIcon size={16} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

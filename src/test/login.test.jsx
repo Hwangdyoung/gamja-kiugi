@@ -41,7 +41,8 @@ beforeEach(() => {
 describe('로그인 (이메일·비밀번호)', () => {
   it('처음 열면 로그인 화면 → 이메일·비밀번호 → 계정에 저장된 감자로 이어서 시작', async () => {
     render(<App />);
-    await screen.findByText('시작하기');
+    fireEvent.click(await screen.findByText('시작하기')); // 감자 얼굴 시작 화면
+    await screen.findByLabelText('이메일');
     fireEvent.change(screen.getByLabelText('이메일'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('비밀번호'), { target: { value: '123' } });
     fireEvent.click(screen.getByText('시작하기'));
@@ -60,6 +61,7 @@ describe('로그인 (이메일·비밀번호)', () => {
 
   it('로그인 없이 둘러보기 → 예전처럼 시작 설정', async () => {
     render(<App />);
+    fireEvent.click(await screen.findByText('시작하기'));
     fireEvent.click(await screen.findByText('로그인 없이 둘러보기'));
     await waitFor(() => expect(screen.getByText('춘천이라 할 게 없다며?', { exact: false })).toBeTruthy());
     expect(localStorage.getItem('gamja:guest')).toBe('1');

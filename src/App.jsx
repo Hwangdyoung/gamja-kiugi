@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getTrack, messageFor, moodOf } from './lib/growth.js';
 import { migrateDone, progressOf } from './lib/roadmap.js';
-import { buildItems, isOpen, opensIn, startOfToday } from './lib/opportunities.js';
+import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import { DEFAULT_PREFS, urgentSaved } from './lib/notify.js';
 import { resumeText } from './lib/resume.js';
 import { CARE, dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from './lib/care.js';
@@ -9,6 +9,7 @@ import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
 import { exportText, setEventSink, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
 import { authEnabled, currentUser, onAuthChange, pullProgress, pushEvent, pushProgress, signOut } from './lib/auth.js';
 import Login from './screens/Login.jsx';
+import Welcome from './screens/Welcome.jsx';
 import * as storage from './lib/storage.js';
 import { isNativeApp, listenNotificationOpen, sendTestNotification, syncWidget } from './lib/nativeWidget.js';
 import Onboarding from './screens/Onboarding.jsx';
@@ -50,6 +51,8 @@ export default function App() {
   const [mode, setMode] = useState(null);
   const [nameDraft, setNameDraft] = useState(''); // 시작 화면에서 입력 중인 이름
   const [toast, setToast] = useState('');
+  // 앱을 열 때마다 감자 얼굴 시작 화면부터 (시작하기를 누르면 닫힘)
+  const [welcomed, setWelcomed] = useState(false);
   const [days, setDays] = useState(0); // 시연용 미접속 일수
   const [clock, setClock] = useState('auto'); // 시연용 감자 시간: 지금 시각 · 낮 · 밤
 
@@ -307,8 +310,11 @@ export default function App() {
 
   let screen;
   const needLogin = authEnabled() && authReady && !user && ((!profile && !guest) || showLogin);
+  const showWelcome = authReady && !welcomed;
   if (!authReady) {
     screen = null;
+  } else if (showWelcome) {
+    screen = <Welcome name={profile?.name} onStart={() => setWelcomed(true)} />;
   } else if (needLogin) {
     screen = <Login onDone={onLoggedIn} onGuest={browseAsGuest} />;
   } else if (!profile) {
@@ -335,22 +341,12 @@ export default function App() {
         mood={mood}
         message={message}
         items={items}
-        today={today}
-        saved={saved}
         urgent={urgentSaved(items, saved, today)}
-        soon={items.filter((it) => opensIn(it, today) !== null)}
         care={care}
         vital={vitalOf(care)}
         sleeping={clock === 'auto' ? isSleepTime() : clock === 'night'}
         onGive={giveCare}
-        onOpen={setDetailId}
-        onSave={toggleSave}
         onTab={goTab}
-        onSearch={(v) => {
-          setQ(v);
-          setType('전체');
-          goTab('opps');
-        }}
       />
     );
   } else if (tab === 'opps') {
@@ -391,7 +387,7 @@ export default function App() {
   return (
     <div className="stage">
       <div className="phone" aria-label={`${appName} 앱 화면`}>
-        {profile && !needLogin && (
+        {profile && !needLogin && !showWelcome && (
           <header className="appbar">
             {detail ? (
               <button type="button" className="icon-btn" aria-label="뒤로" onClick={() => setDetailId(null)}>
@@ -409,11 +405,11 @@ export default function App() {
           </header>
         )}
 
-        <div className={`content${profile && !detail && tab === 'home' ? ' is-home' : ''}`} ref={scrollRef}>
+        <div className={`content${showWelcome ? ' is-welcome' : profile && !needLogin && !detail && tab === 'home' ? ' is-home' : ''}${profile && !needLogin && !showWelcome ? ' has-tabbar' : ''}`} ref={scrollRef}>
           {screen}
         </div>
 
-        {profile && !needLogin && <TabBar tab={detail ? null : tab} onTab={goTab} />}
+        {profile && !needLogin && !showWelcome && <TabBar tab={detail ? null : tab} onTab={goTab} />}
 
         {toast && (
           <div className="toast" role="status">
@@ -474,6 +470,7 @@ export default function App() {
         appName={appName}
         notifyOn={notifyOn}
         onReopen={() => {
+          setWelcomed(false);
           setDays(0);
           setDetailId(null);
           setTab('home');

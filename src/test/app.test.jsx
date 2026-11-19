@@ -214,7 +214,9 @@ describe('화면 흐름', () => {
 
   const start = (name = '하늘') => {
     render(<App />);
-    // 1쪽 소개 → 시작하기 → 2쪽 나를 알려줘
+    // 감자 얼굴 시작 화면(처음이라 자기소개) → 1쪽 소개 → 시작하기 → 2쪽 나를 알려줘
+    expect(screen.getByText('안녕, 나는 감자!')).toBeTruthy();
+    fireEvent.click(screen.getByText('시작하기'));
     fireEvent.click(screen.getByText('시작하기'));
     fireEvent.click(screen.getByText('감자 키우기 시작'));
     expect(screen.getByRole('alert').textContent).toBe('이름을 입력해 주세요.');
@@ -235,7 +237,7 @@ describe('화면 흐름', () => {
     start();
     expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
     expect(screen.getByText('감자가 오늘도 성장 중!')).toBeTruthy();
-    expect(screen.getByText('1학년 추천 기회')).toBeTruthy();
+    expect(document.querySelector('.float-title').textContent).toBe('지역 기관 SNS 서포터즈');
     expect(document.querySelector('.home-hi').textContent).toBe('하늘, 1학년엔 이것부터 해 볼까?');
 
     // 살아 있는 감자: 누르면 한마디, 첫 접속 물 1개를 주면 고마워한다, 햇빛이 없으면 얻는 법을 알려준다
@@ -252,7 +254,8 @@ describe('화면 흐름', () => {
     expect(document.querySelector('.phone .mascot').getAttribute('data-mood')).toBe('angry');
     expect(document.querySelector('.push')).toBeTruthy();
 
-    // 추천 기회 → 상세
+    // 기회 탭 → 상세
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('기회'));
     fireEvent.click(screen.getByText('춘천인재육성장학재단 서포터즈'));
     expect(screen.getByText('기회 상세')).toBeTruthy();
     expect(screen.getByText('(재)춘천인재육성장학재단')).toBeTruthy();
@@ -316,9 +319,11 @@ describe('화면 흐름', () => {
     fireEvent.click(screen.getByText('저장'));
     expect(screen.getByText('기록 2 / 12')).toBeTruthy();
 
-    // 다시 열어도 저장된 프로필로 시작
+    // 다시 열면 감자가 이름을 불러 반기고, 시작하기를 누르면 저장된 프로필로 시작
     cleanup();
     render(<App />);
+    expect(screen.getByText('반가워, 하늘!')).toBeTruthy();
+    fireEvent.click(screen.getByText('시작하기'));
     expect(document.querySelector('.brand').textContent).toBe('감자 키우기');
   });
 });
