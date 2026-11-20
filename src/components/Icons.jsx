@@ -79,12 +79,6 @@ export const BookmarkIcon = ({ on, ...p }) => (
     <path d="M6 3h12v18l-6-4-6 4z" />
   </Svg>
 );
-export const BellIcon = (p) => (
-  <Svg {...p}>
-    <path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9" />
-    <path d="M10 20a2 2 0 0 0 4 0" />
-  </Svg>
-);
 /* 감자 돌보기: 물 · 햇빛 · 거름 */
 export const DropIcon = (p) => (
   <Svg {...p}>

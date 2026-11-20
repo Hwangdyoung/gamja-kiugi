@@ -279,10 +279,9 @@ button { cursor: pointer; }
 
 /* ---------- 시작 설정 ---------- */
 .onboarding { padding-top: 28px; gap: 22px; }
-.ob-hero { display: grid; justify-items: center; gap: 8px; text-align: center; }
+
 .brand-lg { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; color: var(--primary); }
 .brand-lg .nm { color: var(--ink); }
-.ob-lead { color: var(--ink-2); font-size: 14px; max-width: 26ch; }
 
 .form { display: grid; gap: 16px; }
 .field { display: grid; gap: 6px; border: 0; margin: 0; padding: 0; min-width: 0; }
@@ -320,45 +319,8 @@ button { cursor: pointer; }
 
 /* ---------- 홈 ---------- */
 .status { padding: 16px; display: grid; gap: 14px; }
-.status-top { display: flex; align-items: center; gap: 14px; }
-.bubble {
-  position: relative;
-  flex: 1;
-  padding: 10px 12px;
-  background: var(--muted);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 1.4;
-}
-.bubble::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  background: inherit;
-  border-left: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  transform: translateY(-50%) rotate(45deg);
-}
-.progress { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
-.progress-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); }
-.progress-label b { color: var(--ink); font-variant-numeric: tabular-nums; }
 
-.next {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 12px 14px 16px;
-  text-align: left;
-  color: var(--ink-3);
-  border-left: 3px solid var(--primary);
-}
-.next-body { flex: 1; display: grid; gap: 2px; }
-.next-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+.progress { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
 
 /* ---------- 기회 ---------- */
 .opp { display: flex; align-items: flex-start; gap: 2px; padding-right: 4px; }
@@ -379,18 +341,7 @@ button { cursor: pointer; }
 .save.on { color: var(--primary); }
 
 /* 빠른 필터: 붙어 있는 2칸 버튼 */
-.quick { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-2); border-radius: var(--r-md); overflow: hidden; background: var(--surface); }
-.quick button {
-  min-height: 40px;
-  padding: 6px 8px;
-  border: 0;
-  background: none;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-2);
-}
-.quick button + button { border-left: 1px solid var(--line-2); }
-.quick button[aria-pressed='true'] { background: var(--primary); color: var(--primary-ink); }
+
 .chips { display: flex; gap: 6px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 2px; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip {
@@ -419,9 +370,7 @@ button { cursor: pointer; }
 .detail-actions { display: flex; gap: 8px; }
 
 /* ---------- 내 경로 ---------- */
-.steps { list-style: none; padding: 0; display: grid; gap: 10px; position: relative; }
-.steps::before { content: ''; position: absolute; left: 12px; top: 14px; bottom: 14px; width: 2px; background: var(--line); }
-.step { display: grid; grid-template-columns: 26px 1fr; gap: 10px; position: relative; }
+
 .step-dot {
   display: grid;
   place-items: center;
@@ -435,11 +384,7 @@ button { cursor: pointer; }
   font-weight: 700;
   color: var(--ink-2);
 }
-.step.done .step-dot { background: var(--ok); border-color: var(--ok); color: #fff; }
-.step-card { padding: 14px; display: grid; gap: 6px; }
-.step.done .step-card { border-left: 3px solid var(--ok); }
-.step-card h3 { font-size: 16px; font-weight: 700; line-height: 1.4; }
-.step-card .muted { font-size: 13px; }
+
 .step-opps { list-style: none; padding: 0; margin-top: 4px; border-top: 1px solid var(--line); }
 .step-opps button {
   width: 100%;
@@ -456,8 +401,6 @@ button { cursor: pointer; }
 }
 .step-opps button span:first-child { flex: 1; }
 .step-opps button svg { color: var(--ink-3); flex: none; }
-.check { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.check input { width: 18px; height: 18px; accent-color: var(--ok); }
 
 /* ---------- 선배 ---------- */
 .senior { padding: 16px; display: grid; gap: 12px; }
@@ -489,7 +432,7 @@ button { cursor: pointer; }
 }
 .sheet-head { display: flex; justify-content: space-between; align-items: center; }
 .sheet-head h2 { font-size: 18px; font-weight: 800; }
-.sheet-sub { font-size: 13px; color: var(--ink-2); font-weight: 700; margin-top: 4px; }
+
 .toggle-row { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); cursor: pointer; }
 .toggle-row > span { flex: 1; display: grid; gap: 2px; }
 .toggle-row small { font-size: 12px; color: var(--ink-3); }
@@ -608,25 +551,8 @@ button { cursor: pointer; }
 .mood-row figcaption { font-size: 12px; font-weight: 700; color: var(--ink-2); }
 .mood-strip p { display: grid; gap: 2px; font-size: 14px; text-align: center; }
 .mood-strip small { font-size: 12px; color: var(--ink-3); }
-.urgent .section-head .badge { background: var(--danger-soft); color: var(--danger); }
 
 /* ---------- 홈 하단 번호 카드 ---------- */
-.motto { display: grid; gap: 2px; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; padding-top: 10px; border-top: 1px solid var(--line); }
-.motto span { font-size: 13px; font-weight: 500; color: var(--ink-2); letter-spacing: -0.01em; }
-.shortcuts { display: grid; gap: 8px; }
-.shortcut {
-  display: grid;
-  gap: 4px;
-  padding: 14px 16px;
-  text-align: left;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-}
-.shortcut b { font-size: 16px; font-weight: 700; }
-.shortcut small { font-size: 13px; color: var(--ink-2); }
-.shortcut .go { display: inline-flex; align-items: center; gap: 2px; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--primary); }
-.shortcut:hover { border-color: var(--primary); }
 
 @media (prefers-reduced-motion: reduce) {
   .bar i { transition: none; }
@@ -643,10 +569,9 @@ button { cursor: pointer; }
 .sheet-metrics small { font-size: 12px; color: var(--ink-3); }
 
 /* ---------- 시작 설정: 학교·학과 ---------- */
-.field-row { display: grid; grid-template-columns: 1fr 1.3fr; gap: 10px; }
+
 select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 28px; }
 .field-hint { font-size: 12.5px; margin-top: -6px; color: var(--ok); font-weight: 600; }
-.field-hint.warn { color: var(--caution-ink); }
 
 /* ---------- 홈 (v2): 큰 감자 + 끌어올리는 패널 ---------- */
 .content.is-home { overflow: hidden; position: relative; }
@@ -678,12 +603,10 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .grow-dots i.on { background: var(--ok); }
 .grow-count { font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
-
-
 /* ---------- 로그인 ---------- */
 .login { padding-top: 28px; gap: 18px; }
 .login .brand-lg { font-size: 18px; text-align: left; }
-.code-input { font-size: 24px; letter-spacing: 0.5em; text-align: center; font-variant-numeric: tabular-nums; }
+
 .login .guest { justify-self: center; }
 .account-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-lg); }
 .account-row > span { flex: 1; display: grid; gap: 2px; min-width: 0; }
@@ -694,13 +617,13 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .back-link { justify-self: start; }
 
 /* 학년별 로드맵 (내 로드맵 탭) */
-.stages { display: grid; gap: 12px; }
+
 .stage-card { padding: 14px; display: grid; gap: 8px; }
 .stage-card.now { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
 .stage-head { display: flex; align-items: center; gap: 8px; }
 .stage-head h3 { font-size: 17px; font-weight: 800; flex: 1; }
 .stage-head h3 span { color: var(--primary); }
-.stage-count { font-size: 13px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
 .record { display: grid; gap: 4px; padding: 8px 10px; background: var(--ok-soft); border-radius: var(--r-md); font-size: 13px; }
 .record b { color: var(--ok-ink); margin-right: 4px; }
 .record small { color: var(--ink-3); }
