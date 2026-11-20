@@ -18,7 +18,7 @@ import Home from './screens/Home.jsx';
 import Opportunities from './screens/Opportunities.jsx';
 import OpportunityDetail from './screens/OpportunityDetail.jsx';
 import Path from './screens/Path.jsx';
-import Seniors from './screens/Seniors.jsx';
+import Community from './screens/Community.jsx';
 import TabBar from './components/TabBar.jsx';
 import Me from './screens/Me.jsx';
 import Tour from './components/Tour.jsx';
@@ -470,7 +470,15 @@ export default function App() {
       />
     );
   } else {
-    screen = <Seniors profile={profile} />;
+    screen = (
+      <Community
+        profile={profile}
+        signedIn={!!user}
+        onLogin={() => setShowLogin(true)}
+        onToast={setToast}
+        onTrack={logEvent}
+      />
+    );
   }
 
   return (

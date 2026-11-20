@@ -1,12 +1,12 @@
 import { BagIcon, ChatIcon, HomeIcon, PathIcon, UserIcon } from './Icons.jsx';
 
-/* 하단 탭 5개: 기회 · 로드맵 · [홈] · 선배 · 나
+/* 하단 탭 5개: 기회 · 로드맵 · [홈] · 커뮤니티 · 나
    홈은 가운데에 동그랗게 도드라지게 두고, 양옆에 두 개씩 */
 export const TABS = [
   { id: 'opps', label: '기회', Icon: BagIcon },
   { id: 'path', label: '로드맵', Icon: PathIcon },
   { id: 'home', label: '홈', Icon: HomeIcon, center: true },
-  { id: 'senior', label: '선배', Icon: ChatIcon },
+  { id: 'community', label: '커뮤니티', Icon: ChatIcon },
   { id: 'me', label: '나', Icon: UserIcon },
 ];
 

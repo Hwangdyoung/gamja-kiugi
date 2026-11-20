@@ -13,6 +13,9 @@
 **SQL Editor → New query**에 [`supabase/schema.sql`](../supabase/schema.sql) 내용을 붙여 넣고 **Run**.
 (진행 상황 `progress`, 테스트 지표 `events` 두 표가 생기고, 각자 자기 줄만 읽고 쓸 수 있게 잠깁니다.)
 
+이어서 **New query**를 하나 더 열어 [`supabase/community.sql`](../supabase/community.sql)을 붙여 넣고 **Run** (커뮤니티 글·댓글·공감·신고).
+누가 쓴 글인지 계정이 새지 않게, 앱은 표를 직접 읽지 않고 `post_feed`·`comment_feed` 보기와 `create_post` 같은 함수만 씁니다. 신고가 3건 쌓이면 글·댓글이 숨겨지고, 팀은 대시보드 **Table Editor → reports**에서 봅니다.
+
 ## 3. 메일 확인 끄기
 **Authentication → Sign In / Providers → Email**에서 **Confirm email**을 끄고 **Save**.
 (무료 요금제는 메일을 시간당 몇 통만 보내고 메일 내용도 못 바꿔서, 메일 없이 이메일+비밀번호로 바로 가입·로그인하게 했습니다.)

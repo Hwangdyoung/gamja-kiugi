@@ -99,3 +99,14 @@ export const UserIcon = (p) => (
     <path d="M4.5 20c1.3-3.6 4.2-5.5 7.5-5.5s6.2 1.9 7.5 5.5" />
   </Svg>
 );
+export const HeartIcon = ({ on, ...p }) => (
+  <Svg {...p} fill={on ? 'currentColor' : 'none'}>
+    <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
+  </Svg>
+);
+export const PencilIcon = (p) => (
+  <Svg {...p}>
+    <path d="M4 20h4L19 9l-4-4L4 16v4z" />
+    <path d="M13.5 6.5l4 4" />
+  </Svg>
+);
