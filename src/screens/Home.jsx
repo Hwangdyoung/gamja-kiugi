@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { GROW_LABELS } from '../components/Mascot.jsx';
 import LivePotato from '../components/LivePotato.jsx';
+import HomeScene from '../components/HomeScene.jsx';
 import { ChevronIcon, DropIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
 import { CARE, CARE_KINDS, SLEEPY, TICKLE, pokeLine, vitalLabel } from '../lib/care.js';
 
@@ -41,6 +42,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
 
   return (
     <div className="home" data-mood={mood}>
+      <HomeScene night={sleeping} />
       <section className="home-hero" aria-label="내 감자">
         <p className="home-hi">
           {next ? (
@@ -57,14 +59,21 @@ export default function Home({ name, progress, mood, message, items, urgent = []
             <>{name}, 이제 지원서 쓸 차례.</>
           )}
         </p>
-        <p className="home-bubble" aria-live="polite">
-          {say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : message)}
-        </p>
+        {/* 몽실몽실 구름 말풍선: 감자 쪽으로 작은 구름 두 개가 이어진다. 말이 바뀌면 통 튀어나온다 */}
+        <div className="home-bubble" key={say ?? 'base'} aria-live="polite">
+          <p>{say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : message)}</p>
+          <i className="bump b1" />
+          <i className="bump b2" />
+          <i className="bump b3" />
+          <i className="bump b4" />
+          <i className="puff p1" />
+          <i className="puff p2" />
+        </div>
 
         <div className="potato-stage">
           <LivePotato mood={mood} size={186} grow={grow} vital={vital} fx={fx} sleeping={sleeping} onPoke={onPoke} />
           {care && (
-            <div className="care-side" role="group" aria-label="감자 돌보기">
+            <div className="care-side" data-tour="care" role="group" aria-label="감자 돌보기">
               {CARE_KINDS.map((k) => {
                 const Icon = CARE_ICON[k];
                 return (
@@ -84,7 +93,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
           )}
         </div>
 
-        <div className="home-stats">
+        <div className="home-stats" data-tour="stats">
           {care && (
             <p className="stock-line" aria-label="가진 돌보기">
               {CARE_KINDS.map((k) => (
@@ -115,7 +124,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
         </div>
       </section>
 
-      <div className="home-float">
+      <div className="home-float" data-tour="next">
         <div className="float-card">
           <span className="eyebrow">{next ? `다음 할 일 · ${ni + 1}학년 ${stages[ni].label}` : '모든 할 일 기록'}</span>
           <b className="float-title">{next ? next.task.t : '남긴 기록으로 지원서를 써 보세요'}</b>

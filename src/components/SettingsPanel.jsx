@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import ProfileForm from './ProfileForm.jsx';
-import { MAJORS, MOODS } from '../lib/data.js';
+import { MOODS } from '../lib/data.js';
 import { SEND_HOURS } from '../lib/notify.js';
-import { GRADES } from '../lib/roadmap.js';
 
 const THEMES = [
   { id: 'system', label: '시스템' },
@@ -22,16 +20,14 @@ function Toggle({ title, sub, checked, disabled, onChange }) {
   );
 }
 
-/* 설정: 계정 · 내 정보 · 알림 · 화면 · 내 기록 · 정보 · 시연(접힘)
+/* 설정 (나 탭 안): 계정 · 알림 · 화면 · 정보 · 시연(접힘)
+   내 정보 수정은 나 탭 맨 위 카드에서 한다.
    발표용 시연 도구는 iPhone 앱에서 폰 화면 밖 시연 도구를 볼 수 없어서 맨 아래 접어 둔다. */
-export default function SettingsSheet({
-  profile,
+export default function SettingsPanel({
   notifyOn,
   onNotify,
   prefs,
   onPrefs,
-  onSave,
-  onClose,
   days,
   onDays,
   mood,
@@ -41,28 +37,16 @@ export default function SettingsSheet({
   account,
   onLogin,
   onLogout,
-  recordCount = 0,
-  onCopyResume,
+  onTour,
   researchedAt,
   oppCount,
   onReset,
 }) {
-  const [editing, setEditing] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
-  const major = MAJORS[profile.major];
-  const grade = GRADES.find((g) => g.value === profile.grade)?.label ?? '학년 미입력';
   const set = (k, v) => onPrefs({ ...prefs, [k]: v });
 
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label="설정" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-head">
-          <h2>설정</h2>
-          <button type="button" className="link" onClick={onClose}>
-            닫기
-          </button>
-        </div>
-
+    <div className="settings">
         {account && (
           <section className="set-group" aria-label="계정">
             <h3 className="set-title">계정</h3>
@@ -83,36 +67,6 @@ export default function SettingsSheet({
             </div>
           </section>
         )}
-
-        <section className="set-group" aria-label="내 정보">
-          <h3 className="set-title">내 정보</h3>
-          {editing ? (
-            <ProfileForm
-              profile={profile}
-              submitLabel="저장"
-              onSubmit={(p) => {
-                onSave(p);
-                setEditing(false);
-              }}
-            />
-          ) : (
-            <div className="profile-row">
-              <span>
-                <b>{profile.name}</b>
-                <small>
-                  {profile.school ?? '학교 미입력'} · {grade}
-                </small>
-                <small>
-                  {major.label} · {major.tracks[profile.track].label}
-                </small>
-              </span>
-              <button type="button" className="btn outline sm" onClick={() => setEditing(true)}>
-                수정
-              </button>
-            </div>
-          )}
-          {!profile.grade && !editing && <p className="notice">학년을 알려 주면 지금 학년에 맞는 할 일부터 보여 드려요.</p>}
-        </section>
 
         <section className="set-group" aria-label="알림">
           <h3 className="set-title">알림</h3>
@@ -142,24 +96,14 @@ export default function SettingsSheet({
           </div>
         </section>
 
-        <section className="set-group" aria-label="내 기록">
-          <h3 className="set-title">내 기록</h3>
-          <div className="account-row">
-            <span>
-              <b>남긴 기록 {recordCount}개</b>
-              <small>학년·할 일 순서로 정리해 이력서 초안으로 복사해요.</small>
-            </span>
-            <button type="button" className="btn outline sm" disabled={!recordCount} onClick={onCopyResume}>
-              복사
-            </button>
-          </div>
-        </section>
-
         <section className="set-group" aria-label="정보">
           <h3 className="set-title">정보</h3>
           <p className="small muted">
             기회 {oppCount}건 · {researchedAt} 조사. 앱을 열 때 새 목록을 받아요. 지원 전에는 원문 공고를 꼭 확인해 주세요.
           </p>
+          <button type="button" className="link" onClick={onTour}>
+            감자 사용법 다시 보기
+          </button>
           {confirmReset ? (
             <div className="confirm-row">
               <span className="small">이 기기의 프로필·기록·스크랩을 모두 지울까요? 되돌릴 수 없어요.</span>
@@ -215,7 +159,6 @@ export default function SettingsSheet({
             </div>
           )}
         </details>
-      </div>
     </div>
   );
 }

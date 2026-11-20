@@ -231,6 +231,13 @@ describe('화면 흐름', () => {
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'dmc' } });
     fireEvent.click(screen.getByLabelText('마케팅형'));
     fireEvent.click(screen.getByText('감자 키우기 시작'));
+    // 처음 홈에 오면 감자 사용법 안내가 하나씩 나온다 (건너뛰면 다시 안 나옴)
+    expect(screen.getByRole('dialog', { name: '감자 사용법' })).toBeTruthy();
+    expect(screen.getByText('나를 눌러 봐!')).toBeTruthy();
+    fireEvent.click(screen.getByText('그냥 넘기기'));
+    expect(screen.getByText('물 · 햇빛 · 거름')).toBeTruthy();
+    fireEvent.click(screen.getByText('건너뛰기'));
+    expect(screen.queryByRole('dialog', { name: '감자 사용법' })).toBeNull();
   };
 
   it('시작 설정 → 홈 → 기회 상세 → 스크랩', () => {
@@ -303,11 +310,15 @@ describe('화면 흐름', () => {
     expect(screen.getByText('이력서 초안으로 복사')).toBeTruthy();
     expect(Object.keys(JSON.parse(localStorage.getItem('oo-kiugi:v2')).log)).toEqual(['dmc.mkt.g1', 'g1-counsel', 'g1-posts']);
     // 기록 3개마다 감자 머리 위 싹이 한 칸 자란다
-    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('홈'));
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByLabelText('홈'));
     expect(document.querySelector('.phone .sprout').getAttribute('data-grow')).toBe('1');
     expect(screen.getByText('새싹 감자')).toBeTruthy();
 
-    fireEvent.click(screen.getByLabelText('설정'));
+    // 나 탭: 내 카드 · 숫자 · 스크랩/설정
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('나'));
+    expect(document.querySelector('.me-who b').textContent).toBe('하늘');
+    expect(screen.getByText('아직 스크랩한 기회가 없어요.', { exact: false })).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: '설정' }));
     // 알림 세부 설정·화면 모드
     fireEvent.click(screen.getByRole('radio', { name: '어둡게' }));
     expect(document.documentElement.dataset.theme).toBe('dark');
@@ -317,6 +328,7 @@ describe('화면 흐름', () => {
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'bio' } });
     fireEvent.click(screen.getByLabelText('연구형'));
     fireEvent.click(screen.getByText('저장'));
+    fireEvent.click(within(screen.getByLabelText('하단 탭')).getByLabelText('홈'));
     expect(screen.getByText('기록 2 / 12')).toBeTruthy();
 
     // 다시 열면 감자가 이름을 불러 반기고, 시작하기를 누르면 저장된 프로필로 시작

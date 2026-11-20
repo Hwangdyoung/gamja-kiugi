@@ -19,9 +19,10 @@ import OpportunityDetail from './screens/OpportunityDetail.jsx';
 import Path from './screens/Path.jsx';
 import Seniors from './screens/Seniors.jsx';
 import TabBar from './components/TabBar.jsx';
-import SettingsSheet from './components/SettingsSheet.jsx';
+import Me from './screens/Me.jsx';
+import Tour from './components/Tour.jsx';
 import DemoPanel from './components/DemoPanel.jsx';
-import { BackIcon, GearIcon } from './components/Icons.jsx';
+import { BackIcon } from './components/Icons.jsx';
 
 const APP_NAME = '감자 키우기';
 /* 계정·기기에 저장된 기록. 예전 4단계 체크(배열)면 기록으로 옮긴다 */
@@ -45,7 +46,7 @@ export default function App() {
   // 화면 상태
   const [tab, setTab] = useState('home');
   const [detailId, setDetailId] = useState(null);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [pathStart, setPathStart] = useState(null); // 나 탭에서 '내 기록'을 누르면 로드맵을 내 기록부터
   const [q, setQ] = useState('');
   const [type, setType] = useState('전체');
   const [mode, setMode] = useState(null);
@@ -145,7 +146,6 @@ export default function App() {
       listenNotificationOpen(({ target, kind }) => {
         const id = target.startsWith('opp:') ? target.slice(4) : null;
         logEvent('notification_open', { kind, id });
-        setSettingsOpen(false);
         setTab('home');
         setDetailId(id);
       }),
@@ -265,6 +265,7 @@ export default function App() {
       .catch(() => setToast('복사하지 못했어요.'));
   const goTab = (t) => {
     setDetailId(null);
+    setPathStart(null);
     setTab(t);
   };
 
@@ -279,7 +280,6 @@ export default function App() {
       setMode(null);
       setDetailId(null);
     }
-    setSettingsOpen(false);
     if (!changed && profile) setToast('저장했어요.');
   };
 
@@ -293,7 +293,6 @@ export default function App() {
     setCare(emptyCare());
     setTab('home');
     setDetailId(null);
-    setSettingsOpen(false);
     setQ('');
     setType('전체');
     setMode(null);
@@ -308,9 +307,48 @@ export default function App() {
     if (user) signOut().then(() => setUser(null));
   };
 
+  // 설정 (나 탭 안)
+  const settingsProps = {
+    notifyOn,
+    onNotify: setNotifyOn,
+    prefs,
+    onPrefs: setPrefs,
+    researchedAt: oppData.researchedAt,
+    oppCount: all.length,
+    onReset: reset,
+    onTour: () => {
+      setPrefs((p) => ({ ...p, tourDone: false }));
+      goTab('home');
+    },
+    days,
+    onDays: setDays,
+    mood,
+    metrics: metricsSummary(),
+    account: authEnabled() ? { email: user?.email ?? null } : null,
+    onLogin: () => setShowLogin(true),
+    onLogout: () =>
+      signOut().then(() => {
+        setUser(null);
+        setToast('로그아웃했어요. 이 기기에는 그대로 남아 있어요.');
+      }),
+    onCopyMetrics: () =>
+      navigator.clipboard
+        ?.writeText(exportText())
+        .then(() => setToast('지표를 복사했어요. 팀 단톡방에 붙여 넣어 주세요.'))
+        .catch(() => setToast('복사하지 못했어요.')),
+    onTestNotification: !isNativeApp()
+      ? null
+      : () =>
+          sendTestNotification({ mood, body: message })
+            .then(() => setToast('10초 뒤에 알림이 와요. 지금 iPhone을 잠그면 Apple Watch에도 떠요.'))
+            .catch((e) => setToast(e?.message || '알림을 보내지 못했어요.')),
+  };
+
   let screen;
   const needLogin = authEnabled() && authReady && !user && ((!profile && !guest) || showLogin);
   const showWelcome = authReady && !welcomed;
+  // 처음 홈에 오면 감자 사용법 안내
+  const showTour = !!profile && !needLogin && !showWelcome && !detail && tab === 'home' && !prefs.tourDone;
   if (!authReady) {
     screen = null;
   } else if (showWelcome) {
@@ -378,6 +416,30 @@ export default function App() {
         onClear={clearTask}
         onOpen={setDetailId}
         onCopyResume={copyResume}
+        startView={pathStart}
+      />
+    );
+  } else if (tab === 'me') {
+    screen = (
+      <Me
+        profile={profile}
+        mood={mood}
+        progress={progress}
+        vital={vitalOf(care)}
+        items={items}
+        all={all}
+        saved={saved}
+        today={today}
+        onOpen={setDetailId}
+        onSave={toggleSave}
+        onSaveProfile={saveProfile}
+        onRecords={() => {
+          setDetailId(null);
+          setPathStart('rec');
+          setTab('path');
+        }}
+        onCopyResume={copyResume}
+        settings={settingsProps}
       />
     );
   } else {
@@ -399,9 +461,6 @@ export default function App() {
               </span>
             )}
             {detail && <span className="appbar-title">기회 상세</span>}
-            <button type="button" className="icon-btn" aria-label="설정" onClick={() => setSettingsOpen(true)}>
-              <GearIcon />
-            </button>
           </header>
         )}
 
@@ -417,48 +476,7 @@ export default function App() {
           </div>
         )}
 
-        {settingsOpen && profile && (
-          <SettingsSheet
-            profile={profile}
-            notifyOn={notifyOn}
-            onNotify={setNotifyOn}
-            prefs={prefs}
-            onPrefs={setPrefs}
-            recordCount={progress.count}
-            onCopyResume={copyResume}
-            researchedAt={oppData.researchedAt}
-            oppCount={all.length}
-            onReset={reset}
-            onSave={saveProfile}
-            onClose={() => setSettingsOpen(false)}
-            days={days}
-            onDays={setDays}
-            mood={mood}
-            metrics={metricsSummary()}
-            account={authEnabled() ? { email: user?.email ?? null } : null}
-            onLogin={() => {
-              setSettingsOpen(false);
-              setShowLogin(true);
-            }}
-            onLogout={() =>
-              signOut().then(() => {
-                setUser(null);
-                setToast('로그아웃했어요. 이 기기에는 그대로 남아 있어요.');
-              })
-            }
-            onCopyMetrics={() =>
-              navigator.clipboard
-                ?.writeText(exportText())
-                .then(() => setToast('지표를 복사했어요. 팀 단톡방에 붙여 넣어 주세요.'))
-                .catch(() => setToast('복사하지 못했어요.'))
-            }
-            onTestNotification={!isNativeApp() ? null : () =>
-              sendTestNotification({ mood, body: message })
-                .then(() => setToast('10초 뒤에 알림이 와요. 지금 iPhone을 잠그면 Apple Watch에도 떠요.'))
-                .catch((e) => setToast(e?.message || '알림을 보내지 못했어요.'))
-            }
-          />
-        )}
+        {showTour && <Tour onDone={() => setPrefs((p) => ({ ...p, tourDone: true }))} />}
       </div>
 
       <DemoPanel

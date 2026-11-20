@@ -156,9 +156,9 @@ function Records({ progress, log, onCopyResume, onGo }) {
 }
 
 /* 내 로드맵: 학년 탭(지금 학년이 기본) + 내 기록 탭. 할 일은 한 줄로 접혀 있다가 눌러서 펼친다 */
-export default function Path({ profile, progress, log, items, today, onRecord, onClear, onOpen, onCopyResume }) {
+export default function Path({ profile, progress, log, items, today, onRecord, onClear, onOpen, onCopyResume, startView = null }) {
   const track = MAJORS[profile.major].tracks[profile.track];
-  const [view, setView] = useState(progress.current); // 0~3 학년, 'rec' 내 기록
+  const [view, setView] = useState(startView ?? progress.current); // 0~3 학년, 'rec' 내 기록
   const [openId, setOpenId] = useState(progress.next?.task.id ?? null);
   const stage = view === 'rec' ? null : progress.stages[view];
 
