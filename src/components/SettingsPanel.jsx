@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MOODS } from '../lib/data.js';
 import { SEND_HOURS } from '../lib/notify.js';
+import SkyControls from './SkyControls.jsx';
 
 const THEMES = [
   { id: 'system', label: '시스템' },
@@ -38,6 +39,10 @@ export default function SettingsPanel({
   onLogin,
   onLogout,
   onTour,
+  clock,
+  onClock,
+  sky,
+  onSky,
   researchedAt,
   oppCount,
   onReset,
@@ -131,6 +136,7 @@ export default function SettingsPanel({
               <span className="badge">프로토타입 전용</span>
             </div>
             <input type="range" min="0" max="14" step="1" value={days} aria-label="시연용 미접속 일수" onChange={(e) => onDays(+e.target.value)} />
+            {onClock && <SkyControls clock={clock} onClock={onClock} sky={sky} onSky={onSky} labelClass="sheet-demo-label" />}
             <small>지금 표정: {MOODS[mood]}. iPhone 앱에서는 홈 화면 위젯도 이 일수만큼 지난 모습으로 바뀌어요.</small>
             {onTestNotification && (
               <button type="button" className="btn outline sm" onClick={onTestNotification}>

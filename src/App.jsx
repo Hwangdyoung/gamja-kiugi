@@ -6,6 +6,7 @@ import { DEFAULT_PREFS, urgentSaved } from './lib/notify.js';
 import { resumeText } from './lib/resume.js';
 import { CARE, dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from './lib/care.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
+import { fetchWeather, timeOfDay } from './lib/weather.js';
 import { exportText, setEventSink, summary as metricsSummary, track as logEvent, trackOpen } from './lib/metrics.js';
 import { authEnabled, currentUser, onAuthChange, pullProgress, pushEvent, pushProgress, signOut } from './lib/auth.js';
 import Login from './screens/Login.jsx';
@@ -55,7 +56,10 @@ export default function App() {
   // 앱을 열 때마다 감자 얼굴 시작 화면부터 (시작하기를 누르면 닫힘)
   const [welcomed, setWelcomed] = useState(false);
   const [days, setDays] = useState(0); // 시연용 미접속 일수
-  const [clock, setClock] = useState('auto'); // 시연용 감자 시간: 지금 시각 · 낮 · 밤
+  const [clock, setClock] = useState('auto'); // 시연용 감자 시간: 지금 · 새벽 · 낮 · 노을 · 밤
+  const [sky, setSky] = useState('auto'); // 시연용 날씨: 지금 · 맑음 · 흐림 · 비 · 눈
+  const [weather, setWeather] = useState(null); // 춘천 지금 날씨 { kind, temp }
+  const [now, setNow] = useState(() => new Date());
 
   // 로그인 (Supabase 설정이 있을 때만). 로그인 없이 둘러보기를 고르면 기기에만 저장한다
   const [user, setUser] = useState(null);
@@ -158,6 +162,22 @@ export default function App() {
   useEffect(() => {
     if (profile) storage.save({ profile, log, saved, notifyOn, prefs, care });
   }, [profile, log, saved, notifyOn, prefs, care]);
+
+  // 홈 배경: 1분마다 시계를 다시 보고, 춘천 날씨는 앱을 열거나 돌아올 때 받는다(30분 저장)
+  useEffect(() => {
+    const tick = setInterval(() => setNow(new Date()), 60000);
+    const refresh = () => {
+      setNow(new Date());
+      if (import.meta.env.MODE !== 'test') fetchWeather().then((w) => w && setWeather(w));
+    };
+    refresh();
+    const onVisible = () => document.visibilityState === 'visible' && refresh();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(tick);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, []);
 
   // 하루 첫 접속이면 물 1개 (앱으로 돌아올 때도 확인)
   useEffect(() => {
@@ -316,6 +336,10 @@ export default function App() {
     researchedAt: oppData.researchedAt,
     oppCount: all.length,
     onReset: reset,
+    clock,
+    onClock: setClock,
+    sky,
+    onSky: setSky,
     onTour: () => {
       setPrefs((p) => ({ ...p, tourDone: false }));
       goTab('home');
@@ -382,7 +406,10 @@ export default function App() {
         urgent={urgentSaved(items, saved, today)}
         care={care}
         vital={vitalOf(care)}
-        sleeping={clock === 'auto' ? isSleepTime() : clock === 'night'}
+        sleeping={clock === 'auto' ? isSleepTime(now) : clock === 'night'}
+        time={clock === 'auto' ? timeOfDay(now) : clock}
+        weather={sky === 'auto' ? weather?.kind ?? 'clear' : sky}
+        temp={sky === 'auto' ? weather?.temp ?? null : null}
         onGive={giveCare}
         onTab={goTab}
       />
@@ -496,6 +523,8 @@ export default function App() {
         onReset={reset}
         clock={clock}
         onClock={setClock}
+        sky={sky}
+        onSky={setSky}
       />
     </div>
   );

@@ -21,6 +21,7 @@ import { dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from '../lib/
 import { MAJORS, TYPES } from '../lib/data.js';
 import { migrateDone, progressOf, roadmap } from '../lib/roadmap.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
+import { fetchWeather, timeOfDay, weatherKind } from '../lib/weather.js';
 import { summary, track, trackOpen } from '../lib/metrics.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
@@ -201,6 +202,28 @@ describe('테스트 지표 (기획안 11장)', () => {
     track('source_open', { id: 'a' }, d0 + 8 * day + 60000);
     const m = summary();
     expect(m).toMatchObject({ onboardingDone: true, saved: 1, sourceOpens: 2, sourceOpenedItems: 1, openDays: 3, returnedAfter7Days: true, notificationOpens: 1, dueNotificationThenSource: 1 });
+  });
+});
+
+describe('홈 배경: 시각·날씨', () => {
+  it('시각은 새벽·낮·노을·밤, 날씨 코드는 맑음·흐림·비·눈으로', () => {
+    const at = (h) => new Date(2026, 10, 20, h, 30);
+    expect([at(6), at(12), at(18), at(21), at(2)].map(timeOfDay)).toEqual(['dawn', 'day', 'dusk', 'night', 'night']);
+    expect([0, 2, 3, 45, 61, 81, 95, 71, 86].map(weatherKind)).toEqual(['clear', 'clear', 'cloudy', 'cloudy', 'rain', 'rain', 'rain', 'snow', 'snow']);
+  });
+  it('춘천 날씨를 받아 30분 저장, 못 받으면 null', async () => {
+    localStorage.clear();
+    let calls = 0;
+    const ok = async (url) => {
+      calls++;
+      expect(url).toContain('latitude=37.88');
+      return { ok: true, json: async () => ({ current: { weather_code: 63, temperature_2m: 4.6 } }) };
+    };
+    expect(await fetchWeather(ok)).toEqual({ kind: 'rain', temp: 5 });
+    expect(await fetchWeather(ok)).toEqual({ kind: 'rain', temp: 5 });
+    expect(calls).toBe(1);
+    localStorage.clear();
+    expect(await fetchWeather(async () => { throw new Error('offline'); })).toBeNull();
   });
 });
 

@@ -789,7 +789,7 @@ h4 { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .welcome-potato, .big-potato, .big-eyes ellipse { animation: none; } }
 .vital-word { min-width: 40px; text-align: left; color: var(--ok) !important; }
 
-/* ---------- 홈 배경 그림 (춘천 호숫가 언덕) ---------- */
+/* ---------- 홈 배경 그림 (춘천 호숫가 언덕): 시각 × 날씨 ---------- */
 .home {
   --sc-sky1: oklch(0.86 0.06 230); --sc-sky2: oklch(0.96 0.03 210);
   --sc-orb: oklch(0.95 0.1 95); --sc-glow: oklch(0.97 0.07 95 / 55%);
@@ -798,33 +798,67 @@ h4 { margin: 0; }
   --sc-lake1: oklch(0.8 0.06 225); --sc-lake2: oklch(0.86 0.05 215); --sc-ripple: oklch(1 0 0 / 60%);
   --sc-hill: oklch(0.83 0.09 140); --sc-field: oklch(0.72 0.07 65); --sc-row: oklch(0.64 0.07 60);
   --sc-plant: oklch(0.68 0.12 145);
+  --sc-text: oklch(0.24 0.03 245); --sc-accent: oklch(0.5 0.12 235);
 }
-/* 표정에 따라 하늘이 바뀐다: 무표정 흐림, 짜증 누런 하늘, 분노 노을 */
-.home[data-mood='neutral'] { --sc-sky1: oklch(0.84 0.02 240); --sc-sky2: oklch(0.94 0.01 230); --sc-orb: oklch(0.94 0.04 95); }
-.home[data-mood='annoyed'] { --sc-sky1: oklch(0.86 0.08 85); --sc-sky2: oklch(0.95 0.05 90); --sc-orb: oklch(0.9 0.13 80); }
-.home[data-mood='angry'] { --sc-sky1: oklch(0.74 0.12 35); --sc-sky2: oklch(0.9 0.08 60); --sc-orb: oklch(0.8 0.16 45); --sc-glow: oklch(0.85 0.12 50 / 50%); --sc-lake1: oklch(0.75 0.08 30); }
-/* 밤(감자가 자는 시간)이나 어두운 화면: 달과 별 */
-.home:has(.home-scene.night), :root[data-theme='dark'] .home {
+/* 맑은 낮엔 표정에 따라 하늘이 바뀐다: 무표정 흐릿, 짜증 누런 하늘, 분노 붉은 하늘 */
+.home[data-time='day'][data-weather='clear'][data-mood='neutral'] { --sc-sky1: oklch(0.84 0.02 240); --sc-sky2: oklch(0.94 0.01 230); --sc-orb: oklch(0.94 0.04 95); }
+.home[data-time='day'][data-weather='clear'][data-mood='annoyed'] { --sc-sky1: oklch(0.86 0.08 85); --sc-sky2: oklch(0.95 0.05 90); --sc-orb: oklch(0.9 0.13 80); }
+.home[data-time='day'][data-weather='clear'][data-mood='angry'] { --sc-sky1: oklch(0.74 0.12 35); --sc-sky2: oklch(0.9 0.08 60); --sc-orb: oklch(0.8 0.16 45); --sc-glow: oklch(0.85 0.12 50 / 50%); --sc-lake1: oklch(0.75 0.08 30); }
+/* 새벽: 보랏빛 → 복숭아빛 */
+.home[data-time='dawn'] {
+  --sc-sky1: oklch(0.72 0.07 300); --sc-sky2: oklch(0.9 0.06 55); --sc-orb: oklch(0.93 0.08 80); --sc-glow: oklch(0.95 0.07 70 / 45%);
+  --sc-far: oklch(0.68 0.05 300); --sc-mid: oklch(0.62 0.05 200); --sc-lake1: oklch(0.78 0.06 330); --sc-lake2: oklch(0.85 0.05 60);
+  --sc-hill: oklch(0.7 0.08 145); --sc-field: oklch(0.62 0.06 60); --sc-row: oklch(0.55 0.06 55); --sc-plant: oklch(0.58 0.1 145);
+  --sc-cloud: oklch(0.97 0.03 40 / 80%);
+}
+/* 노을: 장밋빛 → 주황 */
+.home[data-time='dusk'] {
+  --sc-sky1: oklch(0.6 0.13 15); --sc-sky2: oklch(0.86 0.11 65); --sc-orb: oklch(0.86 0.15 60); --sc-glow: oklch(0.88 0.13 55 / 50%);
+  --sc-far: oklch(0.55 0.07 330); --sc-mid: oklch(0.5 0.06 170); --sc-lake1: oklch(0.7 0.1 30); --sc-lake2: oklch(0.8 0.1 60);
+  --sc-hill: oklch(0.62 0.09 130); --sc-field: oklch(0.55 0.07 50); --sc-row: oklch(0.48 0.06 45); --sc-plant: oklch(0.52 0.1 140);
+  --sc-cloud: oklch(0.9 0.06 40 / 80%);
+}
+/* 밤: 달과 별 */
+.home[data-time='night'] {
   --sc-sky1: oklch(0.24 0.06 270); --sc-sky2: oklch(0.36 0.07 255);
   --sc-orb: oklch(0.95 0.04 95); --sc-cloud: oklch(0.5 0.04 260 / 55%);
   --sc-far: oklch(0.3 0.04 255); --sc-mid: oklch(0.3 0.05 200);
   --sc-lake1: oklch(0.32 0.06 250); --sc-lake2: oklch(0.36 0.06 245); --sc-ripple: oklch(0.8 0.05 95 / 40%);
   --sc-hill: oklch(0.36 0.06 155); --sc-field: oklch(0.34 0.04 60); --sc-row: oklch(0.29 0.04 60); --sc-plant: oklch(0.42 0.08 150);
+  --sc-text: oklch(0.97 0.01 250); --sc-accent: oklch(0.8 0.1 235);
 }
-.home-scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.sc-sky1 { stop-color: var(--sc-sky1); transition: stop-color 0.5s; }
-.sc-sky2 { stop-color: var(--sc-sky2); transition: stop-color 0.5s; }
+/* 흐림·비·눈: 해·달을 가리고 하늘을 잿빛으로, 구름을 더 */
+.home:is([data-weather='cloudy'], [data-weather='rain'], [data-weather='snow']) { --sc-cloud: oklch(0.93 0.01 250 / 92%); }
+.home:is([data-weather='cloudy'], [data-weather='snow']):not([data-time='night']) { --sc-sky1: oklch(0.76 0.02 245); --sc-sky2: oklch(0.9 0.01 240); --sc-lake1: oklch(0.76 0.03 235); --sc-lake2: oklch(0.82 0.02 230); }
+.home[data-weather='rain']:not([data-time='night']) { --sc-sky1: oklch(0.6 0.03 250); --sc-sky2: oklch(0.8 0.02 240); --sc-cloud: oklch(0.82 0.015 250 / 95%); --sc-far: oklch(0.66 0.03 230); --sc-mid: oklch(0.6 0.05 175); --sc-lake1: oklch(0.66 0.04 235); --sc-lake2: oklch(0.72 0.03 230); --sc-hill: oklch(0.7 0.08 145); --sc-field: oklch(0.58 0.06 60); --sc-row: oklch(0.5 0.05 55); }
+.home[data-weather='rain'][data-time='night'], .home[data-weather='cloudy'][data-time='night'] { --sc-sky1: oklch(0.22 0.02 260); --sc-sky2: oklch(0.32 0.03 255); --sc-cloud: oklch(0.42 0.02 260 / 85%); }
+/* 눈: 언덕과 밭이 하얗게 */
+.home[data-weather='snow'] { --sc-hill: oklch(0.96 0.01 240); --sc-field: oklch(0.9 0.015 240); --sc-row: oklch(0.82 0.02 240); --sc-plant: oklch(0.7 0.06 150); }
+.home[data-weather='snow'][data-time='night'] { --sc-sky1: oklch(0.26 0.03 260); --sc-sky2: oklch(0.38 0.03 255); --sc-hill: oklch(0.72 0.02 250); --sc-field: oklch(0.64 0.02 250); --sc-row: oklch(0.56 0.02 250); --sc-cloud: oklch(0.5 0.02 260 / 80%); }
+
+.home-scene { position: absolute; inset: 0; overflow: hidden; }
+.home-scene svg { width: 100%; height: 100%; display: block; }
+/* 어두운 화면 모드에선 배경 그림만 조금 어둡게 (시각은 실제 시계를 따른다) */
+:root[data-theme='dark'] .home-scene:not(.t-night) svg { filter: brightness(0.82) saturate(0.92); }
+.sc-sky1 { stop-color: var(--sc-sky1); transition: stop-color 0.6s; }
+.sc-sky2 { stop-color: var(--sc-sky2); transition: stop-color 0.6s; }
 .sc-lake1 { stop-color: var(--sc-lake1); }
 .sc-lake2 { stop-color: var(--sc-lake2); }
 .sc-orb { fill: var(--sc-orb); }
 .sc-glow { fill: var(--sc-glow); }
-.sc-moon { display: none; }
-.home:has(.home-scene.night) .sc-moon, :root[data-theme='dark'] .sc-moon { display: inline; }
-.home:has(.home-scene.night) .sc-sun, :root[data-theme='dark'] .sc-sun { display: none; }
+.sc-moon, .sc-extra, .sc-snowcap { display: none; }
+.t-night .sc-moon { display: inline; }
+.t-night .sc-sun { display: none; }
+.w-cloudy .sc-sun, .w-rain .sc-sun, .w-snow .sc-sun, .w-cloudy .sc-moon, .w-rain .sc-moon, .w-snow .sc-moon { display: none; }
+.w-cloudy .sc-extra, .w-rain .sc-extra, .w-snow .sc-extra { display: inline; }
+.w-snow .sc-snowcap { display: inline; fill: oklch(0.98 0.005 240); }
+.t-dawn .sc-sun, .t-dusk .sc-sun { transform: translateY(150px); }
 .sc-star { fill: oklch(0.97 0.03 95); animation: twinkle 2.8s ease-in-out infinite; }
 .sc-cloud path { fill: var(--sc-cloud); }
 .sc-cloud.c1 { animation: drift 38s linear infinite; }
 .sc-cloud.c2 { animation: drift 52s linear infinite -20s; }
+.sc-cloud.c3 { animation: drift 64s linear infinite -30s; }
+.sc-cloud.c4 { animation: drift 46s linear infinite -8s; }
 .sc-far { fill: var(--sc-far); }
 .sc-mid { fill: var(--sc-mid); }
 .sc-ripple path { stroke: var(--sc-ripple); stroke-width: 2; stroke-linecap: round; }
@@ -834,11 +868,21 @@ h4 { margin: 0; }
 .sc-plant path { fill: var(--sc-plant); }
 @keyframes drift { from { transform: translateX(-160px); } to { transform: translateX(460px); } }
 @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* 비·눈 */
+.sc-fall { position: absolute; inset: 0; pointer-events: none; }
+.sc-fall i { position: absolute; top: -40px; display: block; }
+.sc-fall.rain i { width: 2px; height: 22px; border-radius: 1px; background: linear-gradient(transparent, oklch(0.92 0.03 240 / 85%)); rotate: 12deg; animation: rain-fall linear infinite; }
+.sc-fall.snow i { border-radius: 50%; background: oklch(1 0 0 / 92%); box-shadow: 0 0 3px oklch(1 0 0 / 70%); animation: snow-fall linear infinite; }
+@keyframes rain-fall { to { transform: translate(-40px, 110vh); } }
+@keyframes snow-fall { 0% { transform: translate(0, 0); } 25% { transform: translate(12px, 28vh); } 50% { transform: translate(-6px, 56vh); } 75% { transform: translate(10px, 84vh); } 100% { transform: translate(0, 112vh); } }
+/* 날씨 칩: 왼쪽 위 "춘천 맑음 -1°" */
+.weather-chip { position: absolute; z-index: 2; top: 12px; left: 14px; display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 12px; font-weight: 700; color: var(--sc-text); background: color-mix(in oklch, var(--sc-sky2) 60%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 /* 감자 발밑 그림자: 언덕 위에 서 있는 느낌 */
 .live-potato::after { content: ''; position: absolute; z-index: -1; left: 50%; bottom: 2px; width: 62%; height: 14px; translate: -50% 0; border-radius: 50%; background: oklch(0.3 0.05 140 / 22%); filter: blur(2px); }
 /* 배경 그림 위 글자·숫자가 잘 보이게 */
-.home-hi { text-shadow: 0 1px 0 oklch(1 0 0 / 60%); }
-:root[data-theme='dark'] .home-hi, .home:has(.home-scene.night) .home-hi { text-shadow: none; color: oklch(0.97 0.01 250); }
+.home .home-hi { color: var(--sc-text); }
+.home .home-hi b { color: var(--sc-accent); }
+.home:not([data-time='night']) .home-hi { text-shadow: 0 1px 0 oklch(1 0 0 / 55%); }
 .home-stats { padding: 8px 14px; border-radius: 16px; background: color-mix(in oklch, var(--surface) 78%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 
 /* ---------- 몽실몽실 구름 말풍선 ---------- */
@@ -903,4 +947,11 @@ button.me-stat:active { transform: scale(0.97); }
 .tour-card p { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
 .tour-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
 .tour-next { position: static; }
-@media (prefers-reduced-motion: reduce) { .sc-cloud, .sc-star, .home-bubble, .tour-ring, .tour-card { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .sc-fall, .sc-cloud, .sc-star, .home-bubble, .tour-ring, .tour-card { animation: none !important; } }
+
+/* 비 오는 날 우산: 감자 몸 뒤, 살짝 기울여서 */
+.umbrella { position: absolute; z-index: 0; left: 50%; translate: -50% 0; rotate: -10deg; pointer-events: none; transform-origin: 50% 90%; animation: umbrella-sway 3.2s ease-in-out infinite; }
+.live-potato .live-body { position: relative; z-index: 1; }
+@keyframes umbrella-sway { 50% { rotate: -4deg; } }
+@media (prefers-reduced-motion: reduce) { .umbrella { animation: none; } }
+.sheet-demo-label { font-size: 12.5px; font-weight: 700; color: var(--ink-2); margin-top: 4px; }

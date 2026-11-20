@@ -4,6 +4,10 @@ import LivePotato from '../components/LivePotato.jsx';
 import HomeScene from '../components/HomeScene.jsx';
 import { ChevronIcon, DropIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
 import { CARE, CARE_KINDS, SLEEPY, TICKLE, pokeLine, vitalLabel } from '../lib/care.js';
+import { WEATHER_LABEL } from '../lib/weather.js';
+
+// 날씨에 따라 가끔 하는 말
+const WEATHER_LINE = { rain: '비 와도 우산 있으니까 괜찮아!', snow: '눈이다! 근데 발 시려…', cloudy: '오늘은 좀 흐리네' };
 
 const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
 
@@ -11,7 +15,7 @@ const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
    - 가운데: 인사 · 말풍선 · 살아 있는 감자(누르면 반응), 오른쪽에 물·햇빛·거름 아이콘
    - 감자 아래: 가진 개수 · 기운 · 성장(기록 3개마다 싹 한 칸)
    - 아래: 탭 바 위에 떠 있는 "다음 할 일" 카드 하나. 기회 목록·검색은 기회 탭에서 본다 */
-export default function Home({ name, progress, mood, message, items, urgent = [], care, vital = 60, sleeping = false, onGive, onTab }) {
+export default function Home({ name, progress, mood, message, items, urgent = [], care, vital = 60, sleeping = false, time = 'day', weather = 'clear', temp = null, onGive, onTab }) {
   const [say, setSay] = useState(null);
   const [fx, setFx] = useState(null);
   const sayTimer = useRef(null);
@@ -28,7 +32,8 @@ export default function Home({ name, progress, mood, message, items, urgent = []
   };
   const onPoke = (kind) => {
     const n = count.current++;
-    speak(sleeping ? SLEEPY[n % SLEEPY.length] : kind === 'tickle' ? TICKLE[n % TICKLE.length] : pokeLine(mood, n));
+    const w = WEATHER_LINE[weather];
+    speak(sleeping ? SLEEPY[n % SLEEPY.length] : kind === 'tickle' ? TICKLE[n % TICKLE.length] : w && n % 3 === 1 ? w : pokeLine(mood, n));
   };
   const giveCare = (kind) => {
     if (!care || care.stock[kind] < 1) return speak(CARE[kind].how);
@@ -41,8 +46,12 @@ export default function Home({ name, progress, mood, message, items, urgent = []
   };
 
   return (
-    <div className="home" data-mood={mood}>
-      <HomeScene night={sleeping} />
+    <div className="home" data-mood={mood} data-time={time} data-weather={weather}>
+      <HomeScene time={time} weather={weather} />
+      <span className="weather-chip">
+        춘천 {WEATHER_LABEL[weather]}
+        {temp != null && ` ${temp}°`}
+      </span>
       <section className="home-hero" aria-label="내 감자">
         <p className="home-hi">
           {next ? (
@@ -71,7 +80,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
         </div>
 
         <div className="potato-stage">
-          <LivePotato mood={mood} size={186} grow={grow} vital={vital} fx={fx} sleeping={sleeping} onPoke={onPoke} />
+          <LivePotato mood={mood} size={186} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} onPoke={onPoke} />
           {care && (
             <div className="care-side" data-tour="care" role="group" aria-label="감자 돌보기">
               {CARE_KINDS.map((k) => {

@@ -1,17 +1,12 @@
 import { MOODS } from '../lib/data.js';
 import { notifyDecision, SEND_TIME } from '../lib/notify.js';
+import SkyControls from './SkyControls.jsx';
 
 const MAX = 14;
 const TICKS = [0, 2, 4, 7, 14];
 
 /* 폰 화면 밖의 발표용 시연 도구. 실제 앱에서는 마지막 접속일로 자동 계산된다. */
-const CLOCKS = [
-  { id: 'auto', label: '지금 시각' },
-  { id: 'day', label: '낮' },
-  { id: 'night', label: '밤' },
-];
-
-export default function DemoPanel({ ready, days, onDays, mood, message, appName, notifyOn, onReopen, onReset, clock = 'auto', onClock }) {
+export default function DemoPanel({ ready, days, onDays, mood, message, appName, notifyOn, onReopen, onReset, clock = 'auto', onClock, sky = 'auto', onSky }) {
   const decision = notifyDecision(days, notifyOn);
   return (
     <aside className="demo" aria-label="시연 도구">
@@ -41,14 +36,7 @@ export default function DemoPanel({ ready, days, onDays, mood, message, appName,
 
           {onClock && (
             <div className="demo-block">
-              <p className="demo-label">감자 시간 (밤 11시~아침 7시엔 잠)</p>
-              <div className="seg" role="radiogroup" aria-label="감자 시간">
-                {CLOCKS.map((c) => (
-                  <button key={c.id} type="button" role="radio" aria-checked={clock === c.id} aria-selected={clock === c.id} onClick={() => onClock(c.id)}>
-                    {c.label}
-                  </button>
-                ))}
-              </div>
+              <SkyControls clock={clock} onClock={onClock} sky={sky} onSky={onSky} />
             </div>
           )}
 
