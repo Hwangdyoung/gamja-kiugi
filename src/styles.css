@@ -578,8 +578,10 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .content.is-home { overflow: hidden; position: relative; }
 .home {
   position: relative; height: 100%; overflow: hidden; background: var(--sc-sky2);
+  /* 위: 감자 자리(남는 높이 전부) / 아래: 다음 할 일 카드(탭 바 위). 겹치지 않는다 */
+  display: flex; flex-direction: column;
 }
-.home-hero { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 8px 20px 190px; text-align: center; }
+.home-hero { position: relative; z-index: 1; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 34px 20px 10px; text-align: center; }
 .home-hi { font-size: 19px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
 .home-hi b { color: var(--primary); }
 .home-grow { display: flex; align-items: center; gap: 10px; font-size: 13px; }
@@ -772,7 +774,7 @@ h4 { margin: 0; }
 .vital-line small { font-size: 12px; font-weight: 700; color: var(--ink-2); }
 .vital-line .vital-bar { width: 90px; }
 
-.home-float { position: absolute; left: 12px; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
+.home-float { position: relative; z-index: 5; flex: none; margin: 0 12px calc(84px + env(safe-area-inset-bottom, 0px)); }
 .float-card {
   position: relative; display: grid; gap: 3px; padding: 14px 16px 14px;
   background: var(--surface); border: 1px solid var(--line); border-radius: 18px;

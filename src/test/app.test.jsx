@@ -303,6 +303,12 @@ describe('화면 흐름', () => {
     expect(screen.queryByText('2026 춘천 디카시 공모전')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '인턴' }));
     expect(document.querySelectorAll('.opp')).toHaveLength(2);
+    // 유형은 여러 개 같이: 인턴 + 서포터즈
+    fireEvent.click(screen.getByRole('button', { name: '서포터즈' }));
+    const both = [...document.querySelectorAll('.opp .tag:not(.online)')].map((e) => e.textContent);
+    expect(both.length).toBeGreaterThan(2);
+    both.forEach((t) => expect(['인턴', '서포터즈']).toContain(t));
+    expect(screen.getByRole('button', { name: '전체' }).getAttribute('aria-pressed')).toBe('false');
     fireEvent.click(screen.getByRole('button', { name: '전체' }));
     fireEvent.change(screen.getByLabelText('기회 검색'), { target: { value: '재단' } });
     expect(document.querySelectorAll('.opp')).toHaveLength(2);

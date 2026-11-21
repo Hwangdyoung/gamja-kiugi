@@ -49,7 +49,7 @@ export default function App() {
   const [detailId, setDetailId] = useState(null);
   const [pathStart, setPathStart] = useState(null); // 나 탭에서 '내 기록'을 누르면 로드맵을 내 기록부터
   const [q, setQ] = useState('');
-  const [type, setType] = useState('전체');
+  const [type, setType] = useState([]); // 고른 기회 유형들 (비면 전체)
   const [mode, setMode] = useState(null);
   const [nameDraft, setNameDraft] = useState(''); // 시작 화면에서 입력 중인 이름
   const [toast, setToast] = useState('');
@@ -296,7 +296,7 @@ export default function App() {
     // 계열·직무를 바꿔도 남긴 기록은 지우지 않는다 (공통 할 일 기록은 그대로 이어진다)
     if (changed) {
       setQ('');
-      setType('전체');
+      setType([]);
       setMode(null);
       setDetailId(null);
     }
@@ -314,7 +314,7 @@ export default function App() {
     setTab('home');
     setDetailId(null);
     setQ('');
-    setType('전체');
+    setType([]);
     setMode(null);
     setNameDraft('');
     setDays(0);

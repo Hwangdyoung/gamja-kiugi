@@ -45,14 +45,14 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
   const list = items.filter((it) => {
     if (mode === 'saved' && !saved[it.id]) return false;
     if ((mode === 'exp' || mode === 'job') && !GROUPS[mode].includes(it.type)) return false;
-    if (type !== '전체' && it.type !== type) return false;
+    if (type.length && !type.includes(it.type)) return false;
     if (online && !it.online) return false;
     if (ours && !it.ours) return false;
     if (query && !`${it.title} ${it.org} ${it.type} ${it.target}${it.online ? ' 온라인' : ''}`.toLowerCase().includes(query)) return false;
     return true;
   });
   const groups = sections(list, today);
-  const filtered = query || type !== '전체' || mode || online || ours;
+  const filtered = query || type.length || mode || online || ours;
 
   return (
     <div className="screen">
@@ -72,7 +72,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
             aria-selected={mode === m.id}
             onClick={() => {
               onMode(m.id);
-              onType('전체');
+              onType([]);
             }}
           >
             {m.label}
@@ -83,7 +83,14 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
 
       <div className="chips" role="group" aria-label="기회 유형">
         {['전체', ...types].map((t) => (
-          <button key={t} type="button" className="chip" aria-pressed={type === t} onClick={() => onType(t)}>
+          <button
+            key={t}
+            type="button"
+            className="chip"
+            aria-pressed={t === '전체' ? !type.length : type.includes(t)}
+            // 유형은 여러 개 같이 고를 수 있다(예: 서포터즈 + 공모전). 전체를 누르면 다 풀린다
+            onClick={() => onType(t === '전체' ? [] : type.includes(t) ? type.filter((x) => x !== t) : [...type, t])}
+          >
             {t}
           </button>
         ))}
@@ -129,7 +136,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
               className="btn ghost sm"
               onClick={() => {
                 onQuery('');
-                onType('전체');
+                onType([]);
                 onMode(null);
                 setOnline(false);
                 setOurs(false);

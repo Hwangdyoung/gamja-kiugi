@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { GROW_LABELS } from '../components/Mascot.jsx';
 import LivePotato from '../components/LivePotato.jsx';
 import HomeScene from '../components/HomeScene.jsx';
@@ -21,6 +21,19 @@ export default function Home({ name, progress, mood, message, items, urgent = []
   const sayTimer = useRef(null);
   const fxTimer = useRef(null);
   const count = useRef(0);
+  // 화면 높이에 맞춰 감자 크기를 줄인다(사파리 주소창처럼 화면이 짧아도 아래 카드가 가리지 않게).
+  // 인사·말풍선·숫자 칸이 약 270px를 쓰고, 남는 높이에 감자를 넣는다
+  const heroRef = useRef(null);
+  const [pot, setPot] = useState(186);
+  useLayoutEffect(() => {
+    const el = heroRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const fit = () => setPot(Math.round(Math.max(104, Math.min(186, (el.clientHeight - 270) / 1.16))));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const { next, stages, current, grow } = progress;
   const ni = next ? next.stage : -1;
   const related = next?.task.own ? items.filter((it) => it.step === ni).length : 0;
@@ -52,7 +65,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
         춘천 {WEATHER_LABEL[weather]}
         {temp != null && ` ${temp}°`}
       </span>
-      <section className="home-hero" aria-label="내 감자">
+      <section className="home-hero" aria-label="내 감자" ref={heroRef}>
         <p className="home-hi">
           {next ? (
             ni === current ? (
@@ -80,7 +93,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
         </div>
 
         <div className="potato-stage">
-          <LivePotato mood={mood} size={186} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} onPoke={onPoke} />
+          <LivePotato mood={mood} size={pot} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} onPoke={onPoke} />
           {care && (
             <div className="care-side" data-tour="care" role="group" aria-label="감자 돌보기">
               {CARE_KINDS.map((k) => {
