@@ -81,7 +81,7 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
 
   return (
     <div className="screen community">
-      <PageHead no="04" en="COMMUNITY" title="같이 묻고, 같이 크자." lead="춘천 대학생끼리 묻고 답하는 곳이에요. 이름 없이 학교·계열·학년만 보여요." />
+      <PageHead title="같이 묻고, 같이 크자." lead="춘천 대학생끼리 묻고 답하는 곳이에요. 이름 없이 학교·계열·학년만 보여요." />
 
       <div className="seg" role="tablist" aria-label="게시판">
         {TABS.map((t) => (

@@ -165,8 +165,6 @@ export default function Path({ profile, progress, log, items, today, onRecord, o
   return (
     <div className="screen">
       <PageHead
-        no="03"
-        en="MY ROADMAP"
         title="학년마다 할 일, 하나씩."
         lead={`${MAJORS[profile.major].label} · ${track.label}. 끝낸 일에 한 줄씩 남기면 이력서 재료가 돼요.`}
       />
@@ -179,7 +177,7 @@ export default function Path({ profile, progress, log, items, today, onRecord, o
         </b>
       </div>
 
-      <div className="seg" role="tablist" aria-label="학년">
+      <div className="seg seg-grades" role="tablist" aria-label="학년">
         {progress.stages.map((s, i) => {
           const n = s.tasks.filter(progress.isDone).length;
           return (

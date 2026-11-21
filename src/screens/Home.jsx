@@ -22,13 +22,13 @@ export default function Home({ name, progress, mood, message, items, urgent = []
   const fxTimer = useRef(null);
   const count = useRef(0);
   // 화면 높이에 맞춰 감자 크기를 줄인다(사파리 주소창처럼 화면이 짧아도 아래 카드가 가리지 않게).
-  // 인사·말풍선·숫자 칸이 약 270px를 쓰고, 남는 높이에 감자를 넣는다
+  // 날씨·인사·말풍선·숫자 칸이 약 330px를 쓰고, 남는 높이에 감자를 넣는다
   const heroRef = useRef(null);
   const [pot, setPot] = useState(186);
   useLayoutEffect(() => {
     const el = heroRef.current;
     if (!el || typeof ResizeObserver === 'undefined') return undefined;
-    const fit = () => setPot(Math.round(Math.max(104, Math.min(186, (el.clientHeight - 270) / 1.16))));
+    const fit = () => setPot(Math.round(Math.max(92, Math.min(186, (el.clientHeight - 330) / 1.16))));
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
@@ -61,11 +61,11 @@ export default function Home({ name, progress, mood, message, items, urgent = []
   return (
     <div className="home" data-mood={mood} data-time={time} data-weather={weather}>
       <HomeScene time={time} weather={weather} />
-      <span className="weather-chip">
-        춘천 {WEATHER_LABEL[weather]}
-        {temp != null && ` ${temp}°`}
-      </span>
       <section className="home-hero" aria-label="내 감자" ref={heroRef}>
+        <span className="weather-chip">
+          춘천 {WEATHER_LABEL[weather]}
+          {temp != null && ` ${temp}°`}
+        </span>
         <p className="home-hi">
           {next ? (
             ni === current ? (

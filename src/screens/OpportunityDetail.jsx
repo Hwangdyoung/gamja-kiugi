@@ -14,7 +14,6 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
   return (
     <div className="screen detail">
       <div className="detail-head">
-        <p className="kicker">OPPORTUNITY</p>
         <span className="opp-meta">
           <span className="tag">{item.type}</span>
           {item.online && <span className="tag online">온라인</span>}

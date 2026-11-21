@@ -56,7 +56,7 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
 
   return (
     <div className="screen">
-      <PageHead no="02" en="OPPORTUNITIES" title="할 게 없다며? 여기 있는데." lead="내 로드맵에 맞는 춘천·온라인 기회예요. 마감 지난 기회는 자동으로 내려요." />
+      <PageHead title="할 게 없다며? 여기 있는데." lead="내 로드맵에 맞는 춘천·온라인 기회예요. 마감 지난 기회는 자동으로 내려요." />
 
       <div className="searchbar">
         <SearchIcon size={18} />
