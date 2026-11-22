@@ -15,3 +15,8 @@ dist
 # OS·로그
 .DS_Store
 *.log
+
+# 디자인 스킬 설치가 만든 파일 (앱과 무관)
+.agents
+.codex
+skills-lock.json

@@ -5,7 +5,7 @@
 
 - 웹: https://gamja-kiugi.vercel.app (발표용)
 - iPhone 앱 + 홈 화면 위젯 + Apple Watch 앱: 같은 코드를 Capacitor로 감쌌습니다 → [docs/ios-widget.md](docs/ios-widget.md)
-- 기획안: Claude 문서 "감자 키우기 서비스 기획안 v2"
+- 최종 기획서: Claude 문서 "감자 키우기 최종 기획서" (2026.11.22). 이전 단계 기획안은 "감자 키우기 서비스 기획안 v2"
 
 ## 화면
 
@@ -35,15 +35,15 @@
 
 - 기기(localStorage `oo-kiugi:v2`): 프로필, 기록, 스크랩, 알림·화면 설정, 돌보기.
 - 로그인하면 프로필·기록·스크랩·알림 켜기가 계정(Supabase `progress` 표)에도 저장돼 다른 폰에서 이어집니다. 기록은 표의 `done` 칸에 그대로 들어갑니다. 설정 방법: [docs/supabase-setup.md](docs/supabase-setup.md)
-- 테스트 지표 이벤트는 기기에 쌓이고(설정 → 시연·테스트 도구 → 지표 복사), 로그인하면 `events` 표에도 남습니다. 기록 내용·이름은 남기지 않습니다.
+- 테스트 지표 이벤트는 기기에 쌓이고(나 → 설정 → 시연·테스트 도구 → 지표 복사), 로그인하면 `events` 표에도 남습니다. 기록 내용·이름은 남기지 않습니다.
 
 ## 시연 도구 (폰 화면 밖, 발표용)
 
 - 미접속 일수 슬라이더(0~14일) → 표정과 그날 알림 미리보기
 - 감자 시간: 지금 / 새벽 / 낮 / 노을 / 밤 (밤 11시~아침 7시엔 감자가 자서, 저녁 발표에서는 "낮"을 고르세요)
-- 날씨: 지금(춘천 실제 날씨) / 맑음 / 흐림 / 비 / 눈. iPhone 앱에서는 설정 → 시연·테스트 도구에 같은 버튼이 있어요.
+- 날씨: 지금(춘천 실제 날씨) / 맑음 / 흐림 / 비 / 눈. iPhone 앱에서는 나 → 설정 → 시연·테스트 도구에 같은 버튼이 있어요.
 - 앱 다시 열기(시작 화면부터), 처음부터 다시(저장 내용 삭제)
-- iPhone 앱에서는 설정 → 시연·테스트 도구에서 같은 슬라이더와 "알림 미리 보내기"를 씁니다.
+- iPhone 앱에서는 나 → 설정 → 시연·테스트 도구에서 같은 슬라이더와 "알림 미리 보내기"를 씁니다.
 
 ## 기회 목록 고치기 (앱 재설치 없이)
 
@@ -83,7 +83,8 @@ src/
     ProfileForm.jsx          이름·학교·학년·계열·직무 입력
     SettingsPanel.jsx        설정(나 탭 안)
     SeniorStories.jsx        선배 이야기(가상 사례, 커뮤니티 선배 조언 안)
-    HomeScene.jsx            홈 배경 그림(낮·밤)
+    HomeScene.jsx            홈 배경 그림(시각·날씨에 따라)
+    SkyControls.jsx          시연용 시간·날씨 고르기
     Tour.jsx                 처음 안내
     DemoPanel.jsx            시연 도구
     OpportunityCard.jsx · TabBar.jsx · PageHead.jsx · Icons.jsx
@@ -103,6 +104,7 @@ src/
     nativeWidget.js          iPhone 위젯·알림 연결
     storage.js · text.js
   test/                      동작 테스트 (vitest)
+archive/                     첫 버전(파일 하나짜리 HTML) 보관
 ios/                         Capacitor iPhone 앱, 위젯, Apple Watch 앱
 supabase/schema.sql          로그인용 표
 supabase/community.sql       커뮤니티 표·보기·함수
