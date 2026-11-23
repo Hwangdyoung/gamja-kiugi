@@ -450,10 +450,6 @@ button { cursor: pointer; }
 .timeline li::before { content: ''; position: absolute; left: -5px; top: 7px; width: 8px; height: 8px; background: var(--primary); }
 
 /* ---------- 설정 · 토스트 ---------- */
-.toggle-row { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); cursor: pointer; }
-.toggle-row > span { flex: 1; display: grid; gap: 2px; }
-.toggle-row small { font-size: 12px; color: var(--ink-3); }
-.toggle-row input { width: 20px; height: 20px; accent-color: var(--primary); }
 .sheet-demo { display: grid; gap: 8px; padding: 14px; background: var(--surface); border: 1px dashed var(--line-2); border-radius: var(--r-lg); }
 .sheet-demo-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
 .sheet-demo input { width: 100%; accent-color: var(--primary); }
@@ -498,7 +494,8 @@ button { cursor: pointer; }
   border-radius: var(--r-lg);
   box-shadow: var(--shadow);
 }
-@media (max-width: 520px) { .demo { width: auto; margin: 16px; } }
+/* 폰으로 웹을 열면(포스터 QR) 앱 화면만 꽉 차게: 시연 도구는 나 → 설정 → 시연·테스트 도구에 같은 것이 있다 */
+@media (max-width: 520px) { .demo { display: none; } }
 /* iPhone 앱(Capacitor): 페이지 자체는 움직이지 않고 앱 화면만 스크롤 */
 .native, .native body { height: 100%; overflow: hidden; }
 .native .demo { display: none; }
@@ -532,8 +529,6 @@ button { cursor: pointer; }
 .headline.xl { font-size: 33px; }
 .lead { font-size: 14px; line-height: 1.6; color: var(--ink-2); }
 .disclaimer { font-size: 12px; color: var(--ink-3); padding: 8px 10px; background: var(--muted); border-radius: var(--r-md); }
-.path-progress { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; font-size: 13px; }
-.path-progress b { font-variant-numeric: tabular-nums; }
 
 /* ---------- 시작 화면(랜딩) ---------- */
 .onboarding { padding-top: 18px; gap: 18px; }
@@ -605,21 +600,11 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .login-title { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
 .login-alt { display: grid; gap: 8px; }
 .login .guest { border-color: transparent; }
-.account-row { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-lg); }
-.account-row > span { flex: 1; display: grid; gap: 2px; min-width: 0; }
-.account-row small { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; }
 
 .step-empty { font-size: 12.5px; color: var(--ink-3); padding: 8px 10px; background: var(--muted); border-radius: var(--r-md); }
 
 .back-link { justify-self: start; }
 
-/* 학년별 로드맵 (내 로드맵 탭) */
-
-.stage-card { padding: 14px; display: grid; gap: 8px; }
-.stage-card.now { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
-.stage-head { display: flex; align-items: center; gap: 8px; }
-.stage-head h3 { font-size: 17px; font-weight: 800; flex: 1; }
-.stage-head h3 span { color: var(--primary); }
 
 .record { display: grid; gap: 4px; padding: 8px 10px; background: var(--ok-soft); border-radius: var(--r-md); font-size: 13px; }
 .record b { color: var(--ok-ink); margin-right: 4px; }
@@ -659,7 +644,6 @@ h4 { margin: 0; }
 .task-body { display: grid; gap: 8px; padding: 0 0 14px 32px; }
 .task-body .muted { font-size: 13px; }
 .task-body > .btn { justify-self: start; }
-.stage-head { display: flex; align-items: center; gap: 8px; }
 
 .records { display: grid; gap: 10px; }
 .records-group { padding: 14px; display: grid; gap: 8px; }
@@ -689,17 +673,8 @@ h4 { margin: 0; }
 
 .set-group { display: grid; gap: 8px; }
 .set-title { font-size: 12px; font-weight: 800; letter-spacing: 0.02em; color: var(--ink-3); }
-.select-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
-.select-row .input { width: auto; min-width: 128px; height: 38px; }
-.toggle-row.off { opacity: 0.5; cursor: default; }
-.confirm-row { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--danger); border-radius: var(--r-lg); }
 .btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
 .danger-link { justify-self: start; color: var(--danger); font-size: 13px; }
-.sheet-more summary { cursor: pointer; list-style: none; padding: 6px 0; }
-.sheet-more summary::-webkit-details-marker { display: none; }
-.sheet-more summary::after { content: ' ▸'; }
-.sheet-more[open] summary::after { content: ' ▾'; }
-.sheet-more[open] { gap: 10px; }
 
 /* ---------- 살아 있는 감자 (11/20) ---------- */
 .live-potato { position: relative; display: grid; place-items: center; padding: 0; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -1066,11 +1041,7 @@ h4 { margin: 0; }
 .home .home-hi { font-size: clamp(19px, 3vh, 23px); }
 /* 설정: 따로 떨어진 상자 대신 한 묶음 목록 */
 .set-list { display: grid; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; }
-.set-list > .toggle-row, .set-list > .select-row { border: 0; border-radius: 0; background: transparent; }
 .set-list > * + * { border-top: 1px solid var(--line) !important; }
-.select-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
-.select-row b { flex: 1; font-size: 15px; }
-.select-row .input { width: auto; min-width: 120px; }
 /* 스위치: 체크박스 대신 켜고 끄는 모양 */
 input[role='switch'] {
   appearance: none; -webkit-appearance: none; flex: none; position: relative; width: 46px !important; height: 28px !important; margin: 0;
@@ -1084,10 +1055,6 @@ input[role='switch']:checked { background: var(--ok); }
 input[role='switch']:checked::after { translate: 18px 0; }
 input[role='switch']:disabled { opacity: 0.5; cursor: default; }
 input[role='switch']:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-/* 로드맵 학년 탭: 이름 위, 개수 아래로 쌓아 다섯 칸이 한 줄에 들어가게 */
-.seg-grades { overflow: visible; }
-.seg-grades button { flex: 1 1 0; min-width: 0; flex-direction: column; gap: 0; padding: 5px 2px; line-height: 1.2; position: relative; }
-.seg-grades button .dot { position: absolute; top: 5px; right: 6px; }
 /* 브라우저 기본 표면도 팔레트로 */
 ::selection { background: oklch(0.86 0.08 85); color: var(--ink); }
 :root { caret-color: var(--primary); accent-color: var(--primary); }
