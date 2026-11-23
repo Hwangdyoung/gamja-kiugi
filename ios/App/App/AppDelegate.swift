@@ -226,7 +226,8 @@ enum GamjaNotifications {
 // MARK: - Apple Watch로 보내기
 // iPhone과 워치는 저장소를 함께 쓰지 못해서 WatchConnectivity로 보낸다.
 // - applicationContext: 워치 앱이 켜질 때 받는 "최신 상태" 한 벌
-// - complicationUserInfo: 워치 페이스에 컴플리케이션이 있으면 워치 앱을 깨워서 바로 반영 (하루 횟수 제한 있음)
+// - sendMessage: 워치 앱이 화면에 켜져 있을 때 즉시 (횟수 제한 없음, 시연 슬라이더용)
+// - complicationUserInfo: 워치 앱이 꺼져 있고 워치 페이스에 컴플리케이션이 있으면 깨워서 반영 (하루 약 50번 제한)
 final class WatchSync: NSObject, WCSessionDelegate {
     static let shared = WatchSync()
     private var pending: [String: Any]?
@@ -247,10 +248,16 @@ final class WatchSync: NSObject, WCSessionDelegate {
             return
         }
         do { try session.updateApplicationContext(info) } catch { NSLog("[GamjaWidget] 워치 전송 실패: %@", error.localizedDescription) }
-        if session.isComplicationEnabled, session.remainingComplicationUserInfoTransfers > 0 {
+        // 워치 앱이 화면에 켜져 있으면(isReachable) 바로 보낸다. 하루 횟수 제한이 없어 시연 슬라이더를 움직이면 즉시 바뀐다
+        if session.isReachable {
+            session.sendMessage(info, replyHandler: nil) { error in
+                NSLog("[GamjaWidget] 워치 즉시 전송 실패: %@", error.localizedDescription)
+            }
+        } else if session.isComplicationEnabled, session.remainingComplicationUserInfoTransfers > 0 {
+            // 워치 앱이 꺼져 있으면 컴플리케이션 통로로 깨운다 (하루 약 50번 제한이라 꼭 필요할 때만)
             session.transferCurrentComplicationUserInfo(info)
         }
-        NSLog("[GamjaWidget] 워치로 보냄 (컴플리케이션 %@)", session.isComplicationEnabled ? "있음" : "없음")
+        NSLog("[GamjaWidget] 워치로 보냄 (즉시 %@, 컴플리케이션 남은 횟수 %d)", session.isReachable ? "예" : "아니오", session.remainingComplicationUserInfoTransfers)
     }
 
     func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {

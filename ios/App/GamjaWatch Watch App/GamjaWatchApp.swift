@@ -72,6 +72,11 @@ final class WatchDelegate: NSObject, WKApplicationDelegate, WCSessionDelegate {
         save(userInfo)
     }
 
+    /// 워치 앱이 켜져 있을 때 iPhone이 바로 보낸 상태 (시연 슬라이더를 움직이면 즉시)
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        DispatchQueue.main.async { self.save(message) }
+    }
+
     private func save(_ info: [String: Any]) {
         guard let store = UserDefaults(suiteName: watchGroup) else { return }
         #if DEBUG
