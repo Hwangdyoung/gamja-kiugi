@@ -352,9 +352,12 @@ describe('화면 흐름', () => {
   it('로드맵: 할 일에 한 줄 기록 → 감자 성장, 계열을 바꿔도 공통 기록은 남는다, 기기 저장', () => {
     start();
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('로드맵'));
-    expect(screen.getByText('기록 0 / 12')).toBeTruthy();
-    // 지금 학년(1학년) 탭이 열려 있고, 할 일은 한 줄씩 접혀 있다가 눌러서 펼친다
-    expect(screen.getByRole('tab', { name: /1학년/ }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tab', { name: /로드맵/ }).textContent).toBe('로드맵0/12');
+    // 1~4학년 정류장이 흙길로 이어진 지도. 지금 학년(1학년) 정류장이 골라져 있고 감자가 서 있다. 할 일은 지도 아래
+    expect(screen.getByRole('button', { name: /^1학년 탐색, 0\/3, 지금 학년/ }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('button', { name: /^2학년 첫 경험/ }).getAttribute('aria-pressed')).toBe('false');
+    expect(document.querySelector('.rmap-potato .mascot-wrap')).toBeTruthy();
+    expect(screen.getByText('지원서 쓰기')).toBeTruthy();
     ['지역 기관 SNS 서포터즈', '진로·직무 상담 받기', '관심 직무 채용 공고 3개 읽기'].forEach((title, k) => {
       if (k > 0) fireEvent.click(screen.getByText(title));
       fireEvent.click(screen.getByText('했어요 · 한 줄 남기기'));
@@ -362,7 +365,11 @@ describe('화면 흐름', () => {
       fireEvent.change(input, { target: { value: `기록 ${k + 1}` } });
       fireEvent.click(screen.getByText('기록하기'));
     });
-    expect(screen.getByText('기록 3 / 12')).toBeTruthy();
+    expect(screen.getByRole('tab', { name: /로드맵/ }).textContent).toBe('로드맵3/12');
+    expect(screen.getByRole('button', { name: /^1학년 탐색, 3\/3/ }).classList.contains('done')).toBe(true);
+    // 다른 학년 정류장을 누르면 지도 아래가 그 학년 할 일로 바뀐다
+    fireEvent.click(screen.getByRole('button', { name: /^2학년 첫 경험/ }));
+    expect(screen.getByText('보여줄 결과물 하나 만들기')).toBeTruthy();
     // 내 기록 탭: 학년별로 모아 본다
     fireEvent.click(screen.getByRole('tab', { name: /내 기록/ }));
     expect(screen.getByText('기록 1')).toBeTruthy();

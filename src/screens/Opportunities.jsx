@@ -120,9 +120,18 @@ export default function Opportunities({ items, hiddenCount, today, q, onQuery, t
               </h2>
             </div>
             {g.sub && <p className="muted small group-sub">{g.sub}</p>}
-            <div className="list">
+            {/* 마감 임박은 공고 사이트처럼 가로로 넘겨 보는 줄 */}
+            <div className={g.id === 'urgent' ? 'opp-rail' : 'opp-grid'}>
               {g.items.map((it) => (
-                <OpportunityCard key={it.id} item={it} today={today} saved={!!saved[it.id]} onOpen={onOpen} onSave={onSave} />
+                <OpportunityCard
+                  key={it.id}
+                  item={it}
+                  today={today}
+                  saved={!!saved[it.id]}
+                  onOpen={onOpen}
+                  onSave={onSave}
+                  rail={g.id === 'urgent'}
+                />
               ))}
             </div>
           </section>

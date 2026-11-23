@@ -369,6 +369,149 @@
       "months": [
         6
       ]
+    },
+    {
+      "id": "kspo-intern",
+      "title": "국민체육진흥공단 청년인턴",
+      "type": "인턴",
+      "org": "서울올림픽기념국민체육진흥공단",
+      "due": null,
+      "target": "체육·경영 등 청년 (공고별)",
+      "src": "https://www.kspo.or.kr/kspo/singl/empmn/list.do?menuNo=200186",
+      "when": "해마다 공고 (2026년엔 7월 채용형 인턴)",
+      "months": [
+        7
+      ]
+    },
+    {
+      "id": "sports-industry-intern",
+      "title": "스포츠산업 인턴십",
+      "type": "인턴",
+      "org": "문화체육관광부 · 국민체육진흥공단",
+      "due": null,
+      "target": "스포츠 기업에서 일해 보고 싶은 청년",
+      "src": "https://www.hankyung.com/article/202604087596i",
+      "when": "2026년엔 4월 모집, 5~7월 근무",
+      "months": [
+        4
+      ]
+    },
+    {
+      "id": "nhis-intern",
+      "title": "국민건강보험공단 체험형 청년인턴",
+      "type": "인턴",
+      "org": "국민건강보험공단 (본부 원주)",
+      "due": null,
+      "target": "청년 (사무행정·보건 등, 공고별)",
+      "src": "https://www.nhis.or.kr/nhis/together/wbhaea02700m01.do",
+      "when": "상·하반기 공고 (2026년 상반기 3.16~3.30)",
+      "months": [
+        3
+      ]
+    },
+    {
+      "id": "ccaf-volunteer",
+      "title": "춘천공연예술제 자원활동가",
+      "type": "서포터즈",
+      "org": "춘천공연예술제",
+      "due": null,
+      "target": "공연예술에 관심 있는 20대 (춘천 거주·통학)",
+      "src": "https://ccaf.or.kr/volunteers",
+      "when": "매년 5~6월 모집, 8월 축제 (2026년 5.21~6.7)",
+      "months": [
+        5
+      ]
+    },
+    {
+      "id": "redcross-gw-jobs",
+      "title": "대한적십자사 강원혈액원 채용",
+      "type": "취업",
+      "org": "대한적십자사 혈액관리본부",
+      "due": null,
+      "target": "간호사·임상병리사 (공고별)",
+      "src": "https://www.bloodinfo.net/knrcbs/na/ntt/selectNttList.do?mi=1088&bbsId=1044",
+      "when": "전문직 공개모집 연 여러 차례 (2026년 3월·7월)",
+      "months": [
+        3,
+        7
+      ]
+    },
+    {
+      "id": "boostcamp",
+      "title": "부스트캠프 웹·모바일",
+      "type": "프로젝트",
+      "org": "네이버 커넥트재단",
+      "due": null,
+      "target": "개발 경력 2년 미만, 풀타임 참여 가능 (만 19세 이상)",
+      "src": "https://boostcamp.connect.or.kr",
+      "when": "매년 5~6월 모집 (2025년 5.26~6.9)",
+      "where": "온라인",
+      "months": [
+        5
+      ]
+    },
+    {
+      "id": "godsaeng-intern",
+      "title": "갓생 인턴십 (스마트팜·푸드테크)",
+      "type": "인턴",
+      "org": "농림축산식품부",
+      "due": null,
+      "target": "만 18~34세 청년",
+      "src": "https://www.heraldk.com/article/2026051918000064601",
+      "when": "2026년엔 5.21~6.24 모집",
+      "months": [
+        5
+      ]
+    },
+    {
+      "id": "smartfarm-incubator",
+      "title": "스마트팜 청년창업 보육센터",
+      "type": "프로젝트",
+      "org": "농림축산식품부",
+      "due": null,
+      "target": "만 18~39세 청년 (20개월 실습 교육)",
+      "src": "https://www.mafra.go.kr/bbs/home/792/577784/artclView.do",
+      "when": "2026년엔 5월 마감 · 다음 모집 확인 필요",
+      "months": [
+        5
+      ]
+    },
+    {
+      "id": "kbsi-equip",
+      "title": "연구장비분야 전문인력양성과정",
+      "type": "프로젝트",
+      "org": "한국기초과학지원연구원 (중부권)",
+      "due": null,
+      "target": "이공계 학사 졸업(예정)자",
+      "src": "https://www.syu.ac.kr/zj62",
+      "when": "2026년 집중과정 7~11월 · 교육비 무료"
+    },
+    {
+      "id": "kbsi-jobs",
+      "title": "한국기초과학지원연구원 채용 (춘천센터 포함)",
+      "type": "취업",
+      "org": "한국기초과학지원연구원",
+      "due": null,
+      "target": "공고별 상이 (연구·기술직)",
+      "src": "https://www.kbsi.re.kr/board?menuId=MENU002051102000000&boardId=BOARD00086&siteId=SITE00002",
+      "when": "공동채용 (2026년엔 5월)",
+      "months": [
+        5
+      ]
+    },
+    {
+      "id": "data-ai-challenge",
+      "title": "데이터+AI 혁신 챌린지",
+      "type": "공모전",
+      "org": "과학기술정보통신부 · 한국데이터산업진흥원",
+      "due": null,
+      "target": "데이터·AI에 관심 있는 누구나 (부문별)",
+      "src": "https://www.ddaily.co.kr/page/view/2026090109374698318",
+      "when": "매년 9~10월 접수 (2026년 9.1~10.22)",
+      "where": "온라인",
+      "months": [
+        9
+      ]
     }
   ],
   "paths": {
@@ -425,7 +568,8 @@
       ],
       [
         "cbf-jobs",
-        "eubio-jobs"
+        "eubio-jobs",
+        "kbsi-equip"
       ]
     ],
     "bio.qa": [
@@ -493,8 +637,8 @@
         "policy-reporters"
       ],
       [
-        "work24-chuncheon",
-        "future-work-experience"
+        "nhis-intern",
+        "work24-chuncheon"
       ],
       [
         "gojobs",
@@ -599,8 +743,8 @@
         "knu-winter-field"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "boostcamp",
+        "future-work-experience"
       ],
       [
         "gica-jobs",
@@ -614,7 +758,8 @@
       [
         "policy-contest",
         "public-data-startup",
-        "fiscal-data-contest"
+        "fiscal-data-contest",
+        "data-ai-challenge"
       ],
       [
         "future-work-experience",
@@ -665,8 +810,9 @@
         "future-work-experience"
       ],
       [
-        "cbf-jobs",
-        "gwtp-jobs"
+        "kbsi-equip",
+        "kbsi-jobs",
+        "cbf-jobs"
       ]
     ],
     "natural.analysis": [
@@ -674,12 +820,14 @@
         "knu-bio-job-talk"
       ],
       [
-        "knu-winter-field"
+        "knu-winter-field",
+        "data-ai-challenge"
       ],
       [
         "bio-matching-day"
       ],
       [
+        "kbsi-jobs",
         "hugel-qc-jobs",
         "eubio-jobs"
       ]
@@ -687,10 +835,13 @@
     "health.nurse": [
       [],
       [],
-      [],
+      [
+        "nhis-intern"
+      ],
       [
         "knuh-nurse",
-        "hallym-nurse"
+        "hallym-nurse",
+        "redcross-gw-jobs"
       ]
     ],
     "health.medtech": [
@@ -699,16 +850,17 @@
         "knu-winter-field"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "nhis-intern",
+        "future-work-experience"
       ],
       [
-        "gojobs",
-        "gw-joblink"
+        "redcross-gw-jobs",
+        "gojobs"
       ]
     ],
     "arts.perform": [
       [
+        "ccaf-volunteer",
         "cc-mime-festival-call"
       ],
       [
@@ -724,14 +876,15 @@
       ]
     ],
     "arts.sport": [
-      [],
       [
-        "cc-talent-supporters",
+        "cc-talent-supporters"
+      ],
+      [
         "knu-rise-supporters"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "sports-industry-intern",
+        "kspo-intern"
       ],
       [
         "gojobs",
@@ -742,12 +895,15 @@
       [
         "gw-joblink"
       ],
-      [],
+      [
+        "godsaeng-intern"
+      ],
       [
         "knu-winter-field",
         "future-work-experience"
       ],
       [
+        "smartfarm-incubator",
         "gojobs",
         "cbf-jobs"
       ]
@@ -757,6 +913,7 @@
         "knu-bio-job-talk"
       ],
       [
+        "godsaeng-intern",
         "knu-winter-field"
       ],
       [

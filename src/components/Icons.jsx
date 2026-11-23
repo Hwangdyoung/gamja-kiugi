@@ -110,3 +110,46 @@ export const PencilIcon = (p) => (
     <path d="M13.5 6.5l4 4" />
   </Svg>
 );
+
+/* 기회 유형 그림 (카드 왼쪽 썸네일) */
+export const MegaphoneIcon = (p) => (
+  <Svg {...p}>
+    <path d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z" />
+    <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+    <path d="M18.5 6a8.5 8.5 0 0 1 0 12" />
+  </Svg>
+);
+export const TrophyIcon = (p) => (
+  <Svg {...p}>
+    <path d="M8 4h8v5a4 4 0 0 1-8 0z" />
+    <path d="M8 6H5a2 2 0 0 0 3 4" />
+    <path d="M16 6h3a2 2 0 0 1-3 4" />
+    <path d="M12 13v4" />
+    <path d="M8.5 20h7l-1-3h-5z" />
+  </Svg>
+);
+export const BulbIcon = (p) => (
+  <Svg {...p}>
+    <path d="M9 18h6" />
+    <path d="M10 21h4" />
+    <path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" />
+  </Svg>
+);
+export const WrenchIcon = (p) => (
+  <Svg {...p}>
+    <path d="M14.5 5.5a4 4 0 0 0 4.8 5L20 11l-9 9a2.1 2.1 0 0 1-3-3l9-9 .5.7a4 4 0 0 0-3-3.2z" />
+  </Svg>
+);
+export const BuildingIcon = (p) => (
+  <Svg {...p}>
+    <rect x="5" y="3" width="14" height="18" rx="1" />
+    <path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2" />
+    <path d="M11 21v-3h2v3" />
+  </Svg>
+);
+export const FlagIcon = (p) => (
+  <Svg {...p}>
+    <path d="M5 21V4" />
+    <path d="M5 4h11l-2 4 2 4H5" />
+  </Svg>
+);

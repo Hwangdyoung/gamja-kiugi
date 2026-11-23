@@ -325,23 +325,52 @@ button { cursor: pointer; }
 
 .progress { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
 
-/* ---------- 기회 ---------- */
-.opp { display: flex; align-items: flex-start; gap: 2px; padding-right: 4px; }
-.opp-main {
-  flex: 1;
-  min-width: 0;
-  display: grid;
-  gap: 4px;
-  padding: 12px 4px 12px 14px;
-  border: 0;
-  background: none;
-  text-align: left;
-}
-.opp-meta { display: flex; align-items: center; gap: 8px; }
-.opp-title { font-size: 15px; font-weight: 700; line-height: 1.4; }
-.opp-org { font-size: 12px; color: var(--ink-2); }
-.save { color: var(--ink-3); margin-top: 6px; }
-.save.on { color: var(--primary); }
+/* ---------- 기회: 공모전·대외활동 사이트처럼 포스터 격자 ---------- */
+.opp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+.opp { position: relative; min-width: 0; }
+.opp-main { display: grid; gap: 3px; width: 100%; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.opp-main:focus-visible { outline: none; }
+.opp-main:focus-visible .poster { outline: 2px solid var(--primary); outline-offset: 2px; }
+.opp-title { margin-top: 7px; font-size: 14.5px; font-weight: 700; line-height: 1.36; letter-spacing: -0.01em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.opp-org { font-size: 12px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opp-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 3px; }
+.opp-tags .tag { margin-left: 0; font-size: 11px; padding: 0 5px; }
+.opp-when { font-size: 11.5px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 포스터 표지: 유형 색. 밝기·채도는 화면 모드에 따라 */
+:root { --po-l: 0.9; --po-c: 0.07; --po-ink-l: 0.34; --po-ink-c: 0.1; --po-art-l: 0.78; }
+:root[data-theme='dark'] { --po-l: 0.33; --po-c: 0.06; --po-ink-l: 0.92; --po-ink-c: 0.05; --po-art-l: 0.45; }
+.poster { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; background: oklch(var(--po-l) var(--po-c) var(--po-h)); color: oklch(var(--po-ink-l) var(--po-ink-c) var(--po-h)); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s; }
+.opp-main:hover .poster { transform: translateY(-2px); box-shadow: 0 8px 18px -10px oklch(0.3 0.08 var(--po-h) / 45%); }
+.poster.lg { aspect-ratio: 16 / 9; border-radius: 16px; }
+.poster-art { position: absolute; right: -14px; bottom: -16px; color: oklch(var(--po-art-l) calc(var(--po-c) * 1.6) var(--po-h)); }
+.poster.lg .poster-art { right: 8px; bottom: -18px; }
+.poster-org { position: absolute; left: 11px; right: 34%; bottom: 11px; font-family: var(--font-voice); font-size: 15px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.poster.lg .poster-org { left: 18px; bottom: 18px; font-size: 22px; }
+.poster > .status { position: absolute; left: 8px; top: 8px; }
+.poster.lg > .status { left: 14px; top: 14px; }
+.t-sup { --po-h: 300; }
+.t-con { --po-h: 70; }
+.t-pro { --po-h: 190; }
+.t-int { --po-h: 240; }
+.t-fld { --po-h: 150; }
+.t-job { --po-h: 25; }
+
+/* 상태 배지 */
+.status { flex: none; display: inline-flex; align-items: center; height: 21px; padding: 0 7px; border-radius: 999px; font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.status.hot { background: var(--danger); color: oklch(0.99 0 0); }
+.status.open { background: var(--primary); color: var(--primary-ink); }
+.status.soon { background: var(--ok); color: oklch(0.99 0 0); }
+.status.idle { background: oklch(1 0 0 / 82%); color: oklch(0.32 0.02 245); font-weight: 700; }
+
+/* 스크랩: 포스터 오른쪽 위 동그란 버튼 */
+.opp > .save { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 30px; height: 30px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: oklch(1 0 0 / 82%); color: oklch(0.4 0.02 245); cursor: pointer; }
+.opp > .save.on { background: var(--primary); color: var(--primary-ink); }
+
+/* 마감 임박: 가로로 넘기는 줄 */
+.opp-rail { display: flex; gap: 12px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.opp-rail::-webkit-scrollbar { display: none; }
+.opp.rail { flex: none; width: 212px; scroll-snap-align: start; }
 
 /* 빠른 필터: 붙어 있는 2칸 버튼 */
 
@@ -1076,3 +1105,55 @@ input[role='switch']:focus-visible { outline: 2px solid var(--primary); outline-
 .tag.tag-example { background: var(--muted); color: var(--ink-2); border: 1px dashed var(--line-2); }
 .post-row.is-example { border-style: dashed; box-shadow: none; }
 .post-tags { display: flex; gap: 6px; }
+
+/* ---------- 로드맵 지도: 감자 밭 사이 흙길 ---------- */
+:root { --field: oklch(0.95 0.045 135); --field-row: oklch(0.89 0.06 135); --road: oklch(0.86 0.045 75); --road-edge: oklch(0.78 0.05 70); }
+:root[data-theme='dark'] { --field: oklch(0.26 0.035 145); --field-row: oklch(0.31 0.04 145); --road: oklch(0.4 0.035 70); --road-edge: oklch(0.34 0.03 70); }
+.rmap { position: relative; aspect-ratio: 340 / 404; border-radius: 18px; background: var(--field); overflow: hidden; }
+.rmap > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rmap-rows path { fill: none; stroke: var(--field-row); stroke-width: 3; stroke-linecap: round; }
+.rmap-road { fill: none; stroke: var(--road); stroke-width: 26; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1.5px 0 var(--road-edge)); }
+.rmap-lane { fill: none; stroke: oklch(1 0 0 / 55%); stroke-width: 2; stroke-dasharray: 6 8; stroke-linecap: round; }
+.rmap-done { fill: none; stroke: var(--ok); stroke-width: 8; stroke-linecap: round; transition: stroke-dasharray 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* 정류장: 동그라미 + 옆 이름표 */
+.rmap-stop { position: absolute; z-index: 2; translate: -22px -22px; display: flex; align-items: center; gap: 8px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.rmap-stop.label-left { flex-direction: row-reverse; translate: calc(-100% + 22px) -22px; text-align: right; }
+.rmap-dot { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--surface); background: var(--surface); color: var(--ink-3); font-family: var(--font-voice); font-size: 20px; box-shadow: 0 2px 6px -2px oklch(0.3 0.04 100 / 35%), inset 0 0 0 2px var(--line-2); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.rmap-stop:hover .rmap-dot { transform: scale(1.06); }
+.rmap-stop.done .rmap-dot { background: var(--ok); color: oklch(0.99 0 0); box-shadow: 0 2px 6px -2px oklch(0.3 0.08 150 / 45%); }
+.rmap-stop.now .rmap-dot { background: var(--primary); color: var(--primary-ink); box-shadow: 0 2px 8px -2px oklch(0.3 0.1 240 / 50%); }
+.rmap-stop.past .rmap-dot { color: var(--caution-ink); box-shadow: 0 2px 6px -2px oklch(0.3 0.04 100 / 35%), inset 0 0 0 2px var(--caution-ink); }
+.rmap-stop.picked .rmap-dot { outline: 3px solid color-mix(in oklch, var(--primary) 35%, transparent); outline-offset: 2px; }
+.rmap-stop:focus-visible { outline: none; }
+.rmap-stop:focus-visible .rmap-dot { outline: 3px solid var(--primary); outline-offset: 2px; }
+.rmap-label { display: grid; gap: 1px; padding: 5px 9px 6px; border-radius: 10px; background: color-mix(in oklch, var(--surface) 88%, transparent); box-shadow: 0 1px 3px oklch(0.3 0.04 100 / 18%); }
+.rmap-label small { font-size: 10.5px; font-weight: 700; color: var(--ink-3); line-height: 1.1; }
+.rmap-label b { font-family: var(--font-voice); font-size: 16px; font-weight: 400; line-height: 1.15; white-space: nowrap; }
+.rmap-label .rm-meter { margin-top: 2px; }
+.label-left .rmap-label .rm-meter { justify-content: flex-end; }
+
+/* 감자: 지금 학년 정류장 위에 서 있다 */
+.rmap-potato { position: absolute; z-index: 3; translate: -50% calc(-100% - 16px); pointer-events: none; filter: drop-shadow(0 3px 2px oklch(0.3 0.05 90 / 30%)); animation: rmap-bob 2.8s ease-in-out infinite; }
+@keyframes rmap-bob { 50% { translate: -50% calc(-100% - 20px); } }
+@media (prefers-reduced-motion: reduce) { .rmap-potato { animation: none; } }
+
+/* 도착: 지원서 깃발 */
+.rmap-goal { position: absolute; z-index: 2; translate: -18px -18px; display: flex; align-items: center; gap: 8px; }
+.rmap-flag { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 2px dashed var(--ink-3); background: var(--surface); color: var(--ink-2); }
+.rmap-goal.done .rmap-flag { border-style: solid; border-color: var(--ok); background: var(--ok); color: oklch(0.99 0 0); }
+.rmap-goal b { font-family: var(--font-voice); font-size: 15px; font-weight: 400; color: var(--ink-2); }
+
+/* 진행 막대(학년 할 일 3칸) */
+.rm-meter { display: flex; align-items: center; gap: 3px; }
+.rm-meter i { width: 12px; height: 5px; border-radius: 3px; background: var(--line-2); }
+.rm-meter i.on { background: var(--ok); }
+.rm-meter em { margin-left: 4px; font-style: normal; font-size: 12px; font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* 고른 학년의 할 일 */
+.rm-panel { display: grid; gap: 2px; padding: 14px 16px 6px; }
+.rm-panel.now { border-color: color-mix(in oklch, var(--primary) 55%, var(--line)); }
+.rm-panel-head { display: flex; align-items: center; gap: 8px; }
+.rm-panel-head h2 { flex: 1; display: flex; align-items: baseline; gap: 6px; font-family: var(--font-voice); font-size: 21px; font-weight: 400; }
+.rm-panel-head h2 small { font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.rm-goal { font-size: 13px; color: var(--ink-2); padding: 2px 0 6px; }

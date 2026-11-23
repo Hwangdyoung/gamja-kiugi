@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CheckIcon, ChevronIcon } from '../components/Icons.jsx';
+import { CheckIcon, ChevronIcon, FlagIcon } from '../components/Icons.jsx';
+import Mascot from '../components/Mascot.jsx';
 import PageHead from '../components/PageHead.jsx';
 import { ddayLabel } from '../lib/opportunities.js';
 import { MAJORS } from '../lib/data.js';
@@ -155,78 +156,166 @@ function Records({ progress, log, onCopyResume, onGo }) {
   );
 }
 
-/* 내 로드맵: 학년 탭(지금 학년이 기본) + 내 기록 탭. 할 일은 한 줄로 접혀 있다가 눌러서 펼친다 */
-export default function Path({ profile, progress, log, items, today, onRecord, onClear, onOpen, onCopyResume, startView = null }) {
+/* 로드맵 지도: 감자 밭 사이로 구불구불한 흙길. 1학년 → 4학년 → 지원서 깃발.
+   길 구간은 그 학년 할 일을 한 만큼 초록으로 칠해지고, 감자는 지금 학년 정류장에 서 있다.
+   좌표는 340×380 그림 기준(위에 OY만큼 여유). 정류장은 누를 수 있는 버튼(HTML)으로 그림 위에 얹는다 */
+const MAP_W = 340;
+const MAP_H = 404;
+const OY = 24; // 맨 위 정류장 위에 감자가 설 자리
+const STOPS = [
+  [64, 60],
+  [276, 140],
+  [64, 220],
+  [276, 300],
+];
+const GOAL = [150, 352];
+const SEGS = [
+  'M64 60 C 190 60, 276 74, 276 140',
+  'M276 140 C 276 204, 64 156, 64 220',
+  'M64 220 C 64 284, 276 236, 276 300',
+  'M276 300 C 276 344, 210 352, 150 352',
+];
+const pos = ([x, y]) => ({ left: `${(x / MAP_W) * 100}%`, top: `${((y + OY) / MAP_H) * 100}%` });
+
+function RoadMap({ progress, mood, picked, onPick }) {
+  return (
+    <div className="rmap">
+      <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} aria-hidden="true">
+        <g transform={`translate(0 ${OY})`}>
+        {/* 밭고랑 */}
+        <g className="rmap-rows">
+          <path d="M-10 108 C 90 96, 190 104, 350 92" />
+          <path d="M-10 186 C 110 178, 230 190, 350 176" />
+          <path d="M-10 268 C 100 258, 220 270, 350 258" />
+        </g>
+        <path className="rmap-road" d={SEGS.join(' ')} />
+        <path className="rmap-lane" d={SEGS.join(' ')} />
+        {SEGS.map((d, i) => {
+          const s = progress.stages[i];
+          const frac = s.tasks.filter(progress.isDone).length / s.tasks.length;
+          return <path key={i} className="rmap-done" d={d} pathLength="1" strokeDasharray={`${frac} 1`} />;
+        })}
+        </g>
+      </svg>
+
+      {progress.stages.map((s, i) => {
+        const n = s.tasks.filter(progress.isDone).length;
+        const full = n === s.tasks.length;
+        const now = i === progress.current;
+        const right = STOPS[i][0] < MAP_W / 2;
+        const state = full ? 'done' : now ? 'now' : i < progress.current ? 'past' : 'next';
+        return (
+          <button
+            key={s.grade}
+            type="button"
+            className={`rmap-stop ${state}${picked === i ? ' picked' : ''} ${right ? 'label-right' : 'label-left'}`}
+            style={pos(STOPS[i])}
+            aria-pressed={picked === i}
+            aria-label={`${s.grade}학년 ${s.label}, ${n}/${s.tasks.length}${now ? ', 지금 학년' : ''}`}
+            onClick={() => onPick(i)}
+          >
+            <span className="rmap-dot">{full ? <CheckIcon size={18} /> : s.grade}</span>
+            <span className="rmap-label">
+              <small>{s.grade}학년</small>
+              <b>{s.label}</b>
+              <span className="rm-meter">
+                {s.tasks.map((t) => (
+                  <i key={t.id} className={progress.isDone(t) ? 'on' : ''} />
+                ))}
+              </span>
+            </span>
+          </button>
+        );
+      })}
+
+      <span className="rmap-potato" style={pos(STOPS[progress.current])} aria-hidden="true">
+        <Mascot mood={mood} size={48} grow={progress.grow} />
+      </span>
+
+      <span className={`rmap-goal${progress.count >= progress.total ? ' done' : ''}`} style={pos(GOAL)}>
+        <span className="rmap-flag">
+          <FlagIcon size={16} />
+        </span>
+        <b>지원서 쓰기</b>
+      </span>
+    </div>
+  );
+}
+
+/* 내 로드맵: 위는 길 지도(어디까지 왔는지 한눈에), 아래는 고른 학년의 할 일. 탭으로 로드맵 / 내 기록 */
+export default function Path({ profile, mood = 'happy', progress, log, items, today, onRecord, onClear, onOpen, onCopyResume, startView = null }) {
   const track = MAJORS[profile.major].tracks[profile.track];
-  const [view, setView] = useState(startView ?? progress.current); // 0~3 학년, 'rec' 내 기록
+  const [view, setView] = useState(startView === 'rec' ? 'rec' : 'map');
+  const [picked, setPicked] = useState(typeof startView === 'number' ? startView : progress.current);
   const [openId, setOpenId] = useState(progress.next?.task.id ?? null);
-  const stage = view === 'rec' ? null : progress.stages[view];
+  const go = (i) => {
+    setView('map');
+    setPicked(i);
+  };
+  const s = progress.stages[picked];
+  const n = s.tasks.filter(progress.isDone).length;
 
   return (
-    <div className="screen">
+    <div className="screen path">
       <PageHead
         title="학년마다 할 일, 하나씩."
         lead={`${MAJORS[profile.major].label} · ${track.label}. 끝낸 일에 한 줄씩 남기면 이력서 재료가 돼요.`}
       />
-      <div className="path-progress">
-        <div className="bar" role="progressbar" aria-label="로드맵 진행" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.count}>
-          <i style={{ width: `${(progress.count / progress.total) * 100}%` }} />
-        </div>
-        <b>
-          기록 {progress.count} / {progress.total}
-        </b>
-      </div>
 
-      <div className="seg seg-grades" role="tablist" aria-label="학년">
-        {progress.stages.map((s, i) => {
-          const n = s.tasks.filter(progress.isDone).length;
-          return (
-            <button key={s.grade} type="button" role="tab" aria-selected={view === i} onClick={() => setView(i)}>
-              {s.grade}학년
-              {i === progress.current && <i className="dot" aria-label="지금 학년" />}
-              <small>
-                {n}/{s.tasks.length}
-              </small>
-            </button>
-          );
-        })}
+      <div className="seg" role="tablist" aria-label="로드맵 보기">
+        <button type="button" role="tab" aria-selected={view === 'map'} onClick={() => setView('map')}>
+          로드맵
+          <small>
+            {progress.count}/{progress.total}
+          </small>
+        </button>
         <button type="button" role="tab" aria-selected={view === 'rec'} onClick={() => setView('rec')}>
           내 기록
           <small>{progress.count}</small>
         </button>
       </div>
 
-      {stage ? (
-        <section className="stage-card card" aria-label={`${stage.grade}학년 ${stage.label}`}>
-          <div className="stage-head">
-            <h3>
-              {stage.grade}학년 <span>{stage.label}</span>
-            </h3>
-            {view === progress.current && <span className="badge">지금</span>}
-          </div>
-          <p className="muted small">
-            {view < progress.current && stage.tasks.some((t) => !progress.isDone(t)) ? '지나간 학년이지만 지금 해도 늦지 않아요.' : stage.goal}
-          </p>
-          <ol className="tasks">
-            {stage.tasks.map((t) => (
-              <Task
-                key={t.id}
-                task={t}
-                entry={log[t.id]}
-                opps={t.own ? items.filter((it) => it.step === view) : []}
-                today={today}
-                open={openId === t.id}
-                onToggle={() => setOpenId((o) => (o === t.id ? null : t.id))}
-                onRecord={onRecord}
-                onClear={onClear}
-                onOpen={onOpen}
-              />
-            ))}
-          </ol>
-          {stage.grade === 4 && <p className="fine">4학년 할 일까지 다 해도 합격이 정해지는 건 아니에요. 대신 지원서에 쓸 이야기가 열두 줄 생겨요.</p>}
-        </section>
+      {view === 'rec' ? (
+        <Records progress={progress} log={log} onCopyResume={onCopyResume} onGo={go} />
       ) : (
-        <Records progress={progress} log={log} onCopyResume={onCopyResume} onGo={setView} />
+        <>
+          <RoadMap progress={progress} mood={mood} picked={picked} onPick={setPicked} />
+
+          <section className={`rm-panel card${picked === progress.current ? ' now' : ''}`} aria-label={`${s.grade}학년 ${s.label} 할 일`}>
+            <div className="rm-panel-head">
+              <h2>
+                <small>{s.grade}학년</small> {s.label}
+              </h2>
+              {picked === progress.current && <span className="badge">지금</span>}
+              <span className="rm-meter">
+                {s.tasks.map((t) => (
+                  <i key={t.id} className={progress.isDone(t) ? 'on' : ''} />
+                ))}
+                <em>
+                  {n}/{s.tasks.length}
+                </em>
+              </span>
+            </div>
+            <p className="rm-goal">{picked < progress.current && n < s.tasks.length ? '지나간 학년이지만 지금 해도 늦지 않아요.' : s.goal}</p>
+            <ol className="tasks">
+              {s.tasks.map((t) => (
+                <Task
+                  key={t.id}
+                  task={t}
+                  entry={log[t.id]}
+                  opps={t.own ? items.filter((it) => it.step === picked) : []}
+                  today={today}
+                  open={openId === t.id}
+                  onToggle={() => setOpenId((o) => (o === t.id ? null : t.id))}
+                  onRecord={onRecord}
+                  onClear={onClear}
+                  onOpen={onOpen}
+                />
+              ))}
+            </ol>
+            {s.grade === 4 && <p className="fine">4학년 할 일까지 다 해도 합격이 정해지는 건 아니에요. 대신 지원서에 쓸 이야기가 {progress.total}줄 생겨요.</p>}
+          </section>
+        </>
       )}
     </div>
   );

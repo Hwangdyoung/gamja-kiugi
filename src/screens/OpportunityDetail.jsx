@@ -1,5 +1,6 @@
 import { BookmarkIcon, ExternalIcon } from '../components/Icons.jsx';
-import { ddayLabel, formatDate } from '../lib/opportunities.js';
+import { Poster } from '../components/OpportunityCard.jsx';
+import { formatDate } from '../lib/opportunities.js';
 
 const host = (url) => {
   try {
@@ -14,11 +15,11 @@ export default function OpportunityDetail({ item, today, saved, onSave, research
   return (
     <div className="screen detail">
       <div className="detail-head">
-        <span className="opp-meta">
+        <Poster item={item} today={today} size="lg" />
+        <span className="opp-tags">
           <span className="tag">{item.type}</span>
           {item.online && <span className="tag online">온라인</span>}
           {item.ours && <span className="tag ours">우리 학교</span>}
-          <span className="dday">{ddayLabel(item, today)}</span>
         </span>
         <h1>{item.title}</h1>
       </div>

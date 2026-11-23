@@ -435,6 +435,7 @@ export default function App() {
     screen = (
       <Path
         profile={profile}
+        mood={mood}
         progress={progress}
         log={log}
         items={items}
