@@ -5,6 +5,10 @@ import { BagIcon, BookmarkIcon, BuildingIcon, BulbIcon, MegaphoneIcon, TrophyIco
 const TYPE_ICON = { 서포터즈: MegaphoneIcon, 공모전: TrophyIcon, 프로젝트: BulbIcon, 인턴: BagIcon, 현장실습: WrenchIcon, 취업: BuildingIcon };
 const TYPE_KEY = { 서포터즈: 'sup', 공모전: 'con', 프로젝트: 'pro', 인턴: 'int', 현장실습: 'fld', 취업: 'job' };
 export const typeKey = (type) => TYPE_KEY[type] ?? 'pro';
+export const TypeIcon = ({ type, ...p }) => {
+  const Icon = TYPE_ICON[type] ?? BulbIcon;
+  return <Icon {...p} />;
+};
 
 /* 기관 이름을 표지용으로 짧게: 괄호·(재)·법인 꼬리 떼기 */
 const shortOrg = (org) => org.replace(/^\(재\)|\(.*?\)/g, '').replace(/\s*·.*$/, '').trim();

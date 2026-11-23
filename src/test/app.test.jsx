@@ -380,9 +380,11 @@ describe('화면 흐름', () => {
     expect(document.querySelector('.phone .sprout').getAttribute('data-grow')).toBe('1');
     expect(screen.getByText('새싹 감자')).toBeTruthy();
 
-    // 나 탭: 내 카드 · 숫자 · 스크랩/설정
+    // 나 탭: 감자·이름 머리 · 성장 카드 · 스크랩/일정, 설정은 톱니
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('나'));
-    expect(document.querySelector('.me-who b').textContent).toBe('하늘');
+    expect(document.querySelector('.me-name h2').textContent).toBe('하늘');
+    expect(screen.getByRole('progressbar', { name: '내 기록' }).getAttribute('aria-valuenow')).toBe('3');
+    expect(screen.getByText('새싹 감자', { selector: '.me-stage' })).toBeTruthy();
     expect(screen.getByText('아직 스크랩한 기회가 없어요.', { exact: false })).toBeTruthy();
     // 일정: 이 달 달력에 오늘(11/18) 남긴 기록 3개가 찍히고, 날짜를 누르면 그날 것만
     fireEvent.click(screen.getByRole('tab', { name: '일정' }));
@@ -396,13 +398,14 @@ describe('화면 흐름', () => {
     fireEvent.click(screen.getByLabelText('다음 달'));
     expect(screen.getByText('2027년 1월')).toBeTruthy();
     expect(screen.getByLabelText('1월 1일, 모집 열림 2개')).toBeTruthy();
-    fireEvent.click(screen.getByRole('tab', { name: '설정' }));
+    fireEvent.click(screen.getByLabelText('설정'));
     // 알림 세부 설정·화면 모드
     fireEvent.click(screen.getByRole('radio', { name: '어둡게' }));
     expect(document.documentElement.dataset.theme).toBe('dark');
     fireEvent.click(screen.getByLabelText('미접속 알림'));
     expect(JSON.parse(localStorage.getItem('oo-kiugi:v2')).prefs).toMatchObject({ away: false, due: true, theme: 'dark' });
-    fireEvent.click(screen.getByText('수정'));
+    fireEvent.click(screen.getByLabelText('나로 돌아가기'));
+    fireEvent.click(screen.getByLabelText('내 정보 수정'));
     fireEvent.change(screen.getByLabelText('계열'), { target: { value: 'bio' } });
     fireEvent.click(screen.getByLabelText('연구형'));
     fireEvent.click(screen.getByText('저장'));

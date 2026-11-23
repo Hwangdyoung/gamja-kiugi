@@ -1,87 +1,136 @@
 import { useState } from 'react';
 import Calendar from '../components/Calendar.jsx';
-import Mascot from '../components/Mascot.jsx';
-import OpportunityCard from '../components/OpportunityCard.jsx';
+import { BackIcon, BookmarkIcon, ChevronIcon, GearIcon, PencilIcon } from '../components/Icons.jsx';
+import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
+import { TypeIcon, statusOf, typeKey } from '../components/OpportunityCard.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
 import SettingsPanel from '../components/SettingsPanel.jsx';
+import { vitalLabel } from '../lib/care.js';
 import { MAJORS } from '../lib/data.js';
+import { daysLeft } from '../lib/opportunities.js';
 import { GRADES } from '../lib/roadmap.js';
 
 const VIEWS = [
   { id: 'saved', label: '스크랩' },
   { id: 'cal', label: '일정' },
-  { id: 'settings', label: '설정' },
 ];
+const PER_STAGE = 3; // 기록 3개마다 감자가 한 단계 자란다
 
-/* 나: 맨 위 내 카드(감자·이름·학교·학년·직무, 수정) → 숫자 세 칸(기록·스크랩·기운) → 스크랩 / 일정 / 설정 탭.
-   한 화면에 길게 늘어놓지 않고 탭으로 나눴다. 일정은 마감·모집 열림·기록을 한 달 달력으로 본다. */
+/* 스크랩 정렬: 마감일 있는 것(가까운 순) → 곧 열림 → 그 밖 */
+const rank = (it, today) => {
+  const left = daysLeft(it, today);
+  return left === null ? 10000 : left;
+};
+
+/* 나: 감자와 내 이름이 크게 보이는 머리 → 감자 성장 카드(기록 진행·기운) → 스크랩 / 일정.
+   설정은 오른쪽 위 톱니로 따로 연다. 내 정보 수정은 이름 옆 연필. */
 export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, settings }) {
   const [view, setView] = useState('saved');
   const [editing, setEditing] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const major = MAJORS[profile.major];
   const grade = GRADES.find((g) => g.value === profile.grade)?.label ?? '학년 미입력';
   const savedIds = Object.keys(saved).filter((id) => saved[id]);
-  const open = items.filter((it) => saved[it.id]);
+  const open = items.filter((it) => saved[it.id]).sort((a, b) => rank(a, today) - rank(b, today));
   // 마감이 지나 목록에서 내려간 스크랩도 따로 알려 준다
   const closed = savedIds.filter((id) => !open.some((it) => it.id === id) && all.some((it) => it.id === id)).length;
 
+  if (settingsOpen) {
+    return (
+      <div className="screen me">
+        <div className="me-subhead">
+          <button type="button" className="icon-btn" aria-label="나로 돌아가기" onClick={() => setSettingsOpen(false)}>
+            <BackIcon size={20} />
+          </button>
+          <h2>설정</h2>
+        </div>
+        <SettingsPanel {...settings} />
+      </div>
+    );
+  }
+
+  const grow = progress.grow ?? 0;
+  const full = grow >= GROW_LABELS.length - 1;
+  const toNext = PER_STAGE - (progress.count % PER_STAGE);
+  const pct = progress.total ? Math.round((progress.count / progress.total) * 100) : 0;
+
   return (
     <div className="screen me">
-      <section className="card me-card" aria-label="내 정보">
+      <section className={`me-hero mood-${mood}`} aria-label="내 정보">
+        <button type="button" className="icon-btn me-gear" aria-label="설정" onClick={() => setSettingsOpen(true)}>
+          <GearIcon size={20} />
+        </button>
         {editing ? (
-          <ProfileForm
-            profile={profile}
-            submitLabel="저장"
-            onSubmit={(p) => {
-              onSaveProfile(p);
-              setEditing(false);
-            }}
-          />
-        ) : (
-          <div className="me-head">
-            <span className="me-potato">
-              <Mascot mood={mood} size={52} grow={progress.grow} />
-            </span>
-            <span className="me-who">
-              <b>{profile.name}</b>
-              <small>
-                {profile.school ?? '학교 미입력'} · {grade}
-              </small>
-              <small>
-                {major.label} · {major.tracks[profile.track].label}
-              </small>
-            </span>
-            <button type="button" className="btn outline sm" onClick={() => setEditing(true)}>
-              수정
-            </button>
+          <div className="me-edit">
+            <ProfileForm
+              profile={profile}
+              submitLabel="저장"
+              onSubmit={(p) => {
+                onSaveProfile(p);
+                setEditing(false);
+              }}
+            />
           </div>
+        ) : (
+          <>
+            <span className="me-potato">
+              <Mascot mood={mood} size={92} grow={grow} />
+            </span>
+            <div className="me-name">
+              <h2>{profile.name}</h2>
+              <button type="button" className="icon-btn sm" aria-label="내 정보 수정" onClick={() => setEditing(true)}>
+                <PencilIcon size={16} />
+              </button>
+            </div>
+            <div className="me-chips">
+              <span>{profile.school ?? '학교 미입력'}</span>
+              <span>{grade}</span>
+              <span>
+                {major.label} · {major.tracks[profile.track].label}
+              </span>
+            </div>
+          </>
         )}
         {!profile.grade && !editing && <p className="notice">학년을 알려 주면 지금 학년에 맞는 할 일부터 보여 드려요.</p>}
       </section>
 
-      <div className="me-stats">
-        <button type="button" className="me-stat" onClick={onRecords}>
-          <b>
-            {progress.count}
-            <small>/{progress.total}</small>
-          </b>
-          <span>내 기록</span>
-        </button>
-        <button type="button" className="me-stat" onClick={() => setView('saved')}>
-          <b>{savedIds.length}</b>
-          <span>스크랩</span>
-        </button>
-        <div className="me-stat">
-          <b>
-            {vital}
-            <small>%</small>
-          </b>
-          <span>감자 기운</span>
+      <section className="card me-grow" aria-label="감자 성장">
+        <div className="me-grow-head">
+          <span className="me-stage">{GROW_LABELS[grow]}</span>
+          <button type="button" className="link" onClick={onRecords}>
+            내 기록 보기 <ChevronIcon size={14} />
+          </button>
         </div>
-      </div>
-      <button type="button" className="btn outline block" disabled={!progress.count} onClick={onCopyResume}>
-        내 기록을 이력서 초안으로 복사
-      </button>
+        <div className="me-meter">
+          <div className="me-meter-top">
+            <b>내 기록</b>
+            <span className="me-num">
+              {progress.count}
+              <small> / {progress.total}</small>
+            </span>
+          </div>
+          <span className="bar" role="progressbar" aria-label="내 기록" aria-valuenow={progress.count} aria-valuemin={0} aria-valuemax={progress.total}>
+            <i style={{ width: `${pct}%` }} />
+          </span>
+          <small>{full ? '감자가 꽃까지 피웠어요. 이 기록으로 지원서를 써 보세요.' : `기록 ${toNext}개 더 남기면 감자가 한 단계 자라요.`}</small>
+        </div>
+        <div className="me-meter">
+          <div className="me-meter-top">
+            <b>감자 기운</b>
+            <span className="me-num">
+              {vital}
+              <small>% · {vitalLabel(vital)}</small>
+            </span>
+          </div>
+          <span className="bar vital" role="progressbar" aria-label="감자 기운" aria-valuenow={vital} aria-valuemin={0} aria-valuemax={100}>
+            <i style={{ width: `${vital}%` }} />
+          </span>
+          <small>홈에서 물·햇빛·거름을 주면 차오르고, 하루가 지나면 조금씩 빠져요.</small>
+        </div>
+        <button type="button" className="link me-resume" disabled={!progress.count} onClick={onCopyResume}>
+          내 기록을 이력서 초안으로 복사
+        </button>
+      </section>
 
       <div className="seg" role="tablist" aria-label="나">
         {VIEWS.map((v) => (
@@ -94,27 +143,42 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
 
       {view === 'cal' ? (
         <Calendar today={today} all={all} saved={saved} log={log} stages={progress.stages} onOpen={onOpen} onRecords={onRecords} />
-      ) : view === 'saved' ? (
-        open.length ? (
-          <div className="list">
-            {open.map((it) => (
-              <OpportunityCard key={it.id} item={it} today={today} saved onOpen={onOpen} onSave={onSave} />
-            ))}
-            {closed > 0 && <p className="fine">마감이 지나 내려간 스크랩 {closed}건</p>}
-          </div>
-        ) : (
-          <div className="empty">
-            <p>
-              아직 스크랩한 기회가 없어요.
-              <br />
-              기회 탭에서 책갈피를 누르면 여기 모여요.
-              <br />
-              마감이 다가오면 알려 드릴게요.
-            </p>
-          </div>
-        )
+      ) : open.length ? (
+        <div className="me-saved">
+          {open.map((it) => {
+            const st = statusOf(it, today);
+            return (
+              <div key={it.id} className="me-row">
+                <button type="button" className="me-row-main" onClick={() => onOpen(it.id)}>
+                  <span className={`me-thumb t-${typeKey(it.type)}`} aria-hidden="true">
+                    <TypeIcon type={it.type} size={24} strokeWidth={1.7} />
+                  </span>
+                  <span className="me-row-text">
+                    <b>{it.title}</b>
+                    <small>
+                      {it.org} · {it.type}
+                    </small>
+                  </span>
+                  <span className={`status ${st.tone}`}>{st.label}</span>
+                </button>
+                <button type="button" className="me-unsave" aria-pressed aria-label={`${it.title} 스크랩`} onClick={() => onSave(it.id)}>
+                  <BookmarkIcon on size={18} />
+                </button>
+              </div>
+            );
+          })}
+          {closed > 0 && <p className="fine">마감이 지나 내려간 스크랩 {closed}건</p>}
+        </div>
       ) : (
-        <SettingsPanel {...settings} />
+        <div className="empty">
+          <p>
+            아직 스크랩한 기회가 없어요.
+            <br />
+            기회 탭에서 책갈피를 누르면 여기 모여요.
+            <br />
+            마감이 다가오면 알려 드릴게요.
+          </p>
+        </div>
       )}
     </div>
   );
