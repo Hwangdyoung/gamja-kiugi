@@ -124,7 +124,21 @@ describe('로그인 (이메일·비밀번호)', () => {
     if (skip) fireEvent.click(skip);
 
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('커뮤니티'));
-    await screen.findByText('아직 글이 없어요.', { exact: false });
+    // 글이 없으면 "예시" 표시를 단 예시 글이 게시판마다 하나씩 보이고, 열면 읽기만 된다
+    const examples = await screen.findByRole('region', { name: '예시 글' });
+    expect(within(examples).getAllByText('예시')).toHaveLength(4);
+    fireEvent.click(within(examples).getByText('1학년 때 공고 3개만 읽어 둬도 3학년이 편해요'));
+    expect(screen.getByText('커뮤니티 사용법을 보여 주려고 만든 예시 글이에요.', { exact: false })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /공감/ })).toBeNull();
+    expect(screen.queryByLabelText('댓글')).toBeNull();
+    fireEvent.click(screen.getByText('← 커뮤니티'));
+    // 질문 게시판에서 우리 계열만(바이오) → 바이오 예시만
+    fireEvent.click(await screen.findByRole('tab', { name: '질문' }));
+    fireEvent.click(screen.getByRole('button', { name: '우리 계열만' }));
+    expect(await screen.findByText('학부연구생은 몇 학년부터 연락드리는 게 좋아요?')).toBeTruthy();
+    expect(screen.queryByText('서포터즈 처음인데 SNS 팔로워가 적어도 괜찮을까요?')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '우리 계열만' }));
+    fireEvent.click(screen.getByRole('tab', { name: '전체' }));
     fireEvent.click(screen.getByText('글쓰기'));
     fireEvent.click(screen.getByRole('radio', { name: '질문' }));
     fireEvent.change(screen.getByLabelText('제목'), { target: { value: '서포터즈 처음인데요' } });

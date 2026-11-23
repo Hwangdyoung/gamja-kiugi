@@ -21,15 +21,17 @@ import {
   timeAgo,
   toggleLike,
 } from '../lib/community.js';
+import { EXAMPLE_UNDER, exampleById, examplesFor } from '../lib/communityExamples.js';
 
 const TABS = [{ id: 'all', label: '전체' }, ...BOARDS];
 
 /* 커뮤니티 (11/20, 선배 탭을 바꿈)
    게시판 탭(전체 · 선배 조언 · 질문 · 후기 · 자유) → 최신순/공감순 · 우리 계열만 → 글 목록.
    선배 조언 탭 맨 위에는 원래 있던 선배 이야기(가상 사례)를 둔다.
-   읽기는 누구나, 쓰기·공감·댓글·신고는 로그인한 사람. 글쓴이는 "익명 감자 · 학교 · 계열 · 학년"으로만 보인다. */
+   읽기는 누구나, 쓰기·공감·댓글·신고는 로그인한 사람. 글쓴이는 "익명 감자 · 학교 · 계열 · 학년"으로만 보인다.
+   글이 적은 게시판에는 "예시" 표시를 단 앱 안 예시 글을 아래에 보여 준다(lib/communityExamples.js). */
 export default function Community({ profile, signedIn, onLogin, onToast, onTrack }) {
-  const [view, setView] = useState({ kind: 'list' }); // list | post | write | senior
+  const [view, setView] = useState({ kind: 'list' }); // list | post | write | senior | example
   const [board, setBoard] = useState('all');
   const [sort, setSort] = useState('new');
   const [ours, setOurs] = useState(false);
@@ -58,6 +60,7 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
     onLogin();
   };
 
+  if (view.kind === 'example') return <ExampleView p={exampleById(view.id)} onBack={() => setView({ kind: 'list' })} />;
   if (view.kind === 'senior') return <SeniorDetail s={view.s} onBack={() => setView({ kind: 'list' })} />;
   if (view.kind === 'write')
     return (
@@ -77,6 +80,10 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
     return <PostView id={view.id} profile={profile} signedIn={signedIn} onNeedLogin={needLogin} onToast={onToast} onBack={() => setView({ kind: 'list' })} />;
 
   const seniors = collect(profile, 'all');
+  // 실제 글이 적을 때만 예시 글 (불러오는 중이거나 오류면 안 보임)
+  const fewPosts = !enabled || (posts !== null && !err && posts.length < EXAMPLE_UNDER);
+  const examples = fewPosts ? examplesFor({ board, major: ours ? profile.major : null }) : [];
+  if (sort === 'hot') examples.sort((a, b) => b.like_count - a.like_count);
   const shownSeniors = moreSeniors ? seniors : seniors.slice(0, 2);
 
   return (
@@ -130,9 +137,7 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
           </div>
         )}
         {!enabled ? (
-          <div className="card empty">
-            <p>커뮤니티는 로그인 기능을 켠 앱에서 열려요.</p>
-          </div>
+          <p className="notice-soft">커뮤니티 글쓰기는 로그인 기능을 켠 앱에서 열려요. 아래는 예시 글이에요.</p>
         ) : posts === null ? (
           <p className="fine">글을 불러오는 중…</p>
         ) : err ? (
@@ -148,7 +153,7 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
               <PostRow key={p.id} p={p} showBoard={board === 'all'} onOpen={() => setView({ kind: 'post', id: p.id })} />
             ))}
           </div>
-        ) : (
+        ) : examples.length ? null : (
           <div className="card empty">
             <p>
               {ours ? '우리 계열 글이 아직 없어요.' : '아직 글이 없어요.'}
@@ -157,6 +162,20 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
           </div>
         )}
       </section>
+
+      {examples.length > 0 && (
+        <section className="cm-group" aria-label="예시 글">
+          <div className="section-head">
+            <h2>예시 글</h2>
+          </div>
+          <p className="disclaimer">아직 글이 적어서, 이런 이야기를 나누면 된다는 걸 보여 주려고 만든 예시예요. 실제 사용자가 쓴 글이 아니에요.</p>
+          <div className="list">
+            {examples.map((p) => (
+              <PostRow key={p.id} p={p} example showBoard={board === 'all'} onOpen={() => setView({ kind: 'example', id: p.id })} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {enabled && (
         <button type="button" className="fab" onClick={() => (signedIn ? setView({ kind: 'write' }) : needLogin())}>
@@ -168,20 +187,21 @@ export default function Community({ profile, signedIn, onLogin, onToast, onTrack
   );
 }
 
-function PostRow({ p, showBoard, onOpen }) {
+function PostRow({ p, showBoard, example, onOpen }) {
   return (
-    <button type="button" className="card post-row" onClick={onOpen}>
+    <button type="button" className={`card post-row${example ? ' is-example' : ''}`} onClick={onOpen}>
       <span className="post-row-top">
+        {example && <span className="tag tag-example">예시</span>}
         {showBoard && <span className={`tag board-${p.board}`}>{BOARD_LABEL[p.board]}</span>}
         <b>{p.title}</b>
       </span>
       <span className="post-row-body">{p.body}</span>
       <span className="post-meta">
         <span>{authorLine(p.author)}</span>
-        <span>{timeAgo(p.created_at)}</span>
+        {!example && <span>{timeAgo(p.created_at)}</span>}
         <span className="post-counts">
           <HeartIcon size={14} on={p.liked} /> {p.like_count}
-          <ChatIcon size={14} /> {p.comment_count}
+          <ChatIcon size={14} /> {example ? p.comments.length : p.comment_count}
         </span>
       </span>
     </button>
@@ -396,6 +416,51 @@ function PostView({ id, profile, signedIn, onNeedLogin, onToast, onBack }) {
             등록
           </button>
         </form>
+      </section>
+    </div>
+  );
+}
+
+/* 예시 글 보기: 읽기만 (공감·댓글·신고 없음) */
+function ExampleView({ p, onBack }) {
+  return (
+    <div className="screen post-view">
+      <button type="button" className="link back-link" onClick={onBack}>
+        ← 커뮤니티
+      </button>
+      <article className="card post-full">
+        <span className="post-tags">
+          <span className="tag tag-example">예시</span>
+          <span className={`tag board-${p.board}`}>{BOARD_LABEL[p.board]}</span>
+        </span>
+        <h1>{p.title}</h1>
+        <p className="post-meta">
+          <span>{authorLine(p.author)}</span>
+        </p>
+        <p className="post-text">{p.body}</p>
+        <p className="disclaimer">커뮤니티 사용법을 보여 주려고 만든 예시 글이에요. 공감·댓글·신고는 실제 글에서 할 수 있어요.</p>
+      </article>
+
+      <section className="cm-group" aria-label="댓글 목록">
+        <div className="section-head">
+          <h2>
+            댓글 <span className="muted">{p.comments.length}</span>
+          </h2>
+        </div>
+        {p.comments.length ? (
+          <ul className="comments">
+            {p.comments.map((c, i) => (
+              <li key={i} className="comment">
+                <p>{c.body}</p>
+                <span className="post-meta">
+                  <span>{authorLine(c.author)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="fine">아직 댓글이 없어요.</p>
+        )}
       </section>
     </div>
   );

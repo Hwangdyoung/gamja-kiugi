@@ -1071,3 +1071,8 @@ input[role='switch']:focus-visible { outline: 2px solid var(--primary); outline-
 .tag-open { background: var(--secondary); color: var(--secondary-ink); }
 .tag-rec { background: var(--ok-soft); color: var(--ok-ink); }
 .cal-empty { padding: 18px 12px; font-size: 13px; line-height: 1.6; color: var(--ink-2); text-align: center; }
+
+/* 커뮤니티 예시 글: 실제 글과 헷갈리지 않게 점선 테두리 + "예시" 꼬리표 */
+.tag.tag-example { background: var(--muted); color: var(--ink-2); border: 1px dashed var(--line-2); }
+.post-row.is-example { border-style: dashed; box-shadow: none; }
+.post-tags { display: flex; gap: 6px; }
