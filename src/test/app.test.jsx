@@ -23,6 +23,7 @@ import { migrateDone, progressOf, roadmap } from '../lib/roadmap.js';
 import { BUNDLED, cachedData, fetchLatest, isValidData } from '../lib/opportunityData.js';
 import { fetchWeather, timeOfDay, weatherKind } from '../lib/weather.js';
 import { summary, track, trackOpen } from '../lib/metrics.js';
+import { dayKey, monthEvents, monthGrid } from '../lib/calendar.js';
 
 // 최신 Node의 내장 localStorage가 jsdom 것을 가려서, 테스트용 메모리 저장소를 쓴다
 const memory = new Map();
@@ -227,6 +228,34 @@ describe('홈 배경: 시각·날씨', () => {
   });
 });
 
+describe('나 → 일정(달력)', () => {
+  it('달 칸은 일요일부터, 앞뒤는 빈칸으로 7칸씩 채운다', () => {
+    const cells = monthGrid(2026, 10); // 2026년 11월 1일은 일요일
+    expect(cells.length % 7).toBe(0);
+    expect(dayKey(cells[0])).toBe('2026-11-01');
+    expect(cells.filter(Boolean)).toHaveLength(30);
+    const feb = monthGrid(2027, 1); // 2027년 2월 1일은 월요일
+    expect(feb[0]).toBeNull();
+    expect(dayKey(feb[1])).toBe('2027-02-01');
+  });
+
+  it('스크랩한 기회의 마감일, 정기 모집이 열리는 달 1일, 기록한 날을 그 달에만 올린다', () => {
+    const all = [
+      { id: 'a', title: '스크랩한 공모전', org: '춘천시', type: '공모전', deadline: new Date(2026, 10, 20) },
+      { id: 'b', title: '스크랩 안 한 공모전', org: '춘천시', type: '공모전', deadline: new Date(2026, 10, 21) },
+      { id: 'c', title: '1월 정기 기자단', org: '부처', type: '서포터즈', deadline: null, months: [1], when: '매년 1월 모집' },
+    ];
+    const stages = [{ grade: 1, tasks: [{ id: 't1', t: '진로·직무 상담 받기' }] }];
+    const log = { t1: { note: '상담 받음', at: new Date(2026, 10, 18, 15).toISOString() }, gone: { at: new Date(2026, 10, 18).toISOString() } };
+    const nov = monthEvents({ year: 2026, month: 10, all, saved: { a: true }, log, stages });
+    expect(Object.keys(nov).sort()).toEqual(['2026-11-18', '2026-11-20']);
+    expect(nov['2026-11-20']).toEqual([{ kind: 'due', id: 'a', title: '스크랩한 공모전', sub: '춘천시 · 공모전' }]);
+    expect(nov['2026-11-18'][0]).toMatchObject({ kind: 'rec', title: '진로·직무 상담 받기', sub: '1학년 · 상담 받음' });
+    const jan = monthEvents({ year: 2027, month: 0, all, saved: { a: true }, log, stages });
+    expect(jan).toEqual({ '2027-01-01': [{ kind: 'open', id: 'c', title: '1월 정기 기자단', sub: '매년 1월 모집' }] });
+  });
+});
+
 describe('화면 흐름', () => {
   // 기회 마감일이 실제 날짜라서, 조사한 날(2026.11.18) 기준으로 화면을 확인한다
   beforeEach(() => {
@@ -347,6 +376,18 @@ describe('화면 흐름', () => {
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('나'));
     expect(document.querySelector('.me-who b').textContent).toBe('하늘');
     expect(screen.getByText('아직 스크랩한 기회가 없어요.', { exact: false })).toBeTruthy();
+    // 일정: 이 달 달력에 오늘(11/18) 남긴 기록 3개가 찍히고, 날짜를 누르면 그날 것만
+    fireEvent.click(screen.getByRole('tab', { name: '일정' }));
+    expect(screen.getByText('2026년 11월')).toBeTruthy();
+    expect(screen.getByLabelText('11월 18일, 기록 3개')).toBeTruthy();
+    expect(document.querySelectorAll('.cal-item')).toHaveLength(3);
+    fireEvent.click(screen.getByLabelText('11월 17일'));
+    expect(screen.getByText('이날은 일정이 없어요.', { exact: false })).toBeTruthy();
+    // 두 달 뒤 1월: 내 경로의 정기 모집(1월)이 1일에 열린다
+    fireEvent.click(screen.getByLabelText('다음 달'));
+    fireEvent.click(screen.getByLabelText('다음 달'));
+    expect(screen.getByText('2027년 1월')).toBeTruthy();
+    expect(screen.getByLabelText('1월 1일, 모집 열림 2개')).toBeTruthy();
     fireEvent.click(screen.getByRole('tab', { name: '설정' }));
     // 알림 세부 설정·화면 모드
     fireEvent.click(screen.getByRole('radio', { name: '어둡게' }));

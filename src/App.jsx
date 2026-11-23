@@ -456,6 +456,7 @@ export default function App() {
         items={items}
         all={all}
         saved={saved}
+        log={log}
         today={today}
         onOpen={setDetailId}
         onSave={toggleSave}

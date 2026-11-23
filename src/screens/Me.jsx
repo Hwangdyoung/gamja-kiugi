@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Calendar from '../components/Calendar.jsx';
 import Mascot from '../components/Mascot.jsx';
 import OpportunityCard from '../components/OpportunityCard.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
@@ -8,12 +9,13 @@ import { GRADES } from '../lib/roadmap.js';
 
 const VIEWS = [
   { id: 'saved', label: '스크랩' },
+  { id: 'cal', label: '일정' },
   { id: 'settings', label: '설정' },
 ];
 
-/* 나: 맨 위 내 카드(감자·이름·학교·학년·직무, 수정) → 숫자 세 칸(기록·스크랩·기운) → 스크랩 / 설정 탭.
-   한 화면에 길게 늘어놓지 않고 탭으로 나눴다. 일정(달력)은 나중에 여기 탭으로 더한다. */
-export default function Me({ profile, mood, progress, vital, items, all, saved, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, settings }) {
+/* 나: 맨 위 내 카드(감자·이름·학교·학년·직무, 수정) → 숫자 세 칸(기록·스크랩·기운) → 스크랩 / 일정 / 설정 탭.
+   한 화면에 길게 늘어놓지 않고 탭으로 나눴다. 일정은 마감·모집 열림·기록을 한 달 달력으로 본다. */
+export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, settings }) {
   const [view, setView] = useState('saved');
   const [editing, setEditing] = useState(false);
   const major = MAJORS[profile.major];
@@ -90,7 +92,9 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
         ))}
       </div>
 
-      {view === 'saved' ? (
+      {view === 'cal' ? (
+        <Calendar today={today} all={all} saved={saved} log={log} stages={progress.stages} onOpen={onOpen} onRecords={onRecords} />
+      ) : view === 'saved' ? (
         open.length ? (
           <div className="list">
             {open.map((it) => (
