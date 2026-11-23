@@ -335,6 +335,8 @@ export default function App() {
     onPrefs: setPrefs,
     researchedAt: oppData.researchedAt,
     oppCount: all.length,
+    oppTotal: oppData.opportunities?.length ?? all.length,
+    name: profile?.name ?? null,
     onReset: reset,
     clock,
     onClock: setClock,

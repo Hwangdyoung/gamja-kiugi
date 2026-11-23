@@ -39,10 +39,11 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
     return (
       <div className="screen me">
         <div className="me-subhead">
-          <button type="button" className="icon-btn" aria-label="나로 돌아가기" onClick={() => setSettingsOpen(false)}>
-            <BackIcon size={20} />
+          <button type="button" className="me-back" aria-label="나로 돌아가기" onClick={() => setSettingsOpen(false)}>
+            <BackIcon size={18} />
+            <span aria-hidden="true">나</span>
           </button>
-          <h2>설정</h2>
+          <h1>설정</h1>
         </div>
         <SettingsPanel {...settings} />
       </div>
