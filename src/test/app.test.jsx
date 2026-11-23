@@ -180,10 +180,11 @@ describe('기회 데이터', () => {
   });
   it('마감 지난 기회는 열린 기회에서 빠진다', () => {
     const today = new Date(2026, 10, 16);
-    const items = buildItems({ name: 'a', major: 'dmc', track: 'mkt' }, today);
-    const contest = items.find((it) => it.title === '2026 춘천 디카시 공모전');
+    const contest = { id: 'x', title: '지난 공모전', deadline: new Date(2026, 7, 31) };
     expect(ddayLabel(contest, today)).toBe('마감');
     expect(isOpen(contest, today)).toBe(false);
+    expect(isOpen({ ...contest, deadline: new Date(2026, 10, 16) }, today)).toBe(true);
+    expect(isOpen({ ...contest, deadline: null }, today)).toBe(true);
   });
 });
 
@@ -328,8 +329,8 @@ describe('화면 흐름', () => {
   it('기회 탭: 마감 숨김, 칩, 검색, 빠른 필터', () => {
     start();
     fireEvent.click(within(screen.getByLabelText('하단 탭')).getByText('기회'));
-    expect(screen.getByText(/마감 지난 1건은 숨겼어요/)).toBeTruthy();
-    expect(screen.queryByText('2026 춘천 디카시 공모전')).toBeNull();
+    // 지금 데이터엔 마감 지난 기회가 없어서 숨김 안내도 없다 (숨기는 규칙은 위 '마감 지난 기회' 테스트)
+    expect(screen.queryByText(/마감 지난 \d+건은 숨겼어요/)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '인턴' }));
     expect(document.querySelectorAll('.opp')).toHaveLength(2);
     // 유형은 여러 개 같이: 인턴 + 서포터즈

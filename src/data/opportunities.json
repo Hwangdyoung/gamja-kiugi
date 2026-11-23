@@ -1,5 +1,5 @@
 {
-  "researchedAt": "2026.11.18",
+  "researchedAt": "2026.11.23",
   "opportunities": [
     {
       "id": "cc-talent-supporters",
@@ -30,23 +30,29 @@
     },
     {
       "id": "cc-travel-sns-contest",
-      "title": "2026 춘천여행 SNS 공모전",
+      "title": "춘천여행 SNS 공모전",
       "type": "공모전",
       "org": "춘천시",
-      "due": "2026-11-20",
+      "due": null,
       "target": "누구나 (유튜브·인스타그램·블로그)",
       "src": "https://linkareer.com/activity/310916",
-      "when": null
+      "when": "회차별 접수 (2026년엔 3~11월) · 다음 공고 확인 필요",
+      "months": [
+        3
+      ]
     },
     {
       "id": "cc-dica-poem-contest",
-      "title": "2026 춘천 디카시 공모전",
+      "title": "춘천 디카시 공모전",
       "type": "공모전",
       "org": "춘천 디카시 공모전 운영처",
-      "due": "2026-08-31",
+      "due": null,
       "target": "누구나",
       "src": "https://ilovecontest.com/bbs/board.php?bo_table=contest&wr_id=5523",
-      "when": null
+      "when": "2026년엔 8.17~9.1 접수 · 다음 공고 확인 필요",
+      "months": [
+        8
+      ]
     },
     {
       "id": "future-work-experience",
@@ -122,7 +128,7 @@
       "org": "강원대 생명건강공학과",
       "due": null,
       "target": "재학생",
-      "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
+      "src": "https://bio-health.kangwon.ac.kr/bio-health/community/notice-department.do",
       "when": "학기마다 열림 · 학과 공지 확인",
       "school": "강원대학교"
     },
@@ -133,7 +139,7 @@
       "org": "강원대 생명건강공학과",
       "due": null,
       "target": "재학생",
-      "src": "https://bio-health.kangwon.ac.kr/bio-health/index.do",
+      "src": "https://bio-health.kangwon.ac.kr/bio-health/community/notice-department.do",
       "when": "연구실별 수시 모집 · 학과 공지 확인",
       "school": "강원대학교"
     },
@@ -155,7 +161,7 @@
       "org": "(재)춘천바이오산업진흥원",
       "due": null,
       "target": "공고별 상이 (연구개발 원급 등)",
-      "src": "https://www.cbf.or.kr/main.php",
+      "src": "https://www.cbf.or.kr/twb_bbs/bbs_list.php?bcd=01_05_05_00_00",
       "when": "수시 공개채용 (2026년 4차 9.30 공고)"
     },
     {
@@ -225,7 +231,7 @@
       "org": "인사혁신처 나라일터",
       "due": null,
       "target": "공고별 상이",
-      "src": "https://www.gojobs.go.kr",
+      "src": "https://www.gojobs.go.kr/apmList.do",
       "when": "춘천 근무 공공기관 공고를 지역으로 검색"
     },
     {
@@ -245,7 +251,7 @@
       "org": "강원창조경제혁신센터",
       "due": null,
       "target": "예비창업 대학생·청년",
-      "src": "https://ccei.creativekorea.or.kr/gangwon",
+      "src": "https://ccei.creativekorea.or.kr/gangwon/custom/notice_list.do",
       "when": "수시 · 예비창업 교육과 공모"
     },
     {
@@ -255,7 +261,7 @@
       "org": "강원대학교병원",
       "due": null,
       "target": "간호학과 졸업예정자",
-      "src": "https://www.knuh.or.kr",
+      "src": "https://www.knuh.or.kr/hospitalinfo/hospitalinfo_03_05_list.asp",
       "when": "매년 12~1월 공채 (2026년 12.23~1.6)",
       "months": [
         12
@@ -268,7 +274,7 @@
       "org": "한림대학교의료원 (춘천성심병원 포함)",
       "due": null,
       "target": "간호학과 졸업예정자",
-      "src": "https://www.hallym.or.kr",
+      "src": "https://recruit.hallym.or.kr/",
       "when": "매년 10월 (2026년 10.13~10.22)",
       "months": [
         10
@@ -281,7 +287,7 @@
       "org": "강원특별자치도교육청",
       "due": null,
       "target": "공고별 상이",
-      "src": "https://www.gwe.go.kr",
+      "src": "https://www.gwe.go.kr/main/bbs/list.do?key=bTIzMDcyMTA1ODU2MzM=",
       "when": "수시 (기간제 교사·교육공무직 등)"
     },
     {
@@ -291,7 +297,7 @@
       "org": "국립춘천박물관",
       "due": null,
       "target": "인문·역사 전공 청년",
-      "src": "https://chuncheon.museum.go.kr",
+      "src": "https://chuncheon.museum.go.kr/bbs/BBSMSTR_000000000162.do",
       "when": "비정기 (문체부 청년인턴 학예 분야 등)"
     },
     {
