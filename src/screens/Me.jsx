@@ -234,9 +234,13 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
             </ul>
           </div>
         )}
-        <button type="button" className="link me-resume" disabled={!progress.count} onClick={onCopyResume}>
-          내 기록을 이력서 초안으로 복사
-        </button>
+        {progress.count ? (
+          <button type="button" className="link me-resume" onClick={onCopyResume}>
+            내 기록을 이력서 초안으로 복사
+          </button>
+        ) : (
+          <p className="me-first">할 일 하나를 끝내고 한 줄 남기면 여기 쌓여요. 기록이 생기면 이력서 초안으로도 옮길 수 있어요.</p>
+        )}
       </section>
 
       {soon.length > 0 && (
