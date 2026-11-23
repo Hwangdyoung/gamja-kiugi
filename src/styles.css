@@ -932,7 +932,11 @@ h4 { margin: 0; }
 .me-hero.mood-neutral { background: linear-gradient(180deg, var(--hero-neutral), var(--app)); }
 .me-hero.mood-annoyed { background: linear-gradient(180deg, var(--hero-annoyed), var(--app)); }
 .me-hero.mood-angry { background: linear-gradient(180deg, var(--hero-angry), var(--app)); }
-.me-gear { position: absolute; top: 10px; right: 10px; }
+.me-tools { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; }
+.me-tool { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; background: color-mix(in oklch, var(--surface) 80%, transparent); box-shadow: var(--shadow); color: var(--ink); cursor: pointer; }
+.me-tool:active { transform: scale(0.94); }
+.me-tool-badge { position: absolute; top: -3px; right: -3px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--primary); color: var(--primary-ink); font-size: 10.5px; font-weight: 800; line-height: 17px; text-align: center; font-variant-numeric: tabular-nums; }
+.me-subhead h1 small { font-family: var(--font); font-size: 18px; font-weight: 800; color: var(--primary); }
 .me-potato { display: grid; place-items: center; width: 112px; height: 112px; }
 .me-name { display: flex; align-items: center; gap: 2px; margin-left: 30px; }
 .me-name h2 { margin: 0; font-family: var(--font-voice); font-size: 28px; font-weight: 400; line-height: 1.2; color: var(--ink); }
@@ -1244,7 +1248,7 @@ div.set-row { cursor: default; }
 .set-demo[open] { gap: 10px; }
 
 /* ---------- 나: 말풍선 · 다음 할 일 · 최근 기록 · 곧 마감 ---------- */
-.me-bubble { position: relative; max-width: 88%; margin: 18px 0 2px; padding: 8px 14px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); font-family: var(--font-voice); font-size: 16px; line-height: 1.35; color: var(--ink); }
+.me-bubble { position: relative; max-width: 72%; margin: 44px 0 2px; padding: 8px 14px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); font-family: var(--font-voice); font-size: 16px; line-height: 1.35; color: var(--ink); }
 .me-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; translate: -50% 0; rotate: 45deg; background: var(--surface); }
 .me-together { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); }
 .me-together b { color: var(--primary); font-weight: 800; }

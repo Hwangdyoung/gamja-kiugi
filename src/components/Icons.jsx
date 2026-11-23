@@ -145,6 +145,12 @@ export const ResetIcon = (p) => (
     <path d="M5.5 15a7 7 0 1 0 1.2-7.6L4 10" />
   </Svg>
 );
+export const CalendarIcon = (p) => (
+  <Svg {...p}>
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+    <path d="M3.5 10h17M8 3v4M16 3v4" />
+  </Svg>
+);
 export const PencilIcon = (p) => (
   <Svg {...p}>
     <path d="M4 20h4L19 9l-4-4L4 16v4z" />

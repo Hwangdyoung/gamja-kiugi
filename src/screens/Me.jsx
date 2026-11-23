@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from '../components/Calendar.jsx';
-import { BackIcon, BookmarkIcon, ChevronIcon, GearIcon, PencilIcon } from '../components/Icons.jsx';
+import { BackIcon, BookmarkIcon, CalendarIcon, ChevronIcon, GearIcon, PencilIcon } from '../components/Icons.jsx';
 import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
 import { TypeIcon, statusOf, typeKey } from '../components/OpportunityCard.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
@@ -10,10 +10,9 @@ import { MAJORS } from '../lib/data.js';
 import { daysLeft } from '../lib/opportunities.js';
 import { GRADES } from '../lib/roadmap.js';
 
-const VIEWS = [
-  { id: 'saved', label: '스크랩' },
-  { id: 'cal', label: '일정' },
-];
+const SUBS = { saved: '스크랩', cal: '일정', settings: '설정' };
+// 스크랩·일정에서 기회를 열었다가 돌아오면 그 화면으로 (상세로 가면 나 화면이 내려갔다 다시 올라온다)
+let restoreSub = null;
 const PER_STAGE = 3; // 기록 3개마다 감자가 한 단계 자란다
 
 /* 스크랩 정렬: 마감일 있는 것(가까운 순) → 곧 열림 → 그 밖 */
@@ -22,12 +21,18 @@ const rank = (it, today) => {
   return left === null ? 10000 : left;
 };
 
-/* 나: 감자와 내 이름이 크게 보이는 머리 → 감자 성장 카드(기록 진행·기운) → 스크랩 / 일정.
-   설정은 오른쪽 위 톱니로 따로 연다. 내 정보 수정은 이름 옆 연필. */
+/* 나: 감자와 내 이름이 크게 보이는 머리 → 다음 할 일 → 감자 성장 카드 → 곧 마감.
+   스크랩 · 일정 · 설정은 오른쪽 위 아이콘으로 따로 연다 (아래로 내려가지 않아도 되게). 내 정보 수정은 이름 옆 연필. */
 export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings }) {
-  const [view, setView] = useState('saved');
+  const [sub, setSub] = useState(() => restoreSub);
+  useEffect(() => {
+    restoreSub = null;
+  }, []);
   const [editing, setEditing] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const openFrom = (id) => {
+    restoreSub = sub;
+    onOpen(id);
+  };
   const major = MAJORS[profile.major];
   const grade = GRADES.find((g) => g.value === profile.grade)?.label ?? '학년 미입력';
   const savedIds = Object.keys(saved).filter((id) => saved[id]);
@@ -35,17 +40,60 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
   // 마감이 지나 목록에서 내려간 스크랩도 따로 알려 준다
   const closed = savedIds.filter((id) => !open.some((it) => it.id === id) && all.some((it) => it.id === id)).length;
 
-  if (settingsOpen) {
+  if (sub) {
     return (
       <div className="screen me">
         <div className="me-subhead">
-          <button type="button" className="me-back" aria-label="나로 돌아가기" onClick={() => setSettingsOpen(false)}>
+          <button type="button" className="me-back" aria-label="나로 돌아가기" onClick={() => setSub(null)}>
             <BackIcon size={18} />
             <span aria-hidden="true">나</span>
           </button>
-          <h1>설정</h1>
+          <h1>
+            {SUBS[sub]}
+            {sub === 'saved' && <small> {open.length}</small>}
+          </h1>
         </div>
-        <SettingsPanel {...settings} />
+        {sub === 'settings' ? (
+          <SettingsPanel {...settings} />
+        ) : sub === 'cal' ? (
+          <Calendar today={today} all={all} saved={saved} log={log} stages={progress.stages} onOpen={openFrom} onRecords={onRecords} />
+        ) : open.length ? (
+          <div className="me-saved">
+            {open.map((it) => {
+              const st = statusOf(it, today);
+              return (
+                <div key={it.id} className="me-row">
+                  <button type="button" className="me-row-main" onClick={() => openFrom(it.id)}>
+                    <span className={`me-thumb t-${typeKey(it.type)}`} aria-hidden="true">
+                      <TypeIcon type={it.type} size={24} strokeWidth={1.7} />
+                    </span>
+                    <span className="me-row-text">
+                      <b>{it.title}</b>
+                      <small>
+                        {it.org} · {it.type}
+                      </small>
+                    </span>
+                    <span className={`status ${st.tone}`}>{st.label}</span>
+                  </button>
+                  <button type="button" className="me-unsave" aria-pressed aria-label={`${it.title} 스크랩`} onClick={() => onSave(it.id)}>
+                    <BookmarkIcon on size={18} />
+                  </button>
+                </div>
+              );
+            })}
+            {closed > 0 && <p className="fine">마감이 지나 내려간 스크랩 {closed}건</p>}
+          </div>
+        ) : (
+          <div className="empty">
+            <p>
+              아직 스크랩한 기회가 없어요.
+              <br />
+              기회 탭에서 책갈피를 누르면 여기 모여요.
+              <br />
+              마감이 다가오면 알려 드릴게요.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
@@ -68,9 +116,18 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
   return (
     <div className="screen me">
       <section className={`me-hero mood-${mood}`} aria-label="내 정보">
-        <button type="button" className="icon-btn me-gear" aria-label="설정" onClick={() => setSettingsOpen(true)}>
-          <GearIcon size={20} />
-        </button>
+        <div className="me-tools">
+          <button type="button" className="me-tool" aria-label={`스크랩 ${open.length}개`} onClick={() => setSub('saved')}>
+            <BookmarkIcon size={20} />
+            {open.length > 0 && <span className="me-tool-badge">{open.length}</span>}
+          </button>
+          <button type="button" className="me-tool" aria-label="일정" onClick={() => setSub('cal')}>
+            <CalendarIcon size={20} />
+          </button>
+          <button type="button" className="me-tool" aria-label="설정" onClick={() => setSub('settings')}>
+            <GearIcon size={20} />
+          </button>
+        </div>
         {editing ? (
           <div className="me-edit">
             <ProfileForm
@@ -198,55 +255,6 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
             })}
           </div>
         </section>
-      )}
-
-      <div className="seg" role="tablist" aria-label="나">
-        {VIEWS.map((v) => (
-          <button key={v.id} type="button" role="tab" aria-selected={view === v.id} onClick={() => setView(v.id)}>
-            {v.label}
-            {v.id === 'saved' && <small>{open.length}</small>}
-          </button>
-        ))}
-      </div>
-
-      {view === 'cal' ? (
-        <Calendar today={today} all={all} saved={saved} log={log} stages={progress.stages} onOpen={onOpen} onRecords={onRecords} />
-      ) : open.length ? (
-        <div className="me-saved">
-          {open.map((it) => {
-            const st = statusOf(it, today);
-            return (
-              <div key={it.id} className="me-row">
-                <button type="button" className="me-row-main" onClick={() => onOpen(it.id)}>
-                  <span className={`me-thumb t-${typeKey(it.type)}`} aria-hidden="true">
-                    <TypeIcon type={it.type} size={24} strokeWidth={1.7} />
-                  </span>
-                  <span className="me-row-text">
-                    <b>{it.title}</b>
-                    <small>
-                      {it.org} · {it.type}
-                    </small>
-                  </span>
-                  <span className={`status ${st.tone}`}>{st.label}</span>
-                </button>
-                <button type="button" className="me-unsave" aria-pressed aria-label={`${it.title} 스크랩`} onClick={() => onSave(it.id)}>
-                  <BookmarkIcon on size={18} />
-                </button>
-              </div>
-            );
-          })}
-          {closed > 0 && <p className="fine">마감이 지나 내려간 스크랩 {closed}건</p>}
-        </div>
-      ) : (
-        <div className="empty">
-          <p>
-            아직 스크랩한 기회가 없어요.
-            <br />
-            기회 탭에서 책갈피를 누르면 여기 모여요.
-            <br />
-            마감이 다가오면 알려 드릴게요.
-          </p>
-        </div>
       )}
     </div>
   );

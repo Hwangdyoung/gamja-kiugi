@@ -388,9 +388,12 @@ describe('화면 흐름', () => {
     // 다음 할 일 카드와 최근 기록 두 줄
     expect(screen.getByRole('region', { name: '다음 할 일' })).toBeTruthy();
     expect(document.querySelectorAll('.me-recent li')).toHaveLength(2);
+    // 스크랩·일정·설정은 오른쪽 위 아이콘으로 연다
+    fireEvent.click(screen.getByLabelText('스크랩 0개'));
     expect(screen.getByText('아직 스크랩한 기회가 없어요.', { exact: false })).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('나로 돌아가기'));
     // 일정: 이 달 달력에 오늘(11/18) 남긴 기록 3개가 찍히고, 날짜를 누르면 그날 것만
-    fireEvent.click(screen.getByRole('tab', { name: '일정' }));
+    fireEvent.click(screen.getByLabelText('일정'));
     expect(screen.getByText('2026년 11월')).toBeTruthy();
     expect(screen.getByLabelText('11월 18일, 기록 3개')).toBeTruthy();
     expect(document.querySelectorAll('.cal-item')).toHaveLength(3);
@@ -401,6 +404,7 @@ describe('화면 흐름', () => {
     fireEvent.click(screen.getByLabelText('다음 달'));
     expect(screen.getByText('2027년 1월')).toBeTruthy();
     expect(screen.getByLabelText('1월 1일, 모집 열림 2개')).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('나로 돌아가기'));
     fireEvent.click(screen.getByLabelText('설정'));
     // 알림 세부 설정·화면 모드
     fireEvent.click(screen.getByRole('radio', { name: '어둡게' }));
