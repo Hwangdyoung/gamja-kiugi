@@ -84,7 +84,7 @@ iPhone에서 ▶로 설치하면 짝지은 Apple Watch에도 워치 앱이 함�
 옆으로 넘겨 **컴플리케이션** → 칸 선택 → **감자 키우기**.
 
 **발표 시연**: iPhone 앱 → 톱니 → 시연 슬라이더를 7일로 → 몇 초 뒤 워치 페이스의 감자가 화난 얼굴로 바뀝니다.
-결과 화면 예: `docs/watch-complication-angry.png`
+결과 화면 예: `docs/mockups/watch-complication-angry.png`
 
 **주의**: 워치 컴플리케이션 그림은 크기 제한이 있습니다(동그라미 약 112px 이하).
 `ios/App/GamjaWatch/Assets.xcassets`의 그림을 바꿀 때는 작게 유지하세요: 동그라미 `face_*` 100×100(한도 약 112), 코너 `corner_*` 80×80(한도 약 86), 직사각형 `potato_*` 104×120.

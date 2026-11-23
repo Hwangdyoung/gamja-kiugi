@@ -111,7 +111,7 @@ archive/                     첫 버전(파일 하나짜리 HTML) 보관
 ios/                         Capacitor iPhone 앱, 위젯, Apple Watch 앱
 supabase/schema.sql          로그인용 표
 supabase/community.sql       커뮤니티 표·보기·함수
-docs/                        iPhone·Supabase 설정 안내, 링크 점검 기록
+docs/                        iPhone·Supabase 설정 안내, 링크 점검 기록, mockups/(위젯·워치 그림)
 ```
 
 ## 실행
