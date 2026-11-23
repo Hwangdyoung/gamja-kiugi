@@ -512,6 +512,108 @@
       "months": [
         9
       ]
+    },
+    {
+      "id": "knto-intern",
+      "title": "한국관광공사 체험형 청년인턴",
+      "type": "인턴",
+      "org": "한국관광공사 (본사 원주)",
+      "due": null,
+      "target": "청년 (사무·행정 등, 공고별)",
+      "src": "https://knto.or.kr/recruitInfo",
+      "when": "해마다 여러 차례 (2026년 2차는 5월)",
+      "months": [
+        5,
+        11
+      ]
+    },
+    {
+      "id": "kwater-intern",
+      "title": "한국수자원공사 체험형 인턴",
+      "type": "인턴",
+      "org": "한국수자원공사(K-water)",
+      "due": null,
+      "target": "만 18~34세 청년, 전공 무관",
+      "src": "https://www.kwater.or.kr/recr/sub01/recruitPage.do?s_mid=2123",
+      "when": "상·하반기 공고 (2026년 하반기 6.4~6.11)",
+      "months": [
+        6
+      ]
+    },
+    {
+      "id": "kocca-intern",
+      "title": "한국콘텐츠진흥원 체험형 인턴",
+      "type": "인턴",
+      "org": "한국콘텐츠진흥원 (본원 나주)",
+      "due": null,
+      "target": "청년 (공고별 직무)",
+      "src": "https://www.kocca.kr/kocca/bbs/list/B0159004.do?menuNo=204803",
+      "when": "2026년엔 4월 공고",
+      "months": [
+        4
+      ]
+    },
+    {
+      "id": "sangsang-supporters",
+      "title": "KT&G 상상마당 서포터즈",
+      "type": "서포터즈",
+      "org": "KT&G 상상마당 (춘천 포함)",
+      "due": null,
+      "target": "누구나 (나이·학력 제한 없음)",
+      "src": "https://www.all-con.co.kr/view/contest/535904",
+      "when": "매년 4월 모집, 5월~다음 해 1월 활동 (2026년 22기)",
+      "months": [
+        4
+      ]
+    },
+    {
+      "id": "excavation-camp",
+      "title": "여름 발굴캠프",
+      "type": "현장실습",
+      "org": "국립문화유산연구원 · 한국고고학회",
+      "due": null,
+      "target": "대학생",
+      "src": "https://www.asiae.co.kr/en/article/2026041121143851631",
+      "when": "2026년엔 4.13~4.24 모집, 7월 유적 현장 실습",
+      "months": [
+        4
+      ]
+    },
+    {
+      "id": "moel-gw-intern",
+      "title": "고용노동부 강원지청 청년인턴",
+      "type": "인턴",
+      "org": "고용노동부 강원지청 (춘천)",
+      "due": null,
+      "target": "청년 (공고별)",
+      "src": "https://www.moel.go.kr/local/gangwon/news/notice/noticeList.do",
+      "when": "상·하반기 공고 · 지청 공지사항 확인"
+    },
+    {
+      "id": "kpf-academy",
+      "title": "대학언론 저널리즘 아카데미",
+      "type": "프로젝트",
+      "org": "한국언론진흥재단",
+      "due": null,
+      "target": "대학언론사에서 활동하는 2학년 이상",
+      "src": "https://www.syu.ac.kr/wp-content/uploads/2026/07/붙임1.-2026-KPF-대학언론-저널리즘-아카데미-과정-신청-안내문.pdf",
+      "when": "2026년엔 7월 신청, 8.27~28 교육",
+      "months": [
+        7
+      ]
+    },
+    {
+      "id": "kosaf-mentor",
+      "title": "대학생 청소년교육지원사업 멘토",
+      "type": "프로젝트",
+      "org": "한국장학재단",
+      "due": null,
+      "target": "대학생 (초·중·고 학습 멘토링)",
+      "src": "https://www.syu.ac.kr/blog/%eb%8c%80%ed%95%99%ec%83%9d%ec%b2%ad%ec%86%8c%eb%85%84%ea%b5%90%ec%9c%a1%ec%a7%80%ec%9b%90%ec%82%ac%ec%97%85-2026%eb%85%84-%eb%8c%80%ed%95%99%ec%83%9d%ec%b2%ad%ec%86%8c%eb%85%84%ea%b5%90%ec%9c%a1/",
+      "when": "1년 사업(3월 시작) · 2월쯤 학교에서 모집",
+      "months": [
+        2
+      ]
     }
   ],
   "paths": {
@@ -524,11 +626,12 @@
       ],
       [
         "cc-travel-sns-contest",
-        "cc-dica-poem-contest"
+        "cc-dica-poem-contest",
+        "sangsang-supporters"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "kocca-intern",
+        "future-work-experience"
       ],
       [
         "cccf-jobs",
@@ -542,10 +645,11 @@
       ],
       [
         "cc-mime-festival-call",
-        "cc-talent-supporters"
+        "cc-talent-supporters",
+        "sangsang-supporters"
       ],
       [
-        "future-work-experience",
+        "kocca-intern",
         "work24-chuncheon"
       ],
       [
@@ -597,11 +701,12 @@
       ],
       [
         "cc-talent-supporters",
-        "cc-streetreporter"
+        "cc-streetreporter",
+        "excavation-camp"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "kocca-intern",
+        "future-work-experience"
       ],
       [
         "cccf-jobs",
@@ -616,11 +721,12 @@
       [
         "cc-streetreporter",
         "knu-rise-supporters",
-        "policy-reporters"
+        "policy-reporters",
+        "kpf-academy"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "kocca-intern",
+        "future-work-experience"
       ],
       [
         "gica-jobs",
@@ -638,7 +744,7 @@
       ],
       [
         "nhis-intern",
-        "work24-chuncheon"
+        "moel-gw-intern"
       ],
       [
         "gojobs",
@@ -654,8 +760,8 @@
         "cc-streetreporter"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "moel-gw-intern",
+        "future-work-experience"
       ],
       [
         "gojobs",
@@ -672,8 +778,8 @@
         "public-data-startup"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "nhis-intern",
+        "kwater-intern"
       ],
       [
         "gwtp-jobs",
@@ -691,8 +797,8 @@
         "travel-leader"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "knto-intern",
+        "future-work-experience"
       ],
       [
         "cccf-jobs",
@@ -704,8 +810,8 @@
         "cc-museum"
       ],
       [
-        "cc-talent-supporters",
-        "knu-rise-supporters"
+        "kosaf-mentor",
+        "cc-talent-supporters"
       ],
       [
         "knu-winter-field",
@@ -722,10 +828,11 @@
         "cc-talent-supporters"
       ],
       [
+        "kosaf-mentor",
         "ccei-startup"
       ],
       [
-        "future-work-experience",
+        "kocca-intern",
         "work24-chuncheon"
       ],
       [
@@ -762,8 +869,8 @@
         "data-ai-challenge"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "boostcamp",
+        "future-work-experience"
       ],
       [
         "gwtp-jobs",
@@ -777,7 +884,7 @@
       ],
       [
         "knu-winter-field",
-        "future-work-experience"
+        "kwater-intern"
       ],
       [
         "gwtp-jobs",
@@ -792,8 +899,8 @@
         "knu-winter-field"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "kwater-intern",
+        "future-work-experience"
       ],
       [
         "gwtp-jobs",
@@ -867,8 +974,8 @@
         "cc-talent-supporters"
       ],
       [
-        "future-work-experience",
-        "work24-chuncheon"
+        "kocca-intern",
+        "future-work-experience"
       ],
       [
         "cccf-jobs",
