@@ -385,6 +385,9 @@ describe('화면 흐름', () => {
     expect(document.querySelector('.me-name h2').textContent).toBe('하늘');
     expect(screen.getByRole('progressbar', { name: '내 기록' }).getAttribute('aria-valuenow')).toBe('3');
     expect(screen.getByText('새싹 감자', { selector: '.me-stage' })).toBeTruthy();
+    // 다음 할 일 카드와 최근 기록 두 줄
+    expect(screen.getByRole('region', { name: '다음 할 일' })).toBeTruthy();
+    expect(document.querySelectorAll('.me-recent li')).toHaveLength(2);
     expect(screen.getByText('아직 스크랩한 기회가 없어요.', { exact: false })).toBeTruthy();
     // 일정: 이 달 달력에 오늘(11/18) 남긴 기록 3개가 찍히고, 날짜를 누르면 그날 것만
     fireEvent.click(screen.getByRole('tab', { name: '일정' }));

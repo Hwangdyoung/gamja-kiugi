@@ -24,7 +24,7 @@ const rank = (it, today) => {
 
 /* 나: 감자와 내 이름이 크게 보이는 머리 → 감자 성장 카드(기록 진행·기운) → 스크랩 / 일정.
    설정은 오른쪽 위 톱니로 따로 연다. 내 정보 수정은 이름 옆 연필. */
-export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, settings }) {
+export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings }) {
   const [view, setView] = useState('saved');
   const [editing, setEditing] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -54,6 +54,16 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
   const full = grow >= GROW_LABELS.length - 1;
   const toNext = PER_STAGE - (progress.count % PER_STAGE);
   const pct = progress.total ? Math.round((progress.count / progress.total) * 100) : 0;
+  const next = progress.next;
+  // 최근 기록 두 줄 (기록한 날이 있는 것만, 최근 순)
+  const titles = new Map(progress.stages.flatMap((s) => s.tasks.map((t) => [t.id, { t: t.t, grade: s.grade }])));
+  const recent = Object.entries(log)
+    .filter(([id, r]) => r?.at && titles.has(id))
+    .sort((a, b) => new Date(b[1].at) - new Date(a[1].at))
+    .slice(0, 2)
+    .map(([id, r]) => ({ id, ...titles.get(id), note: r.note, at: new Date(r.at) }));
+  // 곧 마감: 스크랩 중 마감일이 남은 것 가까운 순 세 개
+  const soon = open.filter((it) => (daysLeft(it, today) ?? -1) >= 0).slice(0, 3);
 
   return (
     <div className="screen me">
@@ -74,6 +84,11 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
           </div>
         ) : (
           <>
+            {message && (
+              <p className="me-bubble" aria-live="polite">
+                {message}
+              </p>
+            )}
             <span className="me-potato">
               <Mascot mood={mood} size={92} grow={grow} />
             </span>
@@ -90,10 +105,26 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
                 {major.label} · {major.tracks[profile.track].label}
               </span>
             </div>
+            {openDays > 0 && (
+              <p className="me-together">
+                감자와 함께한 날 <b>{openDays}일</b>
+              </p>
+            )}
           </>
         )}
         {!profile.grade && !editing && <p className="notice">학년을 알려 주면 지금 학년에 맞는 할 일부터 보여 드려요.</p>}
       </section>
+
+      {next && (
+        <section className="me-next" aria-label="다음 할 일">
+          <span className="me-next-tag">{progress.stages[next.stage].grade}학년 다음 할 일</span>
+          <b>{next.task.t}</b>
+          {next.task.d && <small>{next.task.d}</small>}
+          <button type="button" className="btn primary sm" onClick={() => onRoadmap?.(next.stage)}>
+            기록하러 가기
+          </button>
+        </section>
+      )}
 
       <section className="card me-grow" aria-label="감자 성장">
         <div className="me-grow-head">
@@ -128,10 +159,46 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
           </span>
           <small>홈에서 물·햇빛·거름을 주면 차오르고, 하루가 지나면 조금씩 빠져요.</small>
         </div>
+        {recent.length > 0 && (
+          <div className="me-recent">
+            <b>최근 기록</b>
+            <ul>
+              {recent.map((r) => (
+                <li key={r.id}>
+                  <span className="me-recent-date">
+                    {r.at.getMonth() + 1}.{r.at.getDate()}
+                  </span>
+                  <span className="me-recent-text">
+                    {r.t}
+                    {r.note && <small>{r.note}</small>}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <button type="button" className="link me-resume" disabled={!progress.count} onClick={onCopyResume}>
           내 기록을 이력서 초안으로 복사
         </button>
       </section>
+
+      {soon.length > 0 && (
+        <section className="me-soon" aria-label="곧 마감">
+          <h3>곧 마감</h3>
+          <div className="me-soon-list">
+            {soon.map((it) => {
+              const st = statusOf(it, today);
+              return (
+                <button key={it.id} type="button" className="me-soon-item" onClick={() => onOpen(it.id)}>
+                  <span className={`status ${st.tone}`}>{st.label}</span>
+                  <b>{it.title}</b>
+                  <small>{st.sub}</small>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <div className="seg" role="tablist" aria-label="나">
         {VIEWS.map((v) => (

@@ -470,6 +470,13 @@ export default function App() {
           setTab('path');
         }}
         onCopyResume={copyResume}
+        message={message}
+        openDays={metricsSummary().openDays}
+        onRoadmap={(stage) => {
+          setDetailId(null);
+          setPathStart(stage);
+          setTab('path');
+        }}
         settings={settingsProps}
       />
     );

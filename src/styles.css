@@ -928,7 +928,7 @@ h4 { margin: 0; }
 
 /* ---------- 나 ---------- */
 /* ---------- 나: 감자와 이름이 크게 → 성장 카드 → 스크랩·일정 ---------- */
-.me-hero { position: relative; display: grid; justify-items: center; gap: 6px; margin: -16px -16px 0; padding: 22px 16px 18px; text-align: center; background: linear-gradient(180deg, var(--hero-happy), var(--app)); }
+.me-hero { position: relative; display: grid; justify-items: center; gap: 6px; margin: -16px -16px 0; padding: 14px 16px 18px; text-align: center; background: linear-gradient(180deg, var(--hero-happy), var(--app)); }
 .me-hero.mood-neutral { background: linear-gradient(180deg, var(--hero-neutral), var(--app)); }
 .me-hero.mood-annoyed { background: linear-gradient(180deg, var(--hero-annoyed), var(--app)); }
 .me-hero.mood-angry { background: linear-gradient(180deg, var(--hero-angry), var(--app)); }
@@ -1242,3 +1242,31 @@ div.set-row { cursor: default; }
 .set-demo .set-chev { transition: rotate 0.2s; }
 .set-demo[open] .set-chev { rotate: 90deg; }
 .set-demo[open] { gap: 10px; }
+
+/* ---------- 나: 말풍선 · 다음 할 일 · 최근 기록 · 곧 마감 ---------- */
+.me-bubble { position: relative; max-width: 88%; margin: 18px 0 2px; padding: 8px 14px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); font-family: var(--font-voice); font-size: 16px; line-height: 1.35; color: var(--ink); }
+.me-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; translate: -50% 0; rotate: 45deg; background: var(--surface); }
+.me-together { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); }
+.me-together b { color: var(--primary); font-weight: 800; }
+
+.me-next { display: grid; gap: 4px; padding: 16px; border-radius: 14px; background: var(--secondary); color: var(--secondary-ink); }
+.me-next-tag { font-size: 12px; font-weight: 800; color: var(--primary); }
+.me-next b { font-size: 17px; font-weight: 800; line-height: 1.35; color: var(--ink); }
+.me-next small { font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+.me-next .btn { justify-self: start; margin-top: 8px; }
+
+.me-recent { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.me-recent > b { font-size: 14px; font-weight: 700; }
+.me-recent ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.me-recent li { display: flex; gap: 10px; align-items: baseline; }
+.me-recent-date { flex: none; min-width: 34px; font-size: 12px; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
+.me-recent-text { display: grid; gap: 1px; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.me-recent-text small { font-size: 12px; font-weight: 500; color: var(--ink-3); }
+
+.me-soon { display: grid; gap: 8px; }
+.me-soon h3 { margin: 4px 2px 0; font-size: 15px; font-weight: 800; }
+.me-soon-list { display: flex; gap: 10px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 4px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.me-soon-list::-webkit-scrollbar { display: none; }
+.me-soon-item { flex: none; width: 168px; display: grid; justify-items: start; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); color: var(--ink); font: inherit; text-align: left; cursor: pointer; scroll-snap-align: start; }
+.me-soon-item b { font-size: 13.5px; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.me-soon-item small { font-size: 11.5px; color: var(--ink-3); }
