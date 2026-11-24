@@ -50,10 +50,15 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
             <BackIcon size={18} />
             <span aria-hidden="true">나</span>
           </button>
-          <h1>
-            {SUBS[sub]}
-            {sub === 'saved' && <small> {open.length}</small>}
-          </h1>
+          {/* 감자 유형 테스트는 화면마다 자기 제목(질문·유형 이름)이 있어서 위 제목을 두지 않는다 */}
+          {sub === 'quiz' ? (
+            <span className="sr-only">{SUBS[sub]}</span>
+          ) : (
+            <h1>
+              {SUBS[sub]}
+              {sub === 'saved' && <small> {open.length}</small>}
+            </h1>
+          )}
         </div>
         {sub === 'settings' ? (
           <SettingsPanel {...settings} />
@@ -201,7 +206,7 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
           </span>
           <span className="me-quiz-text">
             <b>나는 어떤 감자일까?</b>
-            <small>8문항 감자 유형 테스트 · 나한테 맞는 기회까지</small>
+            <small>8문항으로 알아보는 내 감자 유형</small>
           </span>
           <ChevronIcon size={16} />
         </button>

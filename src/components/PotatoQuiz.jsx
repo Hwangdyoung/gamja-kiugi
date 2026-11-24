@@ -4,6 +4,7 @@ import cheerful from '../assets/potato-types/cheerful.webp';
 import searching from '../assets/potato-types/searching.webp';
 import creative from '../assets/potato-types/creative.webp';
 import dependable from '../assets/potato-types/dependable.webp';
+import { BackIcon } from './Icons.jsx';
 import { TypeIcon, statusOf, typeKey } from './OpportunityCard.jsx';
 import { POTATO_ORDER, POTATO_TYPES, QUIZ, potatoOf } from '../lib/potatoType.js';
 
@@ -58,20 +59,24 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
   if (stage === 'intro') {
     return (
       <section className="pt-intro">
-        <span className="pt-kicker">8문항 · 1분</span>
-        <h2>나는 어떤 감자일까?</h2>
-        <p>춘천 캠퍼스 생활로 알아보는 내 감자 유형. 결과에 맞춰 잘 맞는 기회도 골라 드려요.</p>
-        <ul className="pt-lineup" aria-label="감자 유형 다섯 가지">
+        <h2>
+          나는 어떤
+          <br />
+          감자일까?
+        </h2>
+        <p>춘천 캠퍼스 생활 8문항으로 내 감자 유형을 알아보고, 나한테 맞는 기회까지 골라 드려요.</p>
+        <ul className="pt-field" aria-label="감자 유형 다섯 가지">
           {POTATO_ORDER.map((t) => (
             <li key={t}>
-              <TypePotato type={t} size={52} decorative />
+              <TypePotato type={t} size={68} decorative />
               <span>{POTATO_TYPES[t].short}</span>
             </li>
           ))}
         </ul>
-        <button type="button" className="btn primary block" onClick={start}>
+        <button type="button" className="btn primary block pt-go" onClick={start}>
           내 감자 캐러 가기
         </button>
+        <small className="pt-note">1분이면 끝나요. 결과는 나 화면에 남아요.</small>
       </section>
     );
   }
@@ -81,18 +86,14 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
     return (
       <section className="pt-play" aria-live="polite">
         <div className="pt-progress">
-          <button type="button" className="link" onClick={() => (i ? setI(i - 1) : setStage(result ? 'result' : 'intro'))}>
-            ← 이전
-          </button>
+          <span className="bar" role="progressbar" aria-label="테스트 진행" aria-valuenow={i + 1} aria-valuemin={1} aria-valuemax={QUIZ.length}>
+            <i style={{ width: `${((i + 1) / QUIZ.length) * 100}%` }} />
+          </span>
           <span className="pt-count">
             {i + 1} / {QUIZ.length}
           </span>
         </div>
-        <span className="bar" role="progressbar" aria-label="테스트 진행" aria-valuenow={i + 1} aria-valuemin={1} aria-valuemax={QUIZ.length}>
-          <i style={{ width: `${((i + 1) / QUIZ.length) * 100}%` }} />
-        </span>
         <h2 key={i} className="pt-q">
-          <small>Q{i + 1}.</small>
           {q.question}
         </h2>
         <div className="pt-choices">
@@ -107,11 +108,16 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
                 setPicked(n);
               }}
             >
-              <span className="pt-num">{n + 1}</span>
-              <span>{c.text}</span>
+              {c.text}
             </button>
           ))}
         </div>
+        {i > 0 && (
+          <button type="button" className="link pt-prev" onClick={() => setI(i - 1)}>
+            <BackIcon size={15} />
+            이전 문항
+          </button>
+        )}
       </section>
     );
   }
@@ -133,25 +139,23 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
   const fit = items.filter((it) => me.fits.includes(it.type)).slice(0, 3);
   return (
     <div className="pt-result" style={{ '--pt-h': me.hue }}>
-      <section className="pt-card">
-        <span className="pt-kicker">나의 캠퍼스 감자 유형</span>
-        <TypePotato type={result} size={132} />
+      <section className="pt-hero">
+        <TypePotato type={result} size={156} />
         <h2>{me.name}</h2>
         <p>{me.oneLiner}</p>
-        <ol className="pt-traits">
+        <ul className="pt-traits" aria-label="캠퍼스 특징">
           {me.traits.map((t) => (
             <li key={t}>{t}</li>
           ))}
-        </ol>
+        </ul>
       </section>
 
       <section className="pt-partner" aria-label="환상의 팀플 파트너">
-        <TypePotato type={me.partner} size={56} decorative />
-        <span>
-          <small>환상의 팀플 파트너</small>
-          <b>{partner.name}</b>
+        <TypePotato type={me.partner} size={60} decorative />
+        <p>
+          환상의 팀플 파트너는 <b>{partner.name}</b>
           <small>{partner.oneLiner}</small>
-        </span>
+        </p>
       </section>
 
       <section className="pt-fit" aria-label="잘 맞는 기회">
@@ -194,7 +198,7 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
         </button>
       </section>
 
-      <button type="button" className="btn ghost block" onClick={start}>
+      <button type="button" className="link pt-again" onClick={start}>
         테스트 다시 하기
       </button>
     </div>
