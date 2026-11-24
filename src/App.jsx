@@ -478,6 +478,17 @@ export default function App() {
           setTab('path');
         }}
         settings={settingsProps}
+        potatoType={prefs.potatoType ?? null}
+        onPotatoType={(t) => {
+          logEvent('potato_type', { type: t });
+          setPrefs((p) => ({ ...p, potatoType: t }));
+        }}
+        onFindOpps={(types) => {
+          setQ('');
+          setMode(null);
+          setType(types);
+          goTab('opps');
+        }}
       />
     );
   } else {

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Calendar from '../components/Calendar.jsx';
 import { BackIcon, BookmarkIcon, CalendarIcon, ChevronIcon, GearIcon, PencilIcon } from '../components/Icons.jsx';
 import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
+import PotatoQuiz, { TypePotato } from '../components/PotatoQuiz.jsx';
+import { POTATO_TYPES } from '../lib/potatoType.js';
 import { TypeIcon, statusOf, typeKey } from '../components/OpportunityCard.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
 import SettingsPanel from '../components/SettingsPanel.jsx';
@@ -10,7 +12,7 @@ import { MAJORS } from '../lib/data.js';
 import { daysLeft } from '../lib/opportunities.js';
 import { GRADES } from '../lib/roadmap.js';
 
-const SUBS = { saved: '스크랩', cal: '일정', settings: '설정' };
+const SUBS = { saved: '스크랩', cal: '일정', settings: '설정', quiz: '감자 유형 테스트' };
 // 스크랩·일정에서 기회를 열었다가 돌아오면 그 화면으로 (상세로 가면 나 화면이 내려갔다 다시 올라온다)
 let restoreSub = null;
 const PER_STAGE = 3; // 기록 3개마다 감자가 한 단계 자란다
@@ -23,7 +25,7 @@ const rank = (it, today) => {
 
 /* 나: 감자와 내 이름이 크게 보이는 머리 → 다음 할 일 → 감자 성장 카드 → 곧 마감.
    스크랩 · 일정 · 설정은 오른쪽 위 아이콘으로 따로 연다 (아래로 내려가지 않아도 되게). 내 정보 수정은 이름 옆 연필. */
-export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings }) {
+export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings, potatoType, onPotatoType, onFindOpps }) {
   const [sub, setSub] = useState(() => restoreSub);
   useEffect(() => {
     restoreSub = null;
@@ -55,6 +57,8 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
         </div>
         {sub === 'settings' ? (
           <SettingsPanel {...settings} />
+        ) : sub === 'quiz' ? (
+          <PotatoQuiz result={potatoType} items={items} today={today} onDone={onPotatoType} onOpen={openFrom} onFindOpps={onFindOpps} />
         ) : sub === 'cal' ? (
           <Calendar today={today} all={all} saved={saved} log={log} stages={progress.stages} onOpen={openFrom} onRecords={onRecords} />
         ) : open.length ? (
@@ -162,6 +166,12 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
                 {major.label} · {major.tracks[profile.track].label}
               </span>
             </div>
+            {potatoType && POTATO_TYPES[potatoType] && (
+              <button type="button" className="me-type" style={{ '--pt-h': POTATO_TYPES[potatoType].hue }} onClick={() => setSub('quiz')}>
+                {POTATO_TYPES[potatoType].name}
+                <ChevronIcon size={13} />
+              </button>
+            )}
             {openDays > 0 && (
               <p className="me-together">
                 감자와 함께한 날 <b>{openDays}일</b>
@@ -181,6 +191,20 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
             기록하러 가기
           </button>
         </section>
+      )}
+
+      {!potatoType && (
+        <button type="button" className="me-quiz" onClick={() => setSub('quiz')}>
+          <span className="me-quiz-lineup" aria-hidden="true">
+            <TypePotato type="cheerful" size={44} decorative />
+            <TypePotato type="creative" size={44} decorative />
+          </span>
+          <span className="me-quiz-text">
+            <b>나는 어떤 감자일까?</b>
+            <small>8문항 감자 유형 테스트 · 나한테 맞는 기회까지</small>
+          </span>
+          <ChevronIcon size={16} />
+        </button>
       )}
 
       <section className="card me-grow" aria-label="감자 성장">
