@@ -1216,7 +1216,7 @@ div.set-row { cursor: default; }
 
 /* ---------- 나: 말풍선 · 다음 할 일 · 최근 기록 · 곧 마감 ---------- */
 .me-bubble { position: relative; max-width: 72%; margin: 44px 0 2px; padding: 8px 14px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); font-family: var(--font-voice); font-size: 16px; line-height: 1.35; color: var(--ink); }
-.me-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; translate: -50% 0; rotate: 45deg; background: var(--surface); }
+.me-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; translate: -50% 0; rotate: 45deg; background: var(--secondary); }
 .me-together { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); }
 .me-together b { color: var(--primary); font-weight: 800; }
 
@@ -1262,14 +1262,23 @@ div.set-row { cursor: default; }
 .pt-go { margin-top: 40px; }
 .pt-note { font-size: 12px; color: var(--ink-3); text-align: center; }
 
-.pt-play { display: grid; gap: 12px; }
-.pt-progress { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
-.pt-progress .bar { flex: 1; }
+.pt-play { display: grid; gap: 10px; }
+/* 밭고랑 진행: 8칸, 감자가 지금 칸 위에 서고 말풍선(질문)의 꼬리가 감자를 가리킨다 */
+.pt-track { position: relative; height: 86px; margin: 2px 0 0; }
+.pt-rows { position: absolute; inset: auto 0 0 0; display: grid; grid-template-columns: repeat(8, 1fr); height: 22px; margin: 0; padding: 0; list-style: none; border-bottom: 2px solid var(--line-2); }
+.pt-rows li { position: relative; display: grid; place-items: end center; }
+.pt-rows li::after { content: ''; position: absolute; bottom: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); }
+.pt-rows li.grown::after { background: var(--m-leaf); }
+.pt-rows svg { margin-bottom: 1px; fill: var(--m-leaf); stroke: oklch(0.42 0.1 150); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; animation: pt-sprout 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: 50% 100%; }
+.pt-rows svg path:first-child { fill: none; }
+.pt-walker { position: absolute; bottom: 2px; left: calc((100% / 8) * (var(--p) * 7) + (100% / 16)); translate: -50% 0; transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.pt-hop { display: block; transform-origin: 50% 100%; animation: pt-hop 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.pt-count { position: absolute; top: 0; right: 0; font-size: 15px; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
+.pt-count small { font-size: 12px; font-weight: 700; color: var(--ink-3); }
 .pt-prev { justify-self: center; display: inline-flex; align-items: center; gap: 2px; margin-top: 4px; color: var(--ink-2); }
-.pt-count { font-size: 13px; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
-.pt-play .bar { height: 6px; border-radius: 999px; }
-.pt-play .bar i { border-radius: 999px; }
-.pt-q { margin: 14px 0 6px; font-family: var(--font-voice); font-size: 24px; font-weight: 400; line-height: 1.35; color: var(--ink); text-wrap: balance; animation: pt-in 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+/* 질문은 감자가 하는 말: 꼬리가 감자 위치를 따라간다 */
+.pt-q { position: relative; margin: 10px 0 6px; padding: 14px 16px; border-radius: 16px; background: var(--secondary); font-family: var(--font-voice); font-size: 22px; font-weight: 400; line-height: 1.38; color: var(--ink); text-wrap: balance; animation: pt-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.pt-q::before { content: ''; position: absolute; top: -6px; left: clamp(18px, calc((100% / 8) * (var(--p) * 7) + (100% / 16)), calc(100% - 18px)); width: 12px; height: 12px; translate: -50% 0; rotate: 45deg; background: var(--secondary); }
 .pt-choices { display: grid; gap: 8px; }
 .pt-choice { width: 100%; min-height: 52px; padding: 13px 16px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; line-height: 1.45; text-align: left; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s; }
 .pt-choice:hover { border-color: var(--primary); }
@@ -1322,5 +1331,7 @@ div.set-row { cursor: default; }
 @keyframes pt-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes pt-pop { 0% { opacity: 0; transform: scale(0.7) translateY(12px); } 60% { opacity: 1; transform: scale(1.06) translateY(-4px); } 100% { transform: none; } }
 @keyframes pt-dig { 0%, 100% { transform: none; } 30% { transform: translateY(-10px) rotate(-7deg); } 60% { transform: translateY(1px) rotate(5deg) scaleY(0.96); } }
+@keyframes pt-sprout { from { transform: scale(0); } to { transform: none; } }
+@keyframes pt-hop { 0% { transform: translateY(0) scaleY(1); } 35% { transform: translateY(-12px) scaleY(1.04); } 70% { transform: translateY(0) scaleY(0.93); } 100% { transform: none; } }
 @keyframes pt-sway { 0%, 100% { rotate: -2.5deg; } 50% { rotate: 2.5deg; } }
-@media (prefers-reduced-motion: reduce) { .pt-q, .pt-hero > .pt-potato, .pt-dig-potato .pt-potato, .pt-field .pt-potato { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .pt-q, .pt-hero > .pt-potato, .pt-dig-potato .pt-potato, .pt-field .pt-potato, .pt-rows svg, .pt-hop { animation: none; } .pt-walker { transition: none; } }

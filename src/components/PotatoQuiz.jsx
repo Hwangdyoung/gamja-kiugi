@@ -5,6 +5,7 @@ import searching from '../assets/potato-types/searching.webp';
 import creative from '../assets/potato-types/creative.webp';
 import dependable from '../assets/potato-types/dependable.webp';
 import { BackIcon } from './Icons.jsx';
+import Mascot from './Mascot.jsx';
 import { TypeIcon, statusOf, typeKey } from './OpportunityCard.jsx';
 import { POTATO_ORDER, POTATO_TYPES, QUIZ, potatoOf } from '../lib/potatoType.js';
 
@@ -84,13 +85,30 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
   if (stage === 'play') {
     const q = QUIZ[i];
     return (
-      <section className="pt-play" aria-live="polite">
-        <div className="pt-progress">
-          <span className="bar" role="progressbar" aria-label="테스트 진행" aria-valuenow={i + 1} aria-valuemin={1} aria-valuemax={QUIZ.length}>
-            <i style={{ width: `${((i + 1) / QUIZ.length) * 100}%` }} />
+      <section className="pt-play" aria-live="polite" style={{ '--p': i / (QUIZ.length - 1) }}>
+        {/* 진행: 내 감자가 밭고랑을 따라 한 칸씩 걸어가고, 지나온 칸에는 싹이 난다 */}
+        <div className="pt-track" role="progressbar" aria-label="테스트 진행" aria-valuenow={i + 1} aria-valuemin={1} aria-valuemax={QUIZ.length} aria-valuetext={`${QUIZ.length}문항 중 ${i + 1}번째`}>
+          <ol className="pt-rows" aria-hidden="true">
+            {QUIZ.map((_, k) => (
+              <li key={k} className={k < i ? 'grown' : k === i ? 'here' : ''}>
+                {k < i && (
+                  <svg viewBox="0 0 20 20" width="18" height="18">
+                    <path d="M10 19V10" />
+                    <path d="M10 12C10 7 6.5 5 3 5.5 3.5 9.5 6.5 12 10 12Z" />
+                    <path d="M10 10.5C10 6.5 13 4 17 4.5 16.5 8.5 13.5 10.5 10 10.5Z" />
+                  </svg>
+                )}
+              </li>
+            ))}
+          </ol>
+          <span className="pt-walker" aria-hidden="true">
+            <span key={i} className="pt-hop">
+              <Mascot mood="happy" size={52} />
+            </span>
           </span>
-          <span className="pt-count">
-            {i + 1} / {QUIZ.length}
+          <span className="pt-count" aria-hidden="true">
+            {i + 1}
+            <small>/{QUIZ.length}</small>
           </span>
         </div>
         <h2 key={i} className="pt-q">
