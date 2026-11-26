@@ -87,7 +87,9 @@ export default function Home({ name, progress, mood: baseMood, message, items, u
             <>{name}, 이제 지원서 쓸 차례.</>
           )}
         </p>
-        {/* 몽실몽실 구름 말풍선: 감자 쪽으로 작은 구름 두 개가 이어진다. 말이 바뀌면 통 튀어나온다 */}
+        {/* 몽실몽실 구름 말풍선: 감자 쪽으로 작은 구름 두 개가 이어진다. 말이 바뀌면 통 튀어나온다.
+            말풍선 자리는 두 줄 높이로 고정하고 아래(감자 쪽)에 붙인다: 말이 한 줄이든 두 줄이든 감자·숫자 칸이 밀리지 않는다 */}
+        <div className="bubble-slot">
         <div className="home-bubble" key={say ?? 'base'} aria-live="polite">
           <p>{say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : nagOn ? nag.line : message)}</p>
           <i className="bump b1" />
@@ -96,6 +98,7 @@ export default function Home({ name, progress, mood: baseMood, message, items, u
           <i className="bump b4" />
           <i className="puff p1" />
           <i className="puff p2" />
+        </div>
         </div>
 
         <div className="potato-stage">

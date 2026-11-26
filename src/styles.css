@@ -908,6 +908,9 @@ h4 { margin: 0; }
   filter: drop-shadow(0 0 0.6px var(--line-2)) drop-shadow(0 6px 10px oklch(0.3 0.04 240 / 14%));
   animation: bubble-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+/* 말풍선 자리: 두 줄 높이로 고정, 말풍선은 아래에 붙는다 (더 길면 위로만 커져서 아래 UI가 움직이지 않음) */
+.bubble-slot { flex: none; align-self: stretch; display: flex; align-items: flex-end; justify-content: center; height: 70px; margin: 14px 0 18px; }
+.bubble-slot .home-bubble { flex: none; margin: 0; max-width: 280px; }
 /* 몸통 위아래로 큰 동그라미 몇 개를 겹쳐 구름 모양 (바깥 그림자가 하나로 이어 그린다) */
 .home-bubble .bump { position: absolute; border-radius: 50%; background: var(--surface); }
 .home-bubble .b1 { width: 46px; height: 46px; left: 12%; top: -16px; }
