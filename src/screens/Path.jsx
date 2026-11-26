@@ -114,7 +114,8 @@ function Task({ task, entry, opps, today, open, onToggle, onRecord, onClear, onO
 const RINGS = 7;
 function Records({ progress, log, mood, outfit, onCopyResume, onGo }) {
   const recs = recordsOf(progress, log);
-  const { grow, count } = progress;
+  const { grow, count, total } = progress;
+  const grad = count >= total; // 할 일을 다 마치면 학사모
   const left = grow < 4 ? (grow + 1) * 3 - count : 0; // 기록 3개마다 싹 한 칸
   const jump = (i) => {
     const el = document.getElementById(`rec-g${i + 1}`);
@@ -146,7 +147,7 @@ function Records({ progress, log, mood, outfit, onCopyResume, onGo }) {
             </h3>
             <div className="rec-stickers">
               <span className="rec-sticker">
-                <Mascot mood={mood} size={88} grow={grow} outfit={outfit} />
+                <Mascot mood={mood} size={88} grow={grow} outfit={outfit} grad={grad} />
               </span>
               {grow < 4 && (
                 <span className="rec-ghost" aria-hidden="true">
@@ -155,7 +156,11 @@ function Records({ progress, log, mood, outfit, onCopyResume, onGo }) {
               )}
             </div>
             <p className="rec-hint">
-              {grow < 4 ? (
+              {grad ? (
+                <>
+                  할 일을 다 마쳐서 <b>학사모</b>를 받았어요. 이제 이력서 초안을 복사해 보세요.
+                </>
+              ) : grow < 4 ? (
                 <>
                   {left}줄 더 쓰면 <b>{GROW_LABELS[grow + 1]}</b>
                 </>
@@ -288,7 +293,7 @@ function RoadMap({ progress, mood, picked, onPick }) {
       })}
 
       <span className="rmap-potato" style={pos(STOPS[progress.current])} aria-hidden="true">
-        <Mascot mood={mood} size={48} grow={progress.grow} />
+        <Mascot mood={mood} size={48} grow={progress.grow} grad={progress.count >= progress.total} />
       </span>
 
       <span className={`rmap-goal${progress.count >= progress.total ? ' done' : ''}`} style={pos(GOAL)}>

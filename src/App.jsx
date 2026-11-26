@@ -295,6 +295,8 @@ export default function App() {
     if (!log[id]) {
       logEvent('step_done', { task: id });
       reward('compost', `rec:${id}`);
+      // 마지막 할 일까지 마치면 감자가 학사모를 쓴다 (이력서 재료가 다 모인 때)
+      if (progress.count + 1 >= progress.total) setTimeout(() => setToast('할 일을 다 마쳤어요! 감자가 학사모를 받았어요. 내 기록에서 이력서 초안을 복사해 보세요.'), 900);
     }
     setLog((l) => ({ ...l, [id]: { note, at: new Date().toISOString() } }));
   };

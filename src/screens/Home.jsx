@@ -99,7 +99,7 @@ export default function Home({ name, progress, mood: baseMood, message, items, u
         </div>
 
         <div className="potato-stage">
-          <LivePotato mood={mood} size={pot} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} outfit={outfit} onPoke={onPoke} />
+          <LivePotato mood={mood} size={pot} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} outfit={outfit} grad={progress.count >= progress.total} onPoke={onPoke} />
           {care && (
             <div className="care-side" data-tour="care" role="group" aria-label="감자 돌보기">
               {CARE_KINDS.map((k) => {

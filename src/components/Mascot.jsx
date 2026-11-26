@@ -78,8 +78,31 @@ function Eyelids({ sleeping }) {
 const HAT = { searching: [hatSearching, 40, 70, 220, 150], creative: [hatCreative, 70, 78, 160, 120] };
 const HAT_LIFT = { searching: 44, creative: 40 };
 export const OUTFIT_LABELS = { calm: '동그란 안경', cheerful: '노란 머리띠', searching: '탐험 모자', creative: '빨간 베레모', dependable: '네모 안경' };
-function Outfit({ type }) {
-  if (!type) return null;
+const HEADWEAR = ['cheerful', 'searching', 'creative'];
+const CAP_LIFT = 34;
+
+/* 학사모 (로드맵 할 일을 다 마치면 = 이력서 재료가 다 모이면 받는다).
+   머리에 쓰는 유형 소품(머리띠·모자) 대신 쓰고, 안경은 그대로 둔다. 술은 오른쪽으로 늘어진다 */
+function GradCap() {
+  const st = { stroke: INK, strokeWidth: 5, strokeLinecap: 'round', strokeLinejoin: 'round' };
+  return (
+    <g transform="rotate(-7 150 120)">
+      {/* 머리에 닿는 띠 */}
+      <path d="M98 112 L98 146 Q150 166 202 146 L202 112 Z" fill="#323a46" {...st} />
+      {/* 판 (마름모, 아래 두께) */}
+      <path d="M150 74 L252 106 L150 138 L48 106 Z" fill="#3e4756" {...st} />
+      <path d="M58 109 L150 138 L242 109" fill="none" stroke="#5a6577" strokeWidth="3" strokeLinecap="round" />
+      {/* 술 */}
+      <path d="M150 106 Q200 112 226 118 L226 158" fill="none" stroke="#e7b53c" strokeWidth="5" strokeLinecap="round" />
+      <path d="M218 156 L234 156 L238 184 L214 184 Z" fill="#e7b53c" {...st} strokeWidth="4" />
+      <circle cx="150" cy="106" r="7" fill="#e7b53c" {...st} strokeWidth="4" />
+    </g>
+  );
+}
+
+function Outfit({ type, grad = false }) {
+  if (!type && !grad) return null;
+  if (grad && HEADWEAR.includes(type)) type = null;
   const st = { stroke: INK, strokeWidth: 5, strokeLinecap: 'round', strokeLinejoin: 'round' };
   let art = null;
   if (type === 'cheerful') {
@@ -121,13 +144,14 @@ function Outfit({ type }) {
     art = <image href={src} x={x} y={y} width={w} height={h} preserveAspectRatio="xMidYMid meet" />;
   }
   return (
-    <svg className="outfit" viewBox="0 0 300 348" aria-hidden="true" data-outfit={type}>
+    <svg className="outfit" viewBox="0 0 300 348" aria-hidden="true" data-outfit={type ?? undefined} data-grad={grad || undefined}>
       {art}
+      {grad && <GradCap />}
     </svg>
   );
 }
 
-export default function Mascot({ mood = 'happy', size = 120, grow = 0, blink = false, sleeping = false, outfit = null }) {
+export default function Mascot({ mood = 'happy', size = 120, grow = 0, blink = false, sleeping = false, outfit = null, grad = false }) {
   const lids = (blink || sleeping) && (mood === 'happy' || mood === 'neutral');
   return (
     <span className="mascot-wrap" data-mood={mood} style={{ width: size, height: Math.round(size * 1.16) }}>
@@ -137,13 +161,13 @@ export default function Mascot({ mood = 'happy', size = 120, grow = 0, blink = f
         src={MASCOT_SRC[mood]}
         width={size}
         height={Math.round(size * 1.16)}
-        alt={`감자 캐릭터, 표정 ${MOODS[mood]}${grow ? `, ${GROW_LABELS[grow]}` : ''}${outfit && OUTFIT_LABELS[outfit] ? `, ${OUTFIT_LABELS[outfit]}` : ''}`}
+        alt={`감자 캐릭터, 표정 ${MOODS[mood]}${grow ? `, ${GROW_LABELS[grow]}` : ''}${outfit && OUTFIT_LABELS[outfit] ? `, ${OUTFIT_LABELS[outfit]}` : ''}${grad ? ', 학사모' : ''}`}
         draggable="false"
       />
       {lids && <Eyelids sleeping={sleeping} />}
-      <Outfit type={outfit} />
+      <Outfit type={outfit} grad={grad} />
       {/* 모자를 쓰면 싹은 모자 꼭대기에서 난다 */}
-      <Sprout grow={grow} lift={HAT_LIFT[outfit] ?? 0} />
+      <Sprout grow={grow} lift={grad ? CAP_LIFT : HAT_LIFT[outfit] ?? 0} />
     </span>
   );
 }

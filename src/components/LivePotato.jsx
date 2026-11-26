@@ -23,7 +23,7 @@ function Umbrella({ size }) {
   );
 }
 
-export default function LivePotato({ mood, size = 168, grow = 0, vital = 60, fx = null, sleeping = false, umbrella = false, outfit = null, onPoke }) {
+export default function LivePotato({ mood, size = 168, grow = 0, vital = 60, fx = null, sleeping = false, umbrella = false, outfit = null, grad = false, onPoke }) {
   const [anim, setAnim] = useState(null);
   const taps = useRef([]);
   const timer = useRef(null);
@@ -47,7 +47,7 @@ export default function LivePotato({ mood, size = 168, grow = 0, vital = 60, fx 
     <button type="button" className={cls} data-mood={mood} aria-label="감자 쓰다듬기" onClick={poke}>
       {umbrella && <Umbrella size={size} />}
       <span className="live-body">
-        <Mascot mood={mood} size={size} grow={grow} blink={!sleeping} sleeping={sleeping} outfit={outfit} />
+        <Mascot mood={mood} size={size} grow={grow} blink={!sleeping} sleeping={sleeping} outfit={outfit} grad={grad} />
       </span>
       {sleeping && (
         <span className="zzz" aria-hidden="true">
