@@ -5,8 +5,9 @@ import searching from '../assets/potato-types/searching.webp';
 import creative from '../assets/potato-types/creative.webp';
 import dependable from '../assets/potato-types/dependable.webp';
 import { BackIcon } from './Icons.jsx';
-import Mascot from './Mascot.jsx';
+import Mascot, { OUTFIT_LABELS } from './Mascot.jsx';
 import { TypeIcon, statusOf, typeKey } from './OpportunityCard.jsx';
+import { josa } from '../lib/text.js';
 import { POTATO_ORDER, POTATO_TYPES, QUIZ, potatoOf } from '../lib/potatoType.js';
 
 /* 유형 감자 그림 (팀원 그림: 흰 배경을 지우고 키워서 넣음) */
@@ -166,6 +167,13 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
             <li key={t}>{t}</li>
           ))}
         </ul>
+        <div className="pt-gift">
+          <Mascot mood="happy" size={44} outfit={result} />
+          <p>
+            내 감자가 <b>{OUTFIT_LABELS[result]}</b>
+            {josa(OUTFIT_LABELS[result], '을', '를')} 받았어요!
+          </p>
+        </div>
       </section>
 
       <section className="pt-partner" aria-label="환상의 팀플 파트너">

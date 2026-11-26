@@ -15,7 +15,7 @@ const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
    - 가운데: 인사 · 말풍선 · 살아 있는 감자(누르면 반응), 오른쪽에 물·햇빛·거름 아이콘
    - 감자 아래: 가진 개수 · 기운 · 성장(기록 3개마다 싹 한 칸)
    - 아래: 탭 바 위에 떠 있는 "다음 할 일" 카드 하나. 기회 목록·검색은 기회 탭에서 본다 */
-export default function Home({ name, progress, mood: baseMood, message, items, urgent = [], nag = null, onOpen, care, vital = 60, sleeping = false, time = 'day', weather = 'clear', temp = null, onGive, onTab }) {
+export default function Home({ name, progress, mood: baseMood, message, items, urgent = [], nag = null, outfit = null, onOpen, care, vital = 60, sleeping = false, time = 'day', weather = 'clear', temp = null, onGive, onTab }) {
   /* 스크랩만 하고 지원 안 한 기회가 마감 7일 안이면 감자가 그걸 콕 집어 조른다.
      웃던 감자는 시무룩(무표정)해지고, 화난 감자는 원래 말(접속 독촉)을 그대로 한다 */
   const nagOn = !!nag && baseMood !== 'angry';
@@ -97,7 +97,7 @@ export default function Home({ name, progress, mood: baseMood, message, items, u
         </div>
 
         <div className="potato-stage">
-          <LivePotato mood={mood} size={pot} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} onPoke={onPoke} />
+          <LivePotato mood={mood} size={pot} grow={grow} vital={vital} fx={fx} sleeping={sleeping} umbrella={weather === 'rain'} outfit={outfit} onPoke={onPoke} />
           {care && (
             <div className="care-side" data-tour="care" role="group" aria-label="감자 돌보기">
               {CARE_KINDS.map((k) => {

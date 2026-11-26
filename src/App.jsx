@@ -441,6 +441,7 @@ export default function App() {
         urgent={urgentSaved(items, savedToApply(saved, applied), today)}
         nag={nag && { id: nag.item.id, line: nagLine(nag), left: nag.left }}
         onOpen={setDetailId}
+        outfit={prefs.potatoType ?? null}
         care={care}
         vital={vitalOf(care)}
         sleeping={clock === 'auto' ? isSleepTime(now) : clock === 'night'}

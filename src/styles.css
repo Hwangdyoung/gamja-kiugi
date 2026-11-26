@@ -1296,8 +1296,9 @@ div.set-row { cursor: default; }
 
 .pt-result { display: grid; gap: 18px; }
 /* 결과 한 판: 유형 색 바탕에 감자 · 이름 · 한 줄 · 특징 세 줄(선으로만 나눔) */
-.pt-hero { display: grid; justify-items: center; margin: -16px -16px 0; padding: 18px 20px 6px; background: oklch(0.955 0.04 var(--pt-h)); text-align: center; }
-:root[data-theme='dark'] .pt-hero { background: oklch(0.27 0.045 var(--pt-h)); }
+/* 위는 앱 바탕에서 스며들 듯 시작한다 (나 화면 머리와 같은 방식): 뒤로 가기 줄 아래가 칼로 자른 듯 끊기지 않게 */
+.pt-hero { --pt-bg: oklch(0.955 0.04 var(--pt-h)); display: grid; justify-items: center; margin: -16px -16px 0; padding: 18px 20px 6px; background: linear-gradient(180deg, var(--app), var(--pt-bg) 96px, var(--pt-bg) calc(100% - 40px), var(--app)); text-align: center; }
+:root[data-theme='dark'] .pt-hero { --pt-bg: oklch(0.27 0.045 var(--pt-h)); }
 .pt-hero > .pt-potato { margin-bottom: 4px; animation: pt-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .pt-hero h2 { margin: 0; font-family: var(--font-voice); font-size: 32px; font-weight: 400; line-height: 1.2; color: var(--ink); }
 .pt-hero > p { margin: 4px 0 0; font-size: 14px; line-height: 1.45; color: oklch(0.42 0.05 var(--pt-h)); }
@@ -1336,28 +1337,28 @@ div.set-row { cursor: default; }
 @keyframes pt-sway { 0%, 100% { rotate: -2.5deg; } 50% { rotate: 2.5deg; } }
 @media (prefers-reduced-motion: reduce) { .pt-q, .pt-hero > .pt-potato, .pt-dig-potato .pt-potato, .pt-field .pt-potato, .pt-rows svg, .pt-hop { animation: none; } .pt-walker { transition: none; } }
 
-/* ---------- 지원 기록 (기회 상세 · 스크랩 목록) ---------- */
-.apply-cta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1.5px dashed var(--line-2); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
-.apply-cta:hover { border-color: var(--ok); background: var(--ok-soft); }
-.apply-cta:active { transform: scale(0.99); }
-.apply-cta:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.apply-box { flex: none; width: 24px; height: 24px; border: 2px solid var(--line-2); border-radius: 7px; background: var(--app); }
-.apply-cta > span:last-child { display: grid; gap: 2px; }
-.apply-cta b { font-size: 15px; font-weight: 800; }
-.apply-cta small { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
-
-.apply-card { display: grid; gap: 12px; padding: 14px; border-radius: 12px; background: var(--ok-soft); color: var(--ok-ink); animation: pt-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.apply-card.is-fail { background: var(--muted); color: var(--ink-2); }
-.apply-head { display: flex; align-items: center; gap: 12px; }
-.apply-check { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--ok); color: oklch(0.99 0 0); animation: pt-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
-.apply-card.is-fail .apply-check { background: var(--ink-3); }
-.apply-head p { display: grid; gap: 2px; margin: 0; }
-.apply-head b { font-size: 15px; font-weight: 800; color: var(--ink); }
-.apply-head small { font-size: 12.5px; color: inherit; }
-.apply-results { display: flex; gap: 6px; flex-wrap: wrap; }
-.apply-results .chip[aria-checked='true'] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
-.apply-undo { justify-self: start; padding: 0; color: var(--ink-3); font-weight: 600; }
+/* ---------- 지원 기록 (기회 상세 · 스크랩 목록) ----------
+   나 화면 '다음 할 일'과 같은 연파랑 판에 감자가 말을 건다. 결과는 설정의 세그먼트와 같은 모양 */
+.apply { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 12px; padding: 14px 16px 14px 10px; border-radius: 14px; background: var(--secondary); }
+.apply.is-pass { background: var(--ok-soft); }
+.apply-potato { align-self: end; display: grid; }
+.apply.is-pass .apply-potato { animation: pt-hop 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.apply-body { display: grid; justify-items: start; gap: 8px; min-width: 0; }
+.apply-say { margin: 0; font-family: var(--font-voice); font-size: 17px; line-height: 1.35; color: var(--ink); }
+.apply-body .btn { gap: 4px; }
+.apply-seg { width: 100%; background: color-mix(in oklch, var(--ink) 7%, transparent); }
+.apply-seg button { flex: 1; justify-content: center; }
+.apply.is-pass .apply-seg button[aria-selected='true'] { color: var(--ok-ink); }
+.apply-meta { font-size: 12px; color: var(--ink-2); }
+.apply-meta .link { padding: 0; font-size: 12px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+.apply-next { grid-column: 1 / -1; margin-top: 8px; }
 .status.apply-applied { background: var(--ok-soft); color: var(--ok-ink); }
 .status.apply-pass { background: var(--ok); color: oklch(0.99 0 0); }
 .status.apply-fail { background: var(--muted); color: var(--ink-2); }
-@media (prefers-reduced-motion: reduce) { .apply-card, .apply-check { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .apply.is-pass .apply-potato { animation: none; } }
+
+/* 유형 소품: 결과 화면에서 내 감자가 받은 소품 한 줄 */
+.pt-gift { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 14px; padding: 10px 12px; border-radius: 12px; background: color-mix(in oklch, var(--surface) 75%, transparent); text-align: left; }
+.pt-gift p { margin: 0; font-size: 13.5px; line-height: 1.4; color: var(--ink-2); }
+.pt-gift b { color: var(--ink); }
+.outfit { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }

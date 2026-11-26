@@ -162,7 +162,7 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
               </p>
             )}
             <span className="me-potato">
-              <Mascot mood={mood} size={92} grow={grow} />
+              <Mascot mood={mood} size={92} grow={grow} outfit={potatoType} />
             </span>
             <div className="me-name">
               <h2>{profile.name}</h2>
