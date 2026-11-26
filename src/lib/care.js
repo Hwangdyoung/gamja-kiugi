@@ -66,8 +66,16 @@ const POKE = {
   annoyed: ['흥, 이제 왔어?', '건드리지 마, 삐졌어', '할 일이나 하고 와'],
   angry: ['지금 누르기만 할 거야?!', '화났다고!', '기회부터 보고 와!'],
 };
-export const pokeLine = (mood, n) => POKE[mood][n % POKE[mood].length];
+/* 유형 말투가 있으면 기분 좋음·멈춤 반응은 그 유형 말로 (짜증·화남은 모두 같은 말) */
+export const pokeLine = (mood, n, voice = null) => {
+  const lines = voice?.poke[mood] ?? POKE[mood];
+  return lines[n % lines.length];
+};
 export const TICKLE = ['으하하 그만그만!', '간지러워 죽겠어!', '어지러워~'];
+export const tickleLine = (n, voice = null) => {
+  const lines = voice?.tickle ?? TICKLE;
+  return lines[n % lines.length];
+};
 export const SLEEPY = ['쿨… 쿨…', '음냐… 5분만…', '졸려… 내일 보자'];
 
 /* 밤 11시~아침 7시에는 감자가 잔다 */

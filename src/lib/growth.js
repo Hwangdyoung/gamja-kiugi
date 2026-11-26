@@ -1,5 +1,6 @@
 import { MAJORS } from './data.js';
 import { josa } from './text.js';
+import { voiceOf } from './potatoType.js';
 
 /* 프로필({ name, major, track })에 해당하는 직무 경로 */
 export function getTrack(profile) {
@@ -19,10 +20,13 @@ export function moodOf(days) {
 export const CHARACTER = '감자';
 
 /* progress = roadmap.js progressOf() 결과 ({ count, total, next }) */
-export function messageFor(mood, { progress }) {
+export function messageFor(mood, { progress, type = null }) {
   const name = CHARACTER;
   const i = josa(name, '이', '가');
   const full = progress.count >= progress.total;
+  const voice = voiceOf(type); // 감자 유형 테스트 결과가 있으면 그 말투로 (기분 좋음·멈춤만)
+  if (voice && mood === 'happy' && !full) return voice.happy;
+  if (voice && mood === 'neutral') return voice.neutral;
   if (mood === 'happy') return full ? `${name}${i} 다 컸다. 이 기록으로 지원서 써 보자.` : `${name}${i} 오늘도 성장 중!`;
   if (mood === 'neutral') return `${name}${i} 멈춰 있어요.`;
   if (mood === 'annoyed') {

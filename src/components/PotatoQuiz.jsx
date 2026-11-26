@@ -172,6 +172,7 @@ export default function PotatoQuiz({ result, items, today, onDone, onOpen, onFin
           <p>
             내 감자가 <b>{OUTFIT_LABELS[result]}</b>
             {josa(OUTFIT_LABELS[result], '을', '를')} 받았어요!
+            <small>홈에서 하는 말도 {me.short} 감자 말투로 바뀌어요.</small>
           </p>
         </div>
       </section>

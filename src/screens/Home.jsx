@@ -3,7 +3,8 @@ import { GROW_LABELS } from '../components/Mascot.jsx';
 import LivePotato from '../components/LivePotato.jsx';
 import HomeScene from '../components/HomeScene.jsx';
 import { ChevronIcon, DropIcon, SproutIcon, SunIcon } from '../components/Icons.jsx';
-import { CARE, CARE_KINDS, SLEEPY, TICKLE, pokeLine, vitalLabel } from '../lib/care.js';
+import { CARE, CARE_KINDS, SLEEPY, pokeLine, tickleLine, vitalLabel } from '../lib/care.js';
+import { voiceOf } from '../lib/potatoType.js';
 import { WEATHER_LABEL } from '../lib/weather.js';
 
 // 날씨에 따라 가끔 하는 말
@@ -50,7 +51,8 @@ export default function Home({ name, progress, mood: baseMood, message, items, u
   const onPoke = (kind) => {
     const n = count.current++;
     const w = WEATHER_LINE[weather];
-    speak(sleeping ? SLEEPY[n % SLEEPY.length] : kind === 'tickle' ? TICKLE[n % TICKLE.length] : w && n % 3 === 1 ? w : pokeLine(mood, n));
+    const voice = voiceOf(outfit); // 테스트한 감자 유형 말투
+    speak(sleeping ? SLEEPY[n % SLEEPY.length] : kind === 'tickle' ? tickleLine(n, voice) : w && n % 3 === 1 ? w : pokeLine(mood, n, voice));
   };
   const giveCare = (kind) => {
     if (!care || care.stock[kind] < 1) return speak(CARE[kind].how);

@@ -260,7 +260,7 @@ export default function App() {
   }, [profile, log, days, notifyOn, prefs, items, saved, applied]);
   const progress = useMemo(() => progressOf(profile, log), [profile, log]);
   const mood = moodOf(days);
-  const message = profile ? messageFor(mood, { progress }) : '';
+  const message = profile ? messageFor(mood, { progress, type: prefs.potatoType ?? null }) : '';
   const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
 
