@@ -74,7 +74,8 @@ function Eyelids({ sleeping }) {
 /* 감자 유형 소품 (유형 테스트 결과): 내 감자가 그 유형의 포인트 하나를 받아 쓴다.
    그림 좌표(300×348): 머리 꼭대기 (150,134), 눈 (111,240)·(181,239), 몸통 폭 대략 40~262 */
 // [그림, x, y, 너비, 높이] (그림 좌표 300×348)
-const HAT = { searching: [hatSearching, 36, 84, 228, 138], creative: [hatCreative, 62, 84, 176, 111] };
+// 모자는 팀원 그림에서 기울어진 채로 오려서, 수평이 맞게 돌려 저장해 두었다
+const HAT = { searching: [hatSearching, 40, 70, 220, 150], creative: [hatCreative, 70, 78, 160, 120] };
 const HAT_LIFT = { searching: 44, creative: 40 };
 export const OUTFIT_LABELS = { calm: '동그란 안경', cheerful: '노란 머리띠', searching: '탐험 모자', creative: '빨간 베레모', dependable: '네모 안경' };
 function Outfit({ type }) {
@@ -91,25 +92,27 @@ function Outfit({ type }) {
       </g>
     );
   } else if (type === 'calm') {
+    // 안경알은 눈보다 조금 위에(눈이 알 아래쪽에 오게) 두고, 코받침 다리는 입에 닿지 않게 알 윗부분에서 잇는다
     art = (
       <g {...st} fill="none">
-        {EYES.map(([x, y]) => (
-          <circle key={x} cx={x} cy={y} r="31" fill="#ffffff" fillOpacity="0.18" />
-        ))}
-        <path d="M141 236 Q146 230 151 236" />
-        <path d="M80 234 L50 226" />
-        <path d="M212 233 L248 223" />
+        <circle cx="111" cy="236" r="27" fill="#ffffff" fillOpacity="0.16" />
+        <circle cx="181" cy="235" r="27" fill="#ffffff" fillOpacity="0.16" />
+        <path d="M137 227 Q146 221 155 227" />
+        <path d="M85 227 L61 221" />
+        <path d="M207 227 L233 220" />
       </g>
     );
   } else if (type === 'dependable') {
+    // 네모 안경 + 힘준 눈썹 (팀원 그림의 든든한 감자처럼)
     art = (
-      <g {...st} fill="none" strokeWidth="6">
-        {EYES.map(([x, y]) => (
-          <rect key={x} x={x - 27} y={y - 20} width="54" height="40" rx="7" fill="#ffffff" fillOpacity="0.18" />
-        ))}
-        <path d="M138 234 L154 234" />
-        <path d="M84 232 L56 226" />
-        <path d="M208 231 L242 224" />
+      <g {...st} fill="none">
+        <rect x="87" y="219" width="48" height="34" rx="6" fill="#ffffff" fillOpacity="0.16" />
+        <rect x="157" y="218" width="48" height="34" rx="6" fill="#ffffff" fillOpacity="0.16" />
+        <path d="M134 229 Q146 223 158 229" />
+        <path d="M88 229 L63 223" />
+        <path d="M204 229 L231 222" />
+        <path d="M92 203 L128 212" strokeWidth="7" />
+        <path d="M164 211 L200 202" strokeWidth="7" />
       </g>
     );
   } else if (type === 'searching' || type === 'creative') {
