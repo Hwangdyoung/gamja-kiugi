@@ -20,3 +20,5 @@ dist
 .agents
 .codex
 skills-lock.json
+
+video/out/

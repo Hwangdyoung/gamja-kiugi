@@ -645,15 +645,47 @@ h4 { margin: 0; }
 .task-body .muted { font-size: 13px; }
 .task-body > .btn { justify-self: start; }
 
-.records { display: grid; gap: 10px; }
-.records-group { padding: 14px; display: grid; gap: 8px; }
-.records-group h3 { font-size: 15px; font-weight: 800; }
-.records-group h3 span { color: var(--primary); }
-.records-group ul { list-style: none; padding: 0; display: grid; gap: 10px; }
-.records-group li { display: grid; gap: 1px; padding-left: 10px; border-left: 3px solid var(--ok); }
-.records-group li small { font-size: 11.5px; font-weight: 700; color: var(--ink-3); }
-.records-group li p { font-size: 14px; font-weight: 600; }
-.records-group li time { font-size: 11.5px; color: var(--ink-3); }
+.records { display: grid; gap: 12px; }
+/* 내 기록: 스프링 공책 (다크 모드에서도 종이는 종이색) */
+.rec-book { --line: 30px; --nb-ink: #3a2a20; --nb-ink-2: #7a6553; --nb-paper: #fffaf0; --nb-rule: oklch(0.86 0.04 230 / 70%); position: relative; margin: 4px 22px 10px 6px; }
+.rec-book::before { content: ''; position: absolute; inset: 6px -6px -8px 4px; border-radius: 8px 14px 14px 8px; background: #b98252; box-shadow: 0 14px 26px -16px oklch(0.3 0.06 60 / 70%); }
+.rec-page { position: relative; z-index: 1; min-height: 340px; padding: 16px 16px 22px 40px; border-radius: 6px 12px 12px 6px; color: var(--nb-ink); background:
+  linear-gradient(90deg, transparent 31px, oklch(0.75 0.12 20 / 45%) 31px 33px, transparent 33px),
+  var(--nb-paper);
+  box-shadow: 0 1px 0 oklch(0.8 0.03 70), 0 2px 0 #fff, 0 3px 0 oklch(0.82 0.03 70), 0 5px 0 #fff, 0 6px 0 oklch(0.8 0.03 70); }
+.rec-rings { position: absolute; z-index: 2; left: -11px; top: 22px; bottom: 22px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+.rec-rings i { display: block; width: 30px; height: 13px; border-radius: 999px; border: 3.5px solid oklch(0.72 0.01 250); border-left-color: oklch(0.58 0.01 250); background: transparent; box-shadow: inset 0 1px 0 #fff8; }
+.rec-tabs { position: absolute; z-index: 0; right: -22px; top: 26px; display: grid; gap: 6px; }
+.rec-tab { width: 34px; height: 46px; padding: 0 0 0 12px; border: 0; border-radius: 0 9px 9px 0; font-family: var(--font-voice); font-size: 15px; color: var(--nb-ink); text-align: center; transform: translateX(-8px); transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
+.rec-tab.has { transform: none; }
+.rec-tab:active { transform: translateX(3px); }
+.rec-tab.g1, .rec-grade.g1 { --tab: #f6d36b; }
+.rec-tab.g2, .rec-grade.g2 { --tab: #8fd0e8; }
+.rec-tab.g3, .rec-grade.g3 { --tab: #f2a48f; }
+.rec-tab.g4, .rec-grade.g4 { --tab: #a9d98f; }
+.rec-tab { background: var(--tab); }
+.rec-head { display: grid; align-items: end; margin-bottom: 14px; }
+.rec-head h3 { grid-column: 1 / -1; margin: 0 0 6px; font-family: var(--font-voice); font-size: 24px; font-weight: 400; line-height: 1.2; }
+.rec-head h3 em { font-style: normal; font-size: 16px; color: var(--nb-ink-2); }
+.rec-stickers { position: relative; grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 6px; height: 112px; }
+.rec-sticker { display: inline-grid; padding: 6px; border-radius: 26px; background: #fff; transform: rotate(-4deg); box-shadow: 0 0 0 2px oklch(0.85 0.06 70), 0 8px 14px -8px oklch(0.3 0.05 60 / 55%); }
+.rec-ghost { display: inline-grid; margin-bottom: 4px; opacity: 0.5; filter: grayscale(1) sepia(0.6) contrast(0.8); transform: rotate(6deg); mix-blend-mode: multiply; }
+.rec-hint { grid-column: 1 / -1; margin: 8px 0 0; font-size: 13px; font-weight: 600; color: var(--nb-ink-2); }
+.rec-hint b { color: var(--nb-ink); }
+.rec-lines { margin-left: -8px; padding-left: 8px; background: repeating-linear-gradient(180deg, transparent 0 calc(var(--line) - 1px), var(--nb-rule) calc(var(--line) - 1px) var(--line)); }
+.rec-grade { margin: 0; }
+.rec-grade h4 { display: inline-flex; align-items: center; gap: 6px; margin: 0; height: var(--line); padding: 0 10px; border-radius: 4px; font-family: var(--font-voice); font-size: 17px; font-weight: 400; line-height: var(--line); background: color-mix(in oklch, var(--tab) 55%, transparent); transform: rotate(-1deg); }
+.rec-grade h4 span { color: var(--nb-ink-2); font-size: 15px; }
+.rec-grade ul { list-style: none; margin: 0 0 var(--line); padding: 0; }
+.rec-grade li small { display: flex; gap: 8px; height: var(--line); font-size: 12px; font-weight: 700; line-height: var(--line); color: var(--nb-ink-2); }
+.rec-grade li small time { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rec-grade li p { margin: 0; font-family: var(--font-voice); font-size: 18px; line-height: var(--line); color: var(--nb-ink); }
+.rec-empty { display: grid; justify-items: start; gap: 0; }
+.rec-empty p { margin: 0; line-height: var(--line); }
+.rec-empty p:first-child { font-family: var(--font-voice); font-size: 18px; }
+.rec-empty .muted { color: var(--nb-ink-2); line-height: var(--line); }
+.rec-empty .btn { margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .rec-tab { transition: none; } }
 
 .chips-sep { flex: none; width: 1px; margin: 4px 2px; background: var(--line-2); }
 .opp-group { display: grid; gap: 8px; }
@@ -734,7 +766,7 @@ h4 { margin: 0; }
 /* 큰 감자 얼굴: 화면 폭보다 조금 넓게 그려 양옆·아래가 잘리게 한다 */
 .welcome-potato { position: absolute; left: 50%; bottom: 0; width: 132%; translate: -50% 0; animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .big-potato { display: block; width: 100%; height: auto; transform-origin: 50% 100%; animation: breathe 3.6s ease-in-out infinite; }
-.big-eyes ellipse { transform-box: fill-box; transform-origin: center; animation: eye-blink 4.2s infinite; }
+.big-eye { transform-box: fill-box; transform-origin: center; animation: eye-blink 4.2s infinite; }
 @keyframes eye-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
 @keyframes rise { from { transform: translateY(18%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .btn.welcome-start { position: absolute; z-index: 2; left: 20px; right: 20px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: auto; height: 52px; font-size: 16px; border-radius: 14px; box-shadow: 0 8px 24px -10px oklch(0.2 0.05 240 / 50%); }
@@ -770,7 +802,7 @@ h4 { margin: 0; }
   background: var(--ink); color: var(--surface); font-size: 14px; font-weight: 800;
 }
 .pill:active { transform: scale(0.97); }
-@media (prefers-reduced-motion: reduce) { .welcome-potato, .big-potato, .big-eyes ellipse { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .welcome-potato, .big-potato, .big-eye { animation: none; } }
 .vital-word { min-width: 40px; text-align: left; color: var(--ok) !important; }
 
 /* ---------- 홈 배경 그림 (춘천 호숫가 언덕): 시각 × 날씨 ---------- */

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckIcon, ChevronIcon, FlagIcon } from '../components/Icons.jsx';
-import Mascot from '../components/Mascot.jsx';
+import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
 import PageHead from '../components/PageHead.jsx';
 import { ddayLabel } from '../lib/opportunities.js';
 import { MAJORS } from '../lib/data.js';
@@ -108,50 +108,109 @@ function Task({ task, entry, opps, today, open, onToggle, onRecord, onClear, onO
   );
 }
 
-/* 내 기록: 학년별로 모아 보고, 이력서 초안으로 복사 */
-function Records({ progress, log, onCopyResume, onGo }) {
+/* 내 기록 (11/26): 스프링 공책 한 권. 왼쪽 스프링, 오른쪽 학년 색인 탭, 줄 노트 위에 한 줄씩.
+   맨 위에는 지금 내 감자 스티커와, 기록을 더 남기면 될 다음 모습이 연필 밑그림으로 붙어 있다.
+   아래 버튼으로 이력서 초안 복사 */
+const RINGS = 7;
+function Records({ progress, log, mood, outfit, onCopyResume, onGo }) {
   const recs = recordsOf(progress, log);
-  if (!recs.length) {
-    return (
-      <div className="card empty">
-        <p>
-          <b>아직 남긴 기록이 없어요.</b>
-        </p>
-        <p className="muted small">할 일을 끝내고 한 줄씩 남기면 여기에 모여요. 4학년 때 이력서 재료가 돼요.</p>
-        <button type="button" className="btn outline sm" onClick={() => onGo(progress.current)}>
-          {progress.current + 1}학년 할 일 보기
-        </button>
-      </div>
-    );
-  }
+  const { grow, count } = progress;
+  const left = grow < 4 ? (grow + 1) * 3 - count : 0; // 기록 3개마다 싹 한 칸
+  const jump = (i) => {
+    const el = document.getElementById(`rec-g${i + 1}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    else onGo(i);
+  };
   return (
     <div className="records">
-      {progress.stages.map((s) => {
-        const mine = recs.filter((r) => r.grade === s.grade);
-        if (!mine.length) return null;
-        return (
-          <section key={s.grade} className="card records-group">
+      <div className="rec-book">
+        <span className="rec-rings" aria-hidden="true">
+          {Array.from({ length: RINGS }, (_, i) => (
+            <i key={i} />
+          ))}
+        </span>
+        <nav className="rec-tabs" aria-label="학년 색인">
+          {progress.stages.map((s, i) => {
+            const has = recs.some((r) => r.grade === s.grade);
+            return (
+              <button key={s.grade} type="button" className={`rec-tab g${s.grade}${has ? ' has' : ''}`} onClick={() => jump(i)} aria-label={has ? `${s.grade}학년 기록으로` : `${s.grade}학년 할 일 보기`}>
+                {s.grade}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="rec-page">
+          <header className="rec-head">
             <h3>
-              {s.grade}학년 <span>{s.label}</span>
+              감자 기록장 <em>{count}줄</em>
             </h3>
-            <ul>
-              {mine.map((r) => (
-                <li key={r.t}>
-                  <small>
-                    {r.tag} · {r.t}
-                  </small>
-                  <p>{r.note || '기록 없이 완료'}</p>
-                  {r.at && <time>{fmt(r.at)}</time>}
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
-      <button type="button" className="btn primary block" onClick={onCopyResume}>
-        이력서 초안으로 복사
-      </button>
-      <p className="fine">학년·할 일 순서로 정리한 글이 복사돼요. 지원하는 곳에 맞게 다듬어 쓰세요.</p>
+            <div className="rec-stickers">
+              <span className="rec-sticker">
+                <Mascot mood={mood} size={88} grow={grow} outfit={outfit} />
+              </span>
+              {grow < 4 && (
+                <span className="rec-ghost" aria-hidden="true">
+                  <Mascot mood="happy" size={58} grow={grow + 1} />
+                </span>
+              )}
+            </div>
+            <p className="rec-hint">
+              {grow < 4 ? (
+                <>
+                  {left}줄 더 쓰면 <b>{GROW_LABELS[grow + 1]}</b>
+                </>
+              ) : (
+                <>
+                  <b>{GROW_LABELS[4]}</b>까지 다 컸어요
+                </>
+              )}
+            </p>
+          </header>
+
+          <div className="rec-lines">
+          {recs.length ? (
+            progress.stages.map((s) => {
+              const mine = recs.filter((r) => r.grade === s.grade);
+              if (!mine.length) return null;
+              return (
+                <section key={s.grade} id={`rec-g${s.grade}`} className={`rec-grade g${s.grade}`}>
+                  <h4>
+                    {s.grade}학년 <span>{s.label}</span>
+                  </h4>
+                  <ul>
+                    {mine.map((r) => (
+                      <li key={r.t}>
+                        <small>
+                          {r.tag} · {r.t}
+                          {r.at && <time>{fmt(r.at)}</time>}
+                        </small>
+                        <p>{r.note || '기록 없이 완료'}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })
+          ) : (
+            <div className="rec-empty">
+              <p>아직 첫 줄을 기다리는 중이에요.</p>
+              <p className="muted small">할 일을 끝내고 한 줄씩 남기면 여기에 모여요. 4학년 때 이력서 재료가 돼요.</p>
+              <button type="button" className="btn outline sm" onClick={() => onGo(progress.current)}>
+                {progress.current + 1}학년 할 일 보기
+              </button>
+            </div>
+          )}
+          </div>
+        </div>
+      </div>
+      {recs.length > 0 && (
+        <>
+          <button type="button" className="btn primary block" onClick={onCopyResume}>
+            이력서 초안으로 복사
+          </button>
+          <p className="fine">학년·할 일 순서로 정리한 글이 복사돼요. 지원하는 곳에 맞게 다듬어 쓰세요.</p>
+        </>
+      )}
     </div>
   );
 }
@@ -243,7 +302,7 @@ function RoadMap({ progress, mood, picked, onPick }) {
 }
 
 /* 내 로드맵: 위는 길 지도(어디까지 왔는지 한눈에), 아래는 고른 학년의 할 일. 탭으로 로드맵 / 내 기록 */
-export default function Path({ profile, mood = 'happy', progress, log, items, today, onRecord, onClear, onOpen, onCopyResume, startView = null }) {
+export default function Path({ profile, mood = 'happy', progress, log, items, today, onRecord, onClear, onOpen, onCopyResume, startView = null, outfit = null }) {
   const track = MAJORS[profile.major].tracks[profile.track];
   const [view, setView] = useState(startView === 'rec' ? 'rec' : 'map');
   const [picked, setPicked] = useState(typeof startView === 'number' ? startView : progress.current);
@@ -276,7 +335,7 @@ export default function Path({ profile, mood = 'happy', progress, log, items, to
       </div>
 
       {view === 'rec' ? (
-        <Records progress={progress} log={log} onCopyResume={onCopyResume} onGo={go} />
+        <Records progress={progress} log={log} mood={mood} outfit={outfit} onCopyResume={onCopyResume} onGo={go} />
       ) : (
         <>
           <RoadMap progress={progress} mood={mood} picked={picked} onPick={setPicked} />

@@ -18,13 +18,17 @@ function BigPotato() {
       {/* 볼 */}
       <ellipse cx="112" cy="226" rx="38" ry="24" fill="#cf9558" opacity="0.4" />
       <ellipse cx="288" cy="226" rx="38" ry="24" fill="#cf9558" opacity="0.4" />
-      {/* 눈 (가끔 깜빡임) */}
-      <g className="big-eyes" fill={INK}>
-        <ellipse cx="150" cy="196" rx="14" ry="18" />
-        <ellipse cx="250" cy="196" rx="14" ry="18" />
+      {/* 눈 (가끔 깜빡임). 흰 눈빛도 눈과 같이 감긴다 */}
+      <g className="big-eyes">
+        <g className="big-eye">
+          <ellipse cx="150" cy="196" rx="14" ry="18" fill={INK} />
+          <circle cx="145" cy="189" r="4.5" fill="#fff" />
+        </g>
+        <g className="big-eye">
+          <ellipse cx="250" cy="196" rx="14" ry="18" fill={INK} />
+          <circle cx="245" cy="189" r="4.5" fill="#fff" />
+        </g>
       </g>
-      <circle cx="145" cy="189" r="4.5" fill="#fff" />
-      <circle cx="245" cy="189" r="4.5" fill="#fff" />
       {/* 입 */}
       <path d="M178 226 Q 200 246 222 226" fill="none" stroke={INK} strokeWidth="9" strokeLinecap="round" />
       {/* 감자 점 */}

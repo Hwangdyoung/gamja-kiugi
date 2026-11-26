@@ -483,6 +483,7 @@ export default function App() {
         onOpen={setDetailId}
         onCopyResume={copyResume}
         startView={pathStart}
+        outfit={prefs.potatoType ?? null}
       />
     );
   } else if (tab === 'me') {
