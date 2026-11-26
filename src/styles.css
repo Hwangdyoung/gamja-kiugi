@@ -1335,3 +1335,29 @@ div.set-row { cursor: default; }
 @keyframes pt-hop { 0% { transform: translateY(0) scaleY(1); } 35% { transform: translateY(-12px) scaleY(1.04); } 70% { transform: translateY(0) scaleY(0.93); } 100% { transform: none; } }
 @keyframes pt-sway { 0%, 100% { rotate: -2.5deg; } 50% { rotate: 2.5deg; } }
 @media (prefers-reduced-motion: reduce) { .pt-q, .pt-hero > .pt-potato, .pt-dig-potato .pt-potato, .pt-field .pt-potato, .pt-rows svg, .pt-hop { animation: none; } .pt-walker { transition: none; } }
+
+/* ---------- 지원 기록 (기회 상세 · 스크랩 목록) ---------- */
+.apply-cta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1.5px dashed var(--line-2); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.apply-cta:hover { border-color: var(--ok); background: var(--ok-soft); }
+.apply-cta:active { transform: scale(0.99); }
+.apply-cta:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.apply-box { flex: none; width: 24px; height: 24px; border: 2px solid var(--line-2); border-radius: 7px; background: var(--app); }
+.apply-cta > span:last-child { display: grid; gap: 2px; }
+.apply-cta b { font-size: 15px; font-weight: 800; }
+.apply-cta small { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+
+.apply-card { display: grid; gap: 12px; padding: 14px; border-radius: 12px; background: var(--ok-soft); color: var(--ok-ink); animation: pt-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.apply-card.is-fail { background: var(--muted); color: var(--ink-2); }
+.apply-head { display: flex; align-items: center; gap: 12px; }
+.apply-check { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--ok); color: oklch(0.99 0 0); animation: pt-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+.apply-card.is-fail .apply-check { background: var(--ink-3); }
+.apply-head p { display: grid; gap: 2px; margin: 0; }
+.apply-head b { font-size: 15px; font-weight: 800; color: var(--ink); }
+.apply-head small { font-size: 12.5px; color: inherit; }
+.apply-results { display: flex; gap: 6px; flex-wrap: wrap; }
+.apply-results .chip[aria-checked='true'] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.apply-undo { justify-self: start; padding: 0; color: var(--ink-3); font-weight: 600; }
+.status.apply-applied { background: var(--ok-soft); color: var(--ok-ink); }
+.status.apply-pass { background: var(--ok); color: oklch(0.99 0 0); }
+.status.apply-fail { background: var(--muted); color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { .apply-card, .apply-check { animation: none; } }

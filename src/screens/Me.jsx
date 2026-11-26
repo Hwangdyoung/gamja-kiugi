@@ -4,6 +4,7 @@ import { BackIcon, BookmarkIcon, CalendarIcon, ChevronIcon, GearIcon, PencilIcon
 import Mascot, { GROW_LABELS } from '../components/Mascot.jsx';
 import PotatoQuiz, { TypePotato } from '../components/PotatoQuiz.jsx';
 import { POTATO_TYPES } from '../lib/potatoType.js';
+import { APPLY_LABEL, applyStats } from '../lib/apply.js';
 import { TypeIcon, statusOf, typeKey } from '../components/OpportunityCard.jsx';
 import ProfileForm from '../components/ProfileForm.jsx';
 import SettingsPanel from '../components/SettingsPanel.jsx';
@@ -25,7 +26,7 @@ const rank = (it, today) => {
 
 /* 나: 감자와 내 이름이 크게 보이는 머리 → 다음 할 일 → 감자 성장 카드 → 곧 마감.
    스크랩 · 일정 · 설정은 오른쪽 위 아이콘으로 따로 연다 (아래로 내려가지 않아도 되게). 내 정보 수정은 이름 옆 연필. */
-export default function Me({ profile, mood, progress, vital, items, all, saved, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings, potatoType, onPotatoType, onFindOpps }) {
+export default function Me({ profile, mood, progress, vital, items, all, saved, applied = {}, log, today, onOpen, onSave, onSaveProfile, onRecords, onCopyResume, onRoadmap, message, openDays, settings, potatoType, onPotatoType, onFindOpps }) {
   const [sub, setSub] = useState(() => restoreSub);
   useEffect(() => {
     restoreSub = null;
@@ -82,7 +83,11 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
                         {it.org} · {it.type}
                       </small>
                     </span>
-                    <span className={`status ${st.tone}`}>{st.label}</span>
+                    {applied[it.id] ? (
+                      <span className={`status apply-${applied[it.id].s}`}>{APPLY_LABEL[applied[it.id].s]}</span>
+                    ) : (
+                      <span className={`status ${st.tone}`}>{st.label}</span>
+                    )}
                   </button>
                   <button type="button" className="me-unsave" aria-pressed aria-label={`${it.title} 스크랩`} onClick={() => onSave(it.id)}>
                     <BookmarkIcon on size={18} />
@@ -108,6 +113,7 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
   }
 
   const grow = progress.grow ?? 0;
+  const apps = applyStats(applied);
   const full = grow >= GROW_LABELS.length - 1;
   const toNext = PER_STAGE - (progress.count % PER_STAGE);
   const pct = progress.total ? Math.round((progress.count / progress.total) * 100) : 0;
@@ -231,6 +237,16 @@ export default function Me({ profile, mood, progress, vital, items, all, saved, 
             <i style={{ width: `${pct}%` }} />
           </span>
           <small>{full ? '감자가 꽃까지 피웠어요. 이 기록으로 지원서를 써 보세요.' : `기록 ${toNext}개 더 남기면 감자가 한 단계 자라요.`}</small>
+        </div>
+        <div className="me-meter">
+          <div className="me-meter-top">
+            <b>지원한 기회</b>
+            <span className="me-num">
+              {apps.count}
+              <small>건{apps.pass ? ` · 합격 ${apps.pass}` : ''}</small>
+            </span>
+          </div>
+          <small>{apps.count ? '결과가 나오면 기회 상세에서 합격·불합격을 골라 주세요.' : '스크랩한 기회에 지원하고 상세에서 "지원했어요"를 누르면 여기 쌓여요.'}</small>
         </div>
         <div className="me-meter">
           <div className="me-meter-top">

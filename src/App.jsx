@@ -3,6 +3,7 @@ import { getTrack, messageFor, moodOf } from './lib/growth.js';
 import { migrateDone, progressOf } from './lib/roadmap.js';
 import { buildItems, isOpen, startOfToday } from './lib/opportunities.js';
 import { DEFAULT_PREFS, urgentSaved } from './lib/notify.js';
+import { nagLine, nagTarget, savedToApply } from './lib/apply.js';
 import { resumeText } from './lib/resume.js';
 import { CARE, dailyWater, earn, emptyCare, give, isSleepTime, vitalOf } from './lib/care.js';
 import { BUNDLED, cachedData, fetchLatest } from './lib/opportunityData.js';
@@ -38,6 +39,8 @@ export default function App() {
   // 할 일별 한 줄 기록 { [할 일 id]: { note, at } } (학년별 로드맵)
   const [log, setLog] = useState(() => (validStored ? validStored.log ?? toLog(validStored.profile, validStored.done) : {}));
   const [saved, setSaved] = useState(validStored?.saved ?? {});
+  // 지원 기록 { [기회 id]: { s: 지원함·합격·불합격, at } } (이 기기에만 저장)
+  const [applied, setApplied] = useState(validStored?.applied ?? {});
   const [notifyOn, setNotifyOn] = useState(validStored?.notifyOn ?? true);
   // 감자 돌보기: 물·햇빛·거름과 기운 (이 기기에만 저장)
   const [care, setCare] = useState(() => ({ ...emptyCare(), ...(validStored?.care ?? {}) }));
@@ -160,8 +163,8 @@ export default function App() {
   const today = useMemo(() => startOfToday(), []);
 
   useEffect(() => {
-    if (profile) storage.save({ profile, log, saved, notifyOn, prefs, care });
-  }, [profile, log, saved, notifyOn, prefs, care]);
+    if (profile) storage.save({ profile, log, saved, applied, notifyOn, prefs, care });
+  }, [profile, log, saved, applied, notifyOn, prefs, care]);
 
   // 홈 배경: 1분마다 시계를 다시 보고, 춘천 날씨는 앱을 열거나 돌아올 때 받는다(30분 저장)
   useEffect(() => {
@@ -248,17 +251,39 @@ export default function App() {
   // iPhone 앱이면 홈 화면 위젯에 이름·진행·시연 일수를 보내고 알림(미접속·마감 임박)을 다시 예약한다.
   // 앱으로 돌아올 때마다 "지금 접속"으로 기록
   useEffect(() => {
-    const send = () => syncWidget({ profile, log, demoDays: days, notifyOn, prefs, items, saved });
+    // 지원한 기회는 마감 알림에서 뺀다 (지원 끝났는데 조르지 않게)
+    const send = () => syncWidget({ profile, log, demoDays: days, notifyOn, prefs, items, saved: savedToApply(saved, applied) });
     send();
     const onVisible = () => document.visibilityState === 'visible' && send();
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [profile, log, days, notifyOn, prefs, items, saved]);
+  }, [profile, log, days, notifyOn, prefs, items, saved, applied]);
   const progress = useMemo(() => progressOf(profile, log), [profile, log]);
   const mood = moodOf(days);
   const message = profile ? messageFor(mood, { progress }) : '';
   const appName = APP_NAME;
   const detail = detailId ? all.find((it) => it.id === detailId) : null;
+
+  // 지원했어요: 스크랩도 같이 켜고, 처음이면 거름 1개. 결과(합격·불합격)는 나중에 바꾼다
+  const markApplied = (id, s) => {
+    if (!s) {
+      setApplied((a) => {
+        const { [id]: _gone, ...rest } = a;
+        return rest;
+      });
+      return;
+    }
+    logEvent(s === 'applied' ? 'apply' : 'apply_result', { id, s });
+    setApplied((a) => ({ ...a, [id]: { s, at: a[id]?.at ?? new Date().toISOString() } }));
+    if (s === 'applied') {
+      if (!saved[id]) setSaved((v) => ({ ...v, [id]: true }));
+      const r = earn(care, 'compost', `apply:${id}`);
+      if (r.care !== care) setCare(r.care);
+      setToast(r.got ? '지원 완료! 감자가 신났어. 거름 1개를 받았어요.' : '지원 완료! 감자가 신났어.');
+    } else if (s === 'pass') setToast('합격 축하해! 로드맵에 한 줄 남기면 감자가 자라요.');
+    else setToast('괜찮아. 지원해 본 것만으로 한 뼘 컸어.');
+  };
+  const nag = profile ? nagTarget(items, saved, applied, today) : null;
 
   const toggleSave = (id) => {
     logEvent('save', { id, on: !saved[id] });
@@ -308,6 +333,7 @@ export default function App() {
     setProfile(null);
     setLog({});
     setSaved({});
+    setApplied({});
     setNotifyOn(true);
     setPrefs({ ...DEFAULT_PREFS, theme: 'system' });
     setCare(emptyCare());
@@ -390,6 +416,13 @@ export default function App() {
         today={today}
         saved={!!saved[detail.id]}
         onSave={toggleSave}
+        applied={applied[detail.id] ?? null}
+        onApply={markApplied}
+        onRoadmap={(stage) => {
+          setDetailId(null);
+          setPathStart(stage);
+          setTab('path');
+        }}
         researchedAt={oppData.researchedAt}
         onSource={() => {
           logEvent('source_open', { id: detail.id });
@@ -405,7 +438,9 @@ export default function App() {
         mood={mood}
         message={message}
         items={items}
-        urgent={urgentSaved(items, saved, today)}
+        urgent={urgentSaved(items, savedToApply(saved, applied), today)}
+        nag={nag && { id: nag.item.id, line: nagLine(nag), left: nag.left }}
+        onOpen={setDetailId}
         care={care}
         vital={vitalOf(care)}
         sleeping={clock === 'auto' ? isSleepTime(now) : clock === 'night'}
@@ -459,6 +494,7 @@ export default function App() {
         items={items}
         all={all}
         saved={saved}
+        applied={applied}
         log={log}
         today={today}
         onOpen={setDetailId}

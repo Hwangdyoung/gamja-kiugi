@@ -15,7 +15,11 @@ const CARE_ICON = { water: DropIcon, sun: SunIcon, compost: SproutIcon };
    - 가운데: 인사 · 말풍선 · 살아 있는 감자(누르면 반응), 오른쪽에 물·햇빛·거름 아이콘
    - 감자 아래: 가진 개수 · 기운 · 성장(기록 3개마다 싹 한 칸)
    - 아래: 탭 바 위에 떠 있는 "다음 할 일" 카드 하나. 기회 목록·검색은 기회 탭에서 본다 */
-export default function Home({ name, progress, mood, message, items, urgent = [], care, vital = 60, sleeping = false, time = 'day', weather = 'clear', temp = null, onGive, onTab }) {
+export default function Home({ name, progress, mood: baseMood, message, items, urgent = [], nag = null, onOpen, care, vital = 60, sleeping = false, time = 'day', weather = 'clear', temp = null, onGive, onTab }) {
+  /* 스크랩만 하고 지원 안 한 기회가 마감 7일 안이면 감자가 그걸 콕 집어 조른다.
+     웃던 감자는 시무룩(무표정)해지고, 화난 감자는 원래 말(접속 독촉)을 그대로 한다 */
+  const nagOn = !!nag && baseMood !== 'angry';
+  const mood = nagOn && baseMood === 'happy' ? 'neutral' : baseMood;
   const [say, setSay] = useState(null);
   const [fx, setFx] = useState(null);
   const sayTimer = useRef(null);
@@ -83,7 +87,7 @@ export default function Home({ name, progress, mood, message, items, urgent = []
         </p>
         {/* 몽실몽실 구름 말풍선: 감자 쪽으로 작은 구름 두 개가 이어진다. 말이 바뀌면 통 튀어나온다 */}
         <div className="home-bubble" key={say ?? 'base'} aria-live="polite">
-          <p>{say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : message)}</p>
+          <p>{say ?? (sleeping ? '쿨… 쿨… (밤에는 감자가 자요)' : nagOn ? nag.line : message)}</p>
           <i className="bump b1" />
           <i className="bump b2" />
           <i className="bump b3" />
@@ -151,7 +155,11 @@ export default function Home({ name, progress, mood, message, items, urgent = []
           <span className="eyebrow">{next ? `다음 할 일 · ${ni + 1}학년 ${stages[ni].label}` : '모든 할 일 기록'}</span>
           <b className="float-title">{next ? next.task.t : '남긴 기록으로 지원서를 써 보세요'}</b>
           <span className="float-sub">
-            {urgent.length > 0 ? (
+            {nag ? (
+              <button type="button" className="link warn-link" onClick={() => onOpen?.(nag.id)}>
+                {nag.left === 0 ? '오늘 마감' : `D-${nag.left}`} · 스크랩한 기회 지원하러 가기
+              </button>
+            ) : urgent.length > 0 ? (
               <button type="button" className="link warn-link" onClick={() => onTab('opps')}>
                 스크랩한 기회 마감 임박 {urgent.length}건
               </button>
